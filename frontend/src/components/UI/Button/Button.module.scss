@@ -1,0 +1,30 @@
+@import '../../../styles/variables.scss';
+
+.UI_button {
+    width: 180px;
+    height: 50px;
+    border-radius: 50px;
+    background: $pink;
+    border: 0;
+    color: #FFF;
+    font-size: 14px;
+    font-weight: 500;
+    -webkit-transition: all .1s ease;
+    -o-transition: all .1s ease;
+    transition: all .1s ease;
+    text-decoration: none;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+
+    &:disabled {
+        background: $grey;
+    }
+}
+
