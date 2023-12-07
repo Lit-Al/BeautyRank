@@ -1,6 +1,9 @@
 import random
+from datetime import timedelta
 
+from django.utils import timezone
 from rest_framework.decorators import api_view
+from rest_framework.exceptions import ValidationError
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -15,7 +18,7 @@ from django.views.generic import TemplateView, UpdateView
 from django.contrib import messages
 from .models import User
 from .forms import UploadImageForm
-from .serializer import UserSerializer
+from .serializer import UserSerializer, LoginSerializer
 from rest_framework import viewsets
 
 
@@ -35,16 +38,18 @@ class UserViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         pass
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'], serializer_class=LoginSerializer)
     def login_in(self, request, *args, **kwargs):
-        phone_number = request.data.get('phone_number')
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        phone_number = serializer.data['phone_number']
         print('LoginInphone:', phone_number)
         if check_phone(phone_number):
             try:
                 user = User.objects.filter(
-                    Q(phone_number=phone_number) | Q(phone_number=phone_number.replace('8', '7', 1))).first()
+                    Q(phone_number=phone_number)).first()
             except:
-                return Response({'error': 'Такого пользователя нет'})
+                raise ValidationError(detail={'error': 'Такого пользователя нет'}, code=status.HTTP_423_LOCKED)
 
             name_user = user.first_name
             random_number = str(random.randint(1000, 9999))
@@ -56,11 +61,11 @@ class UserViewSet(viewsets.ModelViewSet):
             # print('status_sms=' + status_sms)
             print('random_number', random_number)
             user.set_password(random_number)
+            # user.expiration_password = timezone.now() + timedelta(days=7)
             user.save()
-            # НЕ ЗАБЫТЬ УДАЛИТЬ CODE: RANDOM_NUMBER ИЗ ОТВЕТА НИЖЕ, ОН ТАМ НЕ НУЖЕН НУЖЕН БЫЛ САШКЕ ДЛЯ РАБОТЫ!!!!!!!
+            # НЕ ЗАБЫТЬ УДАЛИТЬ CODE: RANDOM_NUMBER ИЗ ОТВЕТА НИЖЕ, ОН ТАМ НЕ НУЖЕН, НУЖЕН БЫЛ САШКЕ ДЛЯ РАБОТЫ!!!!!!!
             return Response({'phone_number': phone_number, 'code': random_number})
-
-        return Response({'error': 'Номер введён неверно'})
+        return ValidationError(detail='Номер введён неверно', code=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['post'])
     def check_code(self, request, *args, **kwargs):
@@ -71,12 +76,14 @@ class UserViewSet(viewsets.ModelViewSet):
         user = User.objects.filter(
             Q(phone_number=phone_number) | Q(phone_number=phone_number.replace('8', '7', 1))).first()
         if user is None:
-            return Response({'error': 'Такого пользователя нет'})
+            raise ValidationError(detail='Такого пользователя нет', code=status.HTTP_423_LOCKED)
         if user.check_password(password):
+            # if user.expiration_password <= timezone.now():
+            #     raise ValidationError(detail='чет случилось')
             login(request, user)
 
             return Response({'success': 'Успешный вход', 'user': UserSerializer(user).data})
-        return Response({'error': 'Код введён неверно'})
+        raise ValidationError(detail='Код введён неверно', code=status.HTTP_400_BAD_REQUEST)
 
     def photo_selection(self, request, pk=None):
         instance = self.get_object()

@@ -29,9 +29,3 @@ class MemberNominationSerializer(serializers.ModelSerializer):
 class ResponseSerializer(serializers.Serializer):
     my_jobs = MemberNominationSerializer(many=True)
     other_jobs = MemberNominationSerializer(many=True)
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['my_jobs'] = MemberNominationSerializer(instance['my_jobs'], many=True).data
-        data['other_jobs'] = MemberNominationSerializer(instance['other_jobs'], many=True).data
-        return data

@@ -1,9 +1,11 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
 from .views import EventViewSet
-
+router = DefaultRouter()
+router.register(prefix='events', viewset=EventViewSet)
 urlpatterns = [
-    path('master_page', EventViewSet.as_view({'post': 'master_page'}), name='master_page') ,
+    path('', include(router.urls)),
 ]
 
 #     path('evaluations/<pk>', views.EvaluationsView.as_view(), name='evaluations'),

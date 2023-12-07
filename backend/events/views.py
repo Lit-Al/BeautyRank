@@ -7,7 +7,6 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .mixins import PhotoRequiredMixin
 from .models import MemberNomination, Result, NominationAttribute, EventStaff, CategoryNomination, Category, \
     Member
 from .serializer import MemberNominationSerializer, ResponseSerializer
@@ -20,16 +19,16 @@ class EventViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         pass
 
-    @action(detail=True, methods=['post'])
+    @action(detail=False, methods=['get'])
     def master_page(self, request, *args, **kwargs):
-        id = request.data.get('id')
+        id = request.user
         data = {}
-        data['my_jobs'] = list(MemberNomination.objects.select_related('category_nomination__nomination',
+        data['my_jobs'] = (MemberNomination.objects.select_related('category_nomination__nomination',
                                                                        'category_nomination__event_category__category').filter(
             member__user=id
         ).annotate(result_all=Sum('results__score', default=0)).order_by('photo_1', 'result_all'))
 
-        data['other_jobs'] = list(MemberNomination.objects.exclude(
+        data['other_jobs'] = (MemberNomination.objects.exclude(
             Q(photo_1=None) | Q(photo_1='') | Q(member__user=id)).select_related(
             'category_nomination__nomination',
             'category_nomination__event_category__category').annotate(
