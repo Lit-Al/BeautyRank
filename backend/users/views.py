@@ -4,6 +4,7 @@ from datetime import timedelta
 from django.utils import timezone
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import ValidationError
+from rest_framework.mixins import ListModelMixin, UpdateModelMixin, RetrieveModelMixin
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -31,12 +32,9 @@ def check_phone(phone_number: str):
         return False
     return True
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(UpdateModelMixin, RetrieveModelMixin, ListModelMixin, viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
-    def create(self, request, *args, **kwargs):
-        pass
 
     @action(detail=False, methods=['post'], serializer_class=LoginSerializer)
     def login_in(self, request, *args, **kwargs):
@@ -45,12 +43,10 @@ class UserViewSet(viewsets.ModelViewSet):
         phone_number = serializer.data['phone_number']
         print('LoginInphone:', phone_number)
         if check_phone(phone_number):
-            try:
-                user = User.objects.filter(
-                    Q(phone_number=phone_number)).first()
-            except:
-                raise ValidationError(detail={'error': 'Такого пользователя нет'}, code=status.HTTP_423_LOCKED)
-
+            user = User.objects.filter(
+                Q(phone_number=phone_number)).first()
+            if user is None:
+                user = User.objects.create(phone_number=phone_number)
             name_user = user.first_name
             random_number = str(random.randint(1000, 9999))
             # token = sms.get_token()
@@ -84,11 +80,4 @@ class UserViewSet(viewsets.ModelViewSet):
 
             return Response({'success': 'Успешный вход', 'user': UserSerializer(user).data})
         raise ValidationError(detail='Код введён неверно', code=status.HTTP_400_BAD_REQUEST)
-
-    def photo_selection(self, request, pk=None):
-        instance = self.get_object()
-        serializer = UserSerializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
 
