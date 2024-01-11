@@ -21,10 +21,6 @@ class MemberNominationSerializer(serializers.ModelSerializer):
         model = MemberNomination
         fields = '__all__'
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        # Add custom representation logic here if needed
-        return representation
 
 class ResponseSerializer(serializers.Serializer):
     my_jobs = MemberNominationSerializer(many=True)

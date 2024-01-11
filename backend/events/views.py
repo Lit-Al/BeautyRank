@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView, UpdateView
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.mixins import UpdateModelMixin, ListModelMixin, RetrieveModelMixin, CreateModelMixin
 from rest_framework.response import Response
 
 from .models import MemberNomination, Result, NominationAttribute, EventStaff, CategoryNomination, Category, \
@@ -12,27 +13,24 @@ from .models import MemberNomination, Result, NominationAttribute, EventStaff, C
 from .serializer import MemberNominationSerializer, ResponseSerializer
 
 
-class EventViewSet(viewsets.ModelViewSet):
+class MemberNominationViewSet(UpdateModelMixin, CreateModelMixin, viewsets.GenericViewSet):
     queryset = MemberNomination.objects.all()
     serializer_class = MemberNominationSerializer
-
-    def create(self, request, *args, **kwargs):
-        pass
 
     @action(detail=False, methods=['get'])
     def master_page(self, request, *args, **kwargs):
         id = request.user
         data = {}
-        data['my_jobs'] = (MemberNomination.objects.select_related('category_nomination__nomination',
+        data['my_jobs'] = MemberNominationSerializer(MemberNomination.objects.select_related('category_nomination__nomination',
                                                                        'category_nomination__event_category__category').filter(
             member__user=id
-        ).annotate(result_all=Sum('results__score', default=0)).order_by('photo_1', 'result_all'))
+        ).annotate(result_all=Sum('results__score', default=0)).order_by('photo_1', 'result_all'), many=True).data
 
-        data['other_jobs'] = (MemberNomination.objects.exclude(
+        data['other_jobs'] = MemberNominationSerializer(MemberNomination.objects.exclude(
             Q(photo_1=None) | Q(photo_1='') | Q(member__user=id)).select_related(
             'category_nomination__nomination',
             'category_nomination__event_category__category').annotate(
-            result_all=Sum('results__score', default=0)).order_by('photo_1', 'result_all'))
+            result_all=Sum('results__score', default=0)).order_by('photo_1', 'result_all'), many=True).data
 
         print('data', data)
 

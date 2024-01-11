@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import ListModelMixin, UpdateModelMixin, RetrieveModelMixin
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -19,7 +20,7 @@ from django.views.generic import TemplateView, UpdateView
 from django.contrib import messages
 from .models import User
 from .forms import UploadImageForm
-from .serializer import UserSerializer, LoginSerializer
+from .serializer import UserSerializer, LoginSerializer, CheckCodeSerializer
 from rest_framework import viewsets
 
 
@@ -32,11 +33,13 @@ def check_phone(phone_number: str):
         return False
     return True
 
+
 class UserViewSet(UpdateModelMixin, RetrieveModelMixin, ListModelMixin, viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    @action(detail=False, methods=['post'], serializer_class=LoginSerializer)
+    @action(detail=False, methods=['post'],
+            serializer_class=LoginSerializer, permission_classes=[AllowAny])
     def login_in(self, request, *args, **kwargs):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -63,7 +66,8 @@ class UserViewSet(UpdateModelMixin, RetrieveModelMixin, ListModelMixin, viewsets
             return Response({'phone_number': phone_number, 'code': random_number})
         return ValidationError(detail='Номер введён неверно', code=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'],
+            serializer_class=CheckCodeSerializer, permission_classes=[AllowAny])
     def check_code(self, request, *args, **kwargs):
         phone_number = request.data.get('phone_number')
         print('Checkcodephone', phone_number)

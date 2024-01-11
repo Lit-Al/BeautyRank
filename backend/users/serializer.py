@@ -9,6 +9,11 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "is_staff"]
 
 
+class CheckCodeSerializer(serializers.Serializer):
+    phone_number = serializers.CharField()
+    code = serializers.CharField()
+
+
 class LoginSerializer(serializers.Serializer):
     phone_number = serializers.CharField()
     def validate_phone_number(self, value):
