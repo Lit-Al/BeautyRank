@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 from .models import MemberNomination, Result, NominationAttribute, EventStaff, CategoryNomination, Category, \
     Member
-from .serializer import MemberNominationSerializer, ResponseSerializer
+from .serializer import MemberNominationSerializer
 
 
 class MemberNominationViewSet(UpdateModelMixin, CreateModelMixin, viewsets.GenericViewSet):
@@ -24,22 +24,18 @@ class MemberNominationViewSet(UpdateModelMixin, CreateModelMixin, viewsets.Gener
         data['my_jobs'] = MemberNominationSerializer(MemberNomination.objects.select_related('category_nomination__nomination',
                                                                        'category_nomination__event_category__category').filter(
             member__user=id
-        ).annotate(result_all=Sum('results__score', default=0)).order_by('photo_1', 'result_all'), many=True).data
+        ).annotate(result_all=Sum('results__score', default=0)).order_by('photo_1', 'result_all'), many=True,
+                                                     context={'result_sum': True}).data
 
         data['other_jobs'] = MemberNominationSerializer(MemberNomination.objects.exclude(
             Q(photo_1=None) | Q(photo_1='') | Q(member__user=id)).select_related(
             'category_nomination__nomination',
             'category_nomination__event_category__category').annotate(
-            result_all=Sum('results__score', default=0)).order_by('photo_1', 'result_all'), many=True).data
+            result_all=Sum('results__score', default=0)).order_by('photo_1', 'result_all'), many=True,
+                                                        context={'result_sum': True}).data
 
         print('data', data)
-
-        serializer = ResponseSerializer(data=data)
-        serializer.is_valid()
-
-        print('serializerdata:', serializer.data)
-
-        return Response(serializer.data)
+        return Response(data=data)
 
 #
 # class MasterPageView(LoginRequiredMixin, PhotoRequiredMixin, TemplateView):
