@@ -10,24 +10,25 @@ from rest_framework.response import Response
 
 from .models import MemberNomination, Result, NominationAttribute, EventStaff, CategoryNomination, Category, \
     Member
-from .serializer import MemberNominationSerializer
+from .serializer import MemberNominationForMasterSerializer, MemberNominationSerializer, \
+    MemberNominationForRefereeSerializer
 
 
 class MemberNominationViewSet(UpdateModelMixin, CreateModelMixin, viewsets.GenericViewSet):
     queryset = MemberNomination.objects.all()
     serializer_class = MemberNominationSerializer
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], serializer_class=MemberNominationForMasterSerializer)
     def master_page(self, request, *args, **kwargs):
         id = request.user
         data = {}
-        data['my_jobs'] = MemberNominationSerializer(MemberNomination.objects.select_related('category_nomination__nomination',
+        data['my_jobs'] = MemberNominationForMasterSerializer(MemberNomination.objects.select_related('category_nomination__nomination',
                                                                        'category_nomination__event_category__category').filter(
             member__user=id
         ).annotate(result_all=Sum('results__score', default=0)).order_by('photo_1', 'result_all'), many=True,
                                                      context={'result_sum': True}).data
 
-        data['other_jobs'] = MemberNominationSerializer(MemberNomination.objects.exclude(
+        data['other_jobs'] = MemberNominationForMasterSerializer(MemberNomination.objects.exclude(
             Q(photo_1=None) | Q(photo_1='') | Q(member__user=id)).select_related(
             'category_nomination__nomination',
             'category_nomination__event_category__category').annotate(
@@ -37,40 +38,25 @@ class MemberNominationViewSet(UpdateModelMixin, CreateModelMixin, viewsets.Gener
         print('data', data)
         return Response(data=data)
 
-#
-# class MasterPageView(LoginRequiredMixin, PhotoRequiredMixin, TemplateView):
-#     template_name = "events/master_page.html"
-#
-#     def get_context_data(self, **kwargs):
-#         data = super().get_context_data(**kwargs)
-#         data['my_jobs'] = MemberNomination.objects.select_related('category_nomination__nomination',
-#                                                                   'category_nomination__event_category__category').filter(
-#             member__user=self.request.user
-#         ).annotate(result_all=Sum('results__score', default=0)).order_by('photo_1', 'result_all')
-#
-#         data['other_jobs'] = MemberNomination.objects.exclude(
-#             Q(photo_1=None) | Q(photo_1='') | Q(member__user=self.request.user)).select_related(
-#             'category_nomination__nomination',
-#             'category_nomination__event_category__category').annotate(
-#             result_all=Sum('results__score', default=0)).order_by('photo_1', 'result_all')
-#         return data
-#
-#
-# class RefereePageView(LoginRequiredMixin, PhotoRequiredMixin, TemplateView):
-#     template_name = "events/referee_page.html"
-#
-#     def get_context_data(self, **kwargs):
-#         data = super().get_context_data(**kwargs)
-#         data['jobs'] = MemberNomination.objects.exclude(Q(photo_1=None) | Q(photo_1='')).select_related(
-#             'category_nomination__nomination',
-#             'category_nomination__event_category__category', ).filter(
-#             category_nomination__staffs__user=self.request.user,
-#         ).annotate(
-#             results_for_staff=Sum('results__score', filter=Q(results__eventstaff__user=self.request.user), default=0),
-#         ).order_by('results_for_staff')
-#         return data
-#
-#
+    @action(detail=False, methods=['get'], serializer_class=MemberNominationForRefereeSerializer)
+    def referee_page(self, request, *args, **kwargs):
+        id = request.user
+        data = {}
+        data['jobs'] = MemberNominationForRefereeSerializer(MemberNomination.objects.exclude(Q(photo_1=None) | Q(photo_1='')).select_related(
+            'category_nomination__nomination',
+            'category_nomination__event_category__category', ).filter(
+            category_nomination__staffs__user=id,
+        ).annotate(
+            results_for_staff=Sum('results__score', filter=Q(results__eventstaff__user=id), default=0),
+        ).order_by('results_for_staff'), many=True).data
+
+        print('data', data)
+        return Response(data=data)
+
+
+
+
+
 # class UploadPhotoView(UpdateView):
 #     model = MemberNomination
 #     template_name = 'events/upload_photo.html'
