@@ -7,7 +7,6 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.mixins import UpdateModelMixin, ListModelMixin, RetrieveModelMixin, CreateModelMixin
 from rest_framework.response import Response
-
 from .models import MemberNomination, Result, NominationAttribute, EventStaff, CategoryNomination, Category, \
     Member
 from .serializer import MemberNominationForMasterSerializer, MemberNominationSerializer, \

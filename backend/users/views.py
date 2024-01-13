@@ -71,8 +71,10 @@ class UserViewSet(UpdateModelMixin, RetrieveModelMixin, ListModelMixin, viewsets
     def check_code(self, request, *args, **kwargs):
         phone_number = request.data.get('phone_number')
         print('Checkcodephone', phone_number)
-        password = request.data.get('code')
+        password = request.data.get('password')
         print('CheckcodeFromPostSashi', password)
+        if phone_number is None or password is None:
+            raise ValidationError(detail='не были отправлены номер или пароль')
         user = User.objects.filter(
             Q(phone_number=phone_number) | Q(phone_number=phone_number.replace('8', '7', 1))).first()
         if user is None:
@@ -83,5 +85,5 @@ class UserViewSet(UpdateModelMixin, RetrieveModelMixin, ListModelMixin, viewsets
             login(request, user)
 
             return Response({'success': 'Успешный вход', 'user': UserSerializer(user).data})
-        raise ValidationError(detail='Код введён неверно', code=status.HTTP_400_BAD_REQUEST)
+        raise ValidationError(detail='неправильно введен пароль', code=status.HTTP_400_BAD_REQUEST)
 

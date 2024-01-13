@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class CheckCodeSerializer(serializers.Serializer):
     phone_number = serializers.CharField()
-    code = serializers.CharField()
+    password = serializers.CharField()
 
 
 class LoginSerializer(serializers.Serializer):
