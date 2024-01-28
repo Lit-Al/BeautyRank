@@ -2,58 +2,49 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q, Sum, Max, F
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, UpdateView
+from django.db.models import QuerySet
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.mixins import UpdateModelMixin, ListModelMixin, RetrieveModelMixin, CreateModelMixin
+from rest_framework.mixins import (
+    UpdateModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+    CreateModelMixin,
+)
 from rest_framework.response import Response
-from .models import MemberNomination, Result, NominationAttribute, EventStaff, CategoryNomination, Category, \
-    Member
-from .serializer import MemberNominationForMasterSerializer, MemberNominationSerializer, \
-    MemberNominationForRefereeSerializer
+from .models import (
+    MemberNomination,
+    Result,
+    NominationAttribute,
+    EventStaff,
+    CategoryNomination,
+    Category,
+    Member,
+)
+from .serializer import *
 
 
-class MemberNominationViewSet(UpdateModelMixin, CreateModelMixin, viewsets.GenericViewSet):
-    queryset = MemberNomination.objects.all()
+class MemberNominationViewSet(
+    ListModelMixin,
+    RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = MemberNomination.objects.all().annotate(
+        result_all=Sum("results__score", default=0)
+    )
     serializer_class = MemberNominationSerializer
+    filterset_fields = ["category_nomination__event_category__event"]
+    ordering_fields = ["result_all"]
 
-    @action(detail=False, methods=['get'], serializer_class=MemberNominationForMasterSerializer)
-    def master_page(self, request, *args, **kwargs):
-        id = request.user
-        data = {}
-        data['my_jobs'] = MemberNominationForMasterSerializer(MemberNomination.objects.select_related('category_nomination__nomination',
-                                                                       'category_nomination__event_category__category').filter(
-            member__user=id
-        ).annotate(result_all=Sum('results__score', default=0)).order_by('photo_1', 'result_all'), many=True,
-                                                     context={'result_sum': True}).data
-
-        data['other_jobs'] = MemberNominationForMasterSerializer(MemberNomination.objects.exclude(
-            Q(photo_1=None) | Q(photo_1='') | Q(member__user=id)).select_related(
-            'category_nomination__nomination',
-            'category_nomination__event_category__category').annotate(
-            result_all=Sum('results__score', default=0)).order_by('photo_1', 'result_all'), many=True,
-                                                        context={'result_sum': True}).data
-
-        print('data', data)
-        return Response(data=data)
-
-    @action(detail=False, methods=['get'], serializer_class=MemberNominationForRefereeSerializer)
-    def referee_page(self, request, *args, **kwargs):
-        id = request.user
-        data = {}
-        data['jobs'] = MemberNominationForRefereeSerializer(MemberNomination.objects.exclude(Q(photo_1=None) | Q(photo_1='')).select_related(
-            'category_nomination__nomination',
-            'category_nomination__event_category__category', ).filter(
-            category_nomination__staffs__user=id,
-        ).annotate(
-            results_for_staff=Sum('results__score', filter=Q(results__eventstaff__user=id), default=0),
-        ).order_by('results_for_staff'), many=True).data
-
-        print('data', data)
-        return Response(data=data)
-
-
-
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.user.is_staff:
+            queryset = queryset.filter(
+                category_nomination__staffs__user=self.request.user
+            )
+        else:
+            queryset = queryset.filter(member__user=self.request.user)
+        return queryset
 
 
 # class UploadPhotoView(UpdateView):

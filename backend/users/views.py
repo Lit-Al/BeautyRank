@@ -29,25 +29,29 @@ def check_phone(phone_number: str):
         return False
     if not phone_number.isnumeric():
         return False
-    if phone_number[0] not in ['7', '8']:
+    if phone_number[0] not in ["7", "8"]:
         return False
     return True
 
 
-class UserViewSet(UpdateModelMixin, RetrieveModelMixin, ListModelMixin, viewsets.GenericViewSet):
+class UserViewSet(
+    UpdateModelMixin, RetrieveModelMixin, ListModelMixin, viewsets.GenericViewSet
+):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    @action(detail=False, methods=['post'],
-            serializer_class=LoginSerializer, permission_classes=[AllowAny])
+    @action(
+        detail=False,
+        methods=["post"],
+        serializer_class=LoginSerializer,
+        permission_classes=[AllowAny],
+    )
     def login_in(self, request, *args, **kwargs):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        phone_number = serializer.data['phone_number']
-        print('LoginInphone:', phone_number)
+        phone_number = serializer.data["phone_number"]
         if check_phone(phone_number):
-            user = User.objects.filter(
-                Q(phone_number=phone_number)).first()
+            user = User.objects.filter(Q(phone_number=phone_number)).first()
             if user is None:
                 user = User.objects.create(phone_number=phone_number)
             name_user = user.first_name
@@ -58,32 +62,54 @@ class UserViewSet(UpdateModelMixin, RetrieveModelMixin, ListModelMixin, viewsets
             # print('message_id=', message_id)
             # status_sms = sms.check_status(token, message_id)
             # print('status_sms=' + status_sms)
-            print('random_number', random_number)
             user.set_password(random_number)
             # user.expiration_password = timezone.now() + timedelta(days=7)
             user.save()
             # НЕ ЗАБЫТЬ УДАЛИТЬ CODE: RANDOM_NUMBER ИЗ ОТВЕТА НИЖЕ, ОН ТАМ НЕ НУЖЕН, НУЖЕН БЫЛ САШКЕ ДЛЯ РАБОТЫ!!!!!!!
-            return Response({'phone_number': phone_number, 'code': random_number})
-        return ValidationError(detail='Номер введён неверно', code=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    "success": "Успешно!",
+                    "phone_number": phone_number,
+                    "password": random_number,
+                }
+            )
+        return ValidationError(
+            detail="Номер введён неверно", code=status.HTTP_400_BAD_REQUEST
+        )
 
-    @action(detail=False, methods=['post'],
-            serializer_class=CheckCodeSerializer, permission_classes=[AllowAny])
+    @action(
+        detail=False,
+        methods=["post"],
+        serializer_class=CheckCodeSerializer,
+        permission_classes=[AllowAny],
+    )
     def check_code(self, request, *args, **kwargs):
-        phone_number = request.data.get('phone_number')
-        print('Checkcodephone', phone_number)
-        password = request.data.get('password')
-        print('CheckcodeFromPostSashi', password)
-        if phone_number is None or password is None:
-            raise ValidationError(detail='не были отправлены номер или пароль')
+        phone_number = request.data.get("phone_number")
+        password = request.data.get("password")
+        print(phone_number, password)
+        if (
+                phone_number is None
+                or password is None
+                or phone_number == ""
+                or password == ""
+        ):
+            raise ValidationError(
+                detail="Не были отправлены номер или пароль!",
+                code=status.HTTP_400_BAD_REQUEST,
+            )
         user = User.objects.filter(
-            Q(phone_number=phone_number) | Q(phone_number=phone_number.replace('8', '7', 1))).first()
+            Q(phone_number=phone_number)
+            | Q(phone_number=phone_number.replace("8", "7", 1))
+        ).first()
         if user is None:
-            raise ValidationError(detail='Такого пользователя нет', code=status.HTTP_423_LOCKED)
+            raise ValidationError(
+                detail="Пользователь не найден!", code=status.HTTP_423_LOCKED
+            )
         if user.check_password(password):
-            # if user.expiration_password <= timezone.now():
-            #     raise ValidationError(detail='чет случилось')
             login(request, user)
-
-            return Response({'success': 'Успешный вход', 'user': UserSerializer(user).data})
-        raise ValidationError(detail='неправильно введен пароль', code=status.HTTP_400_BAD_REQUEST)
-
+            return Response(
+                {"success": "Успешный вход", "user": UserSerializer(user).data}
+            )
+        raise ValidationError(
+            detail="Пароль введен неверно!", code=status.HTTP_400_BAD_REQUEST
+        )

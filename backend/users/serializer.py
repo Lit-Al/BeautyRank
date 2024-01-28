@@ -16,6 +16,7 @@ class CheckCodeSerializer(serializers.Serializer):
 
 class LoginSerializer(serializers.Serializer):
     phone_number = serializers.CharField()
+
     def validate_phone_number(self, value):
         numbers = "".join([str(i) for i in str(value) if i.isdigit()])
         if len(numbers) == 10:
@@ -26,5 +27,7 @@ class LoginSerializer(serializers.Serializer):
             elif numbers[0] == "8":
                 return "7" + numbers[1:]
             else:
-                return serializers.ValidationError('Phone number invalid')
-        raise serializers.ValidationError('Phone number invalid')
+                return serializers.ValidationError(
+                    detail="Номер телефона введен неверно!"
+                )
+        raise serializers.ValidationError(detail="Номер телефона введен неверно!")

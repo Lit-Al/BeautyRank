@@ -32,7 +32,7 @@ class EventAdmin(admin.ModelAdmin):
 class MemberAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super(MemberAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields['user'].queryset = User.objects.filter(is_staff=False)
+        form.base_fields["user"].queryset = User.objects.filter(is_staff=False)
         return form
 
 
@@ -48,9 +48,9 @@ class CategoryNominationAdmin(admin.ModelAdmin):
 
 @admin.register(MemberNomination)
 class MemberNominationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'member', 'category_nomination', 'photo_1')
-    list_display_links = ('id', 'member', 'category_nomination')
-    ordering = ['id']
+    list_display = ("id", "member", "category_nomination", "photo_1")
+    list_display_links = ("id", "member", "category_nomination")
+    ordering = ["id"]
 
 
 @admin.register(WinnerNomination)
@@ -65,11 +65,11 @@ class WinnerCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(EventStaff)
 class EventStaffAdmin(admin.ModelAdmin):
-    ordering = ['user']
+    ordering = ["user"]
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(EventStaffAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields['user'].queryset = User.objects.filter(is_staff=True)
+        form.base_fields["user"].queryset = User.objects.filter(is_staff=True)
         return form
 
 
@@ -78,5 +78,5 @@ class ResultAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.site_title = 'Админ-панель BeautyRank'
-admin.site.site_header = 'Админ-панель BeautyRank'
+admin.site.site_title = "Админ-панель BeautyRank"
+admin.site.site_header = "Админ-панель BeautyRank"

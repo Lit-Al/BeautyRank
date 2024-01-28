@@ -3,9 +3,9 @@ from rest_framework.routers import DefaultRouter
 from .views import MemberNominationViewSet
 
 router = DefaultRouter()
-router.register(prefix='memberNomination', viewset=MemberNominationViewSet)
+router.register(prefix="memberNomination", viewset=MemberNominationViewSet)
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]
 
 #     path('evaluations/<pk>', views.EvaluationsView.as_view(), name='evaluations'),
