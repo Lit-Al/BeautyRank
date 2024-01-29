@@ -1,65 +1,90 @@
-import React, { useState } from 'react';
-import styles from './AvatarForm.module.scss'
-import axios, { AxiosResponse, AxiosError } from 'axios';
+import { useMutation } from 'react-query';
+import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import axios, { AxiosResponse } from 'axios';
+import { useAtom, useAtomValue } from 'jotai';
+import { avatarExistAtom, userAtom, avatarAtom } from '../../store/store';
 import Button from '../UI/Button/Button';
-import { useNavigate } from 'react-router-dom';
-import { AppDispatch, RootState } from '@/redux/store';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
-import { setImage } from '../../redux/userSlice';
+import styles from './AvatarForm.module.scss';
+import MockAdapter from 'axios-mock-adapter';
+import Avatar from '../AvatarEditor/AvatarEditor';
+import { useEffect } from 'react';
 
 const AvatarForm: React.FC = () => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const navigate = useNavigate();
-  const user = useSelector((state: RootState) => state.user); 
-  const dispatch: AppDispatch = useDispatch(); 
-  // Преобразование объекта пользователя в JSON-строку
-  // const userJSON = JSON.stringify(user);
+  const [user, setUser] = useAtom(userAtom);
+  const router = useRouter();
+  const { handleSubmit } = useForm<FormData>();
+  const avatar = useAtomValue(avatarAtom);
+  const presenceAvatar = useAtomValue(avatarExistAtom);
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+  // const mock = new MockAdapter(axios);
 
-    if (selectedFile) {
-      const formData = new FormData();
-      formData.append('image', selectedFile);
-      formData.append('id', user.id.toString());
-      // formData.append('user', userJSON);
-    
-      axios.put(`http://192.168.24.52:8000/api/photo_selection/${user.id}/`, formData)
-        .then((response: AxiosResponse) => {
-          // Обработка ответа от сервера
-          dispatch(setImage(response.data.image));
-          navigate('/UserPage')
-        })
-        .catch((error: AxiosError) => {
-          // Обработка ошибок
-          console.error(error);
-        });
+  // useEffect(() => {
+  //   console.log(user);
+
+  // }, [])
+
+  // mock
+  //   .onPut(`http://192.168.24.52:8000/api/photo_selection/${user?.id}/`)
+  //   .reply(() => {
+  //     return new Promise((resolve) => {
+  //       setTimeout(() => {
+  //         resolve([
+  //           200,
+  //           {
+  //             image: avatar,
+  //           },
+  //         ]);
+  //       }, 500); // Задержка ответа на 1 секунду
+  //     });
+  //   });
+
+  const uploadAvatar = async (formData: FormData) => {
+    console.log(`http://192.168.110.52:8000/api/v1/users/${user?.id}/`);
+
+    try {
+      const response: AxiosResponse = await axios.put(
+        `http://192.168.110.52:8000/api/v1/users/${user?.id}/`,
+        { image: formData }
+      );
+
+      // Обработка ответа от сервера
+      setUser((prevUser) => {
+        console.log(prevUser);
+        console.log(response.data.image);
+        if (prevUser) {
+          return { ...prevUser, image: response.data.image };
+        }
+        return prevUser;
+      });
+      router.push('user');
+    } catch (error: any) {
+      // Обработка ошибок
+      console.error(error);
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];      
-      setSelectedFile(file);
+  const mutation = useMutation(uploadAvatar);
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        setPreviewUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+  const onSubmit = () => {
+    if (avatar && user) {
+      console.log(avatar);
+
+      const formData = new FormData();
+      formData.append('image', avatar);
+      mutation.mutate(formData);
     }
   };
 
   return (
-    <form encType='multipart/form-data' className={styles.auth_form} onSubmit={handleSubmit}>
-      <label className={styles.auth_label}>Загрузите ваше лучшее фото Профиля
-      <input className={styles.avatar_input} type="file" onChange={handleFileChange} accept="image/jpg, image/jpeg, image/png, image/svg"/>
-      <span className={styles.avatar_input_style}>Выбрать фото</span>
-      </label>
-      {previewUrl && <img src={previewUrl} alt="Аватар" className={styles.avatar_preview} />}
-      <Button disabled={!selectedFile} >Войти</Button>
+    <form
+      encType="multipart/form-data"
+      className={styles.auth_form}
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <Avatar />
+      <Button disabled={!presenceAvatar}>Войти</Button>
+      <h2 style={{ opacity: 0.5 }}>{mutation.isLoading ? 'Loading...' : ''}</h2>
     </form>
   );
 };

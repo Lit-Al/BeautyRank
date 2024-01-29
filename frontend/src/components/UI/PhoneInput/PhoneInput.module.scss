@@ -1,12 +1,5 @@
 @import '../../../styles/variables.scss';
 
-
-.UI_input[type="number"]::-webkit-inner-spin-button,
-.UI_input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
 .UI_input {
     border-radius: 50px;
     border: 1px solid $pink;
@@ -14,7 +7,7 @@
     background-color: transparent;
     height: 50px;
     font-size: 14px;
-    font-weight: 500;   
+    font-weight: 500;
     color: $pink;
     padding: 0 10px 0 63px;
 
@@ -26,17 +19,11 @@
     &:focus {
         outline: 1px solid $pink;
         -webkit-box-shadow: 0px 10px 20px #ffb8da;
-        box-shadow: 0px 10px 20px #ffb8da;
+                box-shadow: 0px 10px 20px #ffb8da;
     }
 
     &_error {
         border-color: $error;
-
-        &:focus {
-            outline: 1px solid $error;;
-            -webkit-box-shadow: 0px 10px 20px lighten($error, 35%);
-            box-shadow: 0px 10px 20px lighten($error, 35%);
-        }
 
         &::placeholder {
             color: $error;
@@ -48,9 +35,8 @@
     &::before {
         background-image: url(../../../../public/images/convert.svg);
     }
-
     &_error::before {
-        background-image: url(../../../../public/images/convertError.svg);
+        background-image: url(../../../../public/images/convertError.svg); 
     }
 }
 
@@ -58,9 +44,8 @@
     &::before {
         background-image: url(../../../../public/images/lock.svg);
     }
-
     &_error::before {
-        background-image: url(../../../../public/images/lockError.svg);
+        background-image: url(../../../../public/images/lockError.svg); 
     }
 }
 
@@ -85,4 +70,5 @@
     bottom: -20px;
     font-size: 13px;
     color: $error;
+
 }

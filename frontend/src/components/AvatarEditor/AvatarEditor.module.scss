@@ -1,0 +1,120 @@
+@import '../../styles/variables.scss';
+@import '../../components/UI/Button/Button.module.scss';
+
+.avatar_input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    display: block;
+    width: 0;
+    height: 0;
+
+
+    &_style {
+        position: relative;
+        color: #ff3e9b;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border-radius: 4px;
+        background-color: transparent;
+        height: 50px;
+        width: 100%;
+        border-radius: 50px;
+        border: 1px solid #ff3e9b;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        transition: all ease-in-out .1s;
+
+        &:hover {
+            background: darken($pink, 1%);
+            scale: 1.01;
+            -webkit-box-shadow: 0px 10px 20px #ffb8da;
+            box-shadow: 0px 10px 20px #ffb8da;
+            color: #fff;
+        }
+
+
+        &:active {
+            background: darken($pink, 5%);
+            scale: .95;
+        }
+
+    }
+}
+
+.avatar_preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.auth_label {
+    font-size: 14px;
+    font-weight: 500;
+    color: $grey;
+    position: relative;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 23px;
+}
+
+.modal {
+    min-width: 375px;
+    position: absolute;
+    top: 10px;
+    padding-top: 200px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+
+    &__content {
+        width: 400px;
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: #eeeaeb;
+        border-radius: 10px;
+    }
+}
+
+
+.input_range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 15px;
+    outline: none;
+    background: #D0D0D0;
+}
+
+.input_range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 30px;
+    height: 15px;
+    cursor: pointer;
+    opacity: 0.64;
+    background: #FF3E9B;
+    box-shadow: 2px 2px 5px rgba(255, 0, 137.70, 0.50);
+    border-radius: 3px
+}
+
+.UI_button {
+    padding: 20px 0;
+}
