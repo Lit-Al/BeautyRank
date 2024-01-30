@@ -1,26 +1,12 @@
 import random
-from datetime import timedelta
-
-from django.utils import timezone
-from rest_framework.decorators import api_view
 from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import ListModelMixin, UpdateModelMixin, RetrieveModelMixin
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.permissions import AllowAny
-from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
 from django.db.models import Q
-import smsc_api as sms
-from django.contrib.auth import login
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-from django.views.generic import TemplateView, UpdateView
-from django.contrib import messages
-from .models import User
-from .forms import UploadImageForm
-from .serializer import UserSerializer, LoginSerializer, CheckCodeSerializer
+from .serializer import *
 from rest_framework import viewsets
 
 
@@ -35,7 +21,7 @@ def check_phone(phone_number: str):
 
 
 class UserViewSet(
-    UpdateModelMixin, RetrieveModelMixin, ListModelMixin, viewsets.GenericViewSet
+    viewsets.GenericViewSet
 ):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -77,39 +63,12 @@ class UserViewSet(
             detail="Номер введён неверно", code=status.HTTP_400_BAD_REQUEST
         )
 
-    @action(
-        detail=False,
-        methods=["post"],
-        serializer_class=CheckCodeSerializer,
-        permission_classes=[AllowAny],
-    )
-    def check_code(self, request, *args, **kwargs):
-        phone_number = request.data.get("phone_number")
-        password = request.data.get("password")
-        print(phone_number, password)
-        if (
-                phone_number is None
-                or password is None
-                or phone_number == ""
-                or password == ""
-        ):
-            raise ValidationError(
-                detail="Не были отправлены номер или пароль!",
-                code=status.HTTP_400_BAD_REQUEST,
-            )
-        user = User.objects.filter(
-            Q(phone_number=phone_number)
-            | Q(phone_number=phone_number.replace("8", "7", 1))
-        ).first()
-        if user is None:
-            raise ValidationError(
-                detail="Пользователь не найден!", code=status.HTTP_423_LOCKED
-            )
-        if user.check_password(password):
-            login(request, user)
-            return Response(
-                {"success": "Успешный вход", "user": UserSerializer(user).data}
-            )
-        raise ValidationError(
-            detail="Пароль введен неверно!", code=status.HTTP_400_BAD_REQUEST
-        )
+    @action(detail=False, methods=["get", "patch"], permission_classes=[IsAuthenticated])
+    def me(self, request, *args, **kwargs):
+        if request.method == "PATCH":
+            serializer = UserSerializer(request.user, data=request.data, partial=True)
+            serializer.is_valid()
+            serializer.save()
+            request.user.refresh_from_db()
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
