@@ -9,11 +9,6 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "is_staff"]
 
 
-class CheckCodeSerializer(serializers.Serializer):
-    phone_number = serializers.CharField()
-    password = serializers.CharField()
-
-
 class LoginSerializer(serializers.Serializer):
     phone_number = serializers.CharField()
 

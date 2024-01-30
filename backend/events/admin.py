@@ -1,5 +1,5 @@
 from django.contrib import admin
-
+from django_json_widget.widgets import JSONEditorWidget
 from users.models import User
 from .models import *
 
@@ -15,6 +15,9 @@ class NominationAttributeInline(admin.TabularInline):
 
 @admin.register(Nomination)
 class NominationAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.JSONField: {'widget': JSONEditorWidget}
+    }
     inlines = [NominationAttributeInline]
 
 
@@ -32,7 +35,7 @@ class EventAdmin(admin.ModelAdmin):
 class MemberAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super(MemberAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields["user"].queryset = User.objects.filter(is_staff=False)
+        form.base_fields['user'].queryset = User.objects.filter(is_staff=False)
         return form
 
 
@@ -48,28 +51,25 @@ class CategoryNominationAdmin(admin.ModelAdmin):
 
 @admin.register(MemberNomination)
 class MemberNominationAdmin(admin.ModelAdmin):
-    list_display = ("id", "member", "category_nomination", "photo_1")
-    list_display_links = ("id", "member", "category_nomination")
-    ordering = ["id"]
+    list_display = ('id', 'member', 'category_nomination')
+    list_display_links = ('id', 'member', 'category_nomination')
+    ordering = ['id']
 
 
-@admin.register(WinnerNomination)
-class WinnerNominationAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(WinnerCategory)
-class WinnerCategoryAdmin(admin.ModelAdmin):
-    pass
+@admin.register(MemberNominationPhoto)
+class MemberNominationPhotoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'member_nomination', 'photo')
+    list_display_links = ('id', 'member_nomination', 'photo')
+    ordering = ['member_nomination']
 
 
 @admin.register(EventStaff)
 class EventStaffAdmin(admin.ModelAdmin):
-    ordering = ["user"]
+    ordering = ['user']
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(EventStaffAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields["user"].queryset = User.objects.filter(is_staff=True)
+        form.base_fields['user'].queryset = User.objects.filter(is_staff=True)
         return form
 
 
@@ -78,5 +78,5 @@ class ResultAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.site_title = "Админ-панель BeautyRank"
-admin.site.site_header = "Админ-панель BeautyRank"
+admin.site.site_title = 'Админ-панель BeautyRank'
+admin.site.site_header = 'Админ-панель BeautyRank'

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_spectacular",
     "django_extensions",
+    "django_json_widget",
     "drf_standardized_errors",
     "django_filters",
     "users",
@@ -159,7 +160,6 @@ SPECTACULAR_SETTINGS = {
     # OTHER SETTINGS
 }
 
-
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
@@ -185,7 +185,7 @@ SIMPLE_JWT = {
     "JTI_CLAIM": "jti",
     "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
     "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
-    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=30),
     "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
     "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
     "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",

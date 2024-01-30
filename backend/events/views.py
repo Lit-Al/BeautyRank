@@ -29,7 +29,7 @@ class MemberNominationViewSet(
     RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = MemberNomination.objects.all().annotate(
+    queryset = MemberNomination.objects.all().prefetch_related('photos').annotate(
         result_all=Sum("results__score", default=0)
     )
     serializer_class = MemberNominationSerializer
@@ -46,6 +46,9 @@ class MemberNominationViewSet(
             queryset = queryset.filter(member__user=self.request.user)
         return queryset
 
+
+class NominationMemberPhotoViewSet:
+    pass
 
 # class UploadPhotoView(UpdateView):
 #     model = MemberNomination
