@@ -1,25 +1,9 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q, Sum, Max, F
-from django.shortcuts import redirect
-from django.urls import reverse_lazy
-from django.db.models import QuerySet
+from django.db.models import Sum
 from rest_framework import viewsets
-from rest_framework.decorators import action
 from rest_framework.mixins import (
-    UpdateModelMixin,
     ListModelMixin,
     RetrieveModelMixin,
     CreateModelMixin,
-)
-from rest_framework.response import Response
-from .models import (
-    MemberNomination,
-    Result,
-    NominationAttribute,
-    EventStaff,
-    CategoryNomination,
-    Category,
-    Member,
 )
 from .serializer import *
 
@@ -29,8 +13,10 @@ class MemberNominationViewSet(
     RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = MemberNomination.objects.all().prefetch_related('photos').annotate(
-        result_all=Sum("results__score", default=0)
+    queryset = (
+        MemberNomination.objects.all()
+        .prefetch_related("photos")
+        .annotate(result_all=Sum("results__score", default=0))
     )
     serializer_class = MemberNominationSerializer
     filterset_fields = ["category_nomination__event_category__event"]
@@ -47,8 +33,26 @@ class MemberNominationViewSet(
         return queryset
 
 
-class NominationMemberPhotoViewSet:
-    pass
+class NominationMemberPhotoViewSet(
+    ListModelMixin, CreateModelMixin, viewsets.GenericViewSet
+):
+    queryset = MemberNominationPhoto.objects.all()
+    serializer_class = MemberNominationPhotoSerializer
+    filterset_fields = ["member_nomination"]
+    ordering_fields = ["before_after"]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.user.is_staff:
+            queryset = queryset.filter(
+                member_nomination__category_nomination__staffs__user=self.request.user
+            )
+        else:
+            queryset = queryset.filter(
+                member_nomination__member__user=self.request.user
+            )
+        return queryset
+
 
 # class UploadPhotoView(UpdateView):
 #     model = MemberNomination

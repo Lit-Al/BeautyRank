@@ -20,9 +20,7 @@ def check_phone(phone_number: str):
     return True
 
 
-class UserViewSet(
-    viewsets.GenericViewSet
-):
+class UserViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -51,7 +49,7 @@ class UserViewSet(
             user.set_password(random_number)
             # user.expiration_password = timezone.now() + timedelta(days=7)
             user.save()
-            # НЕ ЗАБЫТЬ УДАЛИТЬ CODE: RANDOM_NUMBER ИЗ ОТВЕТА НИЖЕ, ОН ТАМ НЕ НУЖЕН, НУЖЕН БЫЛ САШКЕ ДЛЯ РАБОТЫ!!!!!!!
+            # НЕ ЗАБЫТЬ УДАЛИТЬ PASSWORD И PHONE_NUMBER ИЗ ОТВЕТА НИЖЕ, ОНИ ТАМ НЕ НУЖНЫ, НУЖНЫ БЫЛИ САШКЕ ДЛЯ РАБОТЫ!!!!!!!
             return Response(
                 {
                     "success": "Успешно!",
@@ -63,7 +61,9 @@ class UserViewSet(
             detail="Номер введён неверно", code=status.HTTP_400_BAD_REQUEST
         )
 
-    @action(detail=False, methods=["get", "patch"], permission_classes=[IsAuthenticated])
+    @action(
+        detail=False, methods=["get", "patch"], permission_classes=[IsAuthenticated]
+    )
     def me(self, request, *args, **kwargs):
         if request.method == "PATCH":
             serializer = UserSerializer(request.user, data=request.data, partial=True)

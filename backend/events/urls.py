@@ -1,9 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import MemberNominationViewSet
+from .views import MemberNominationViewSet, NominationMemberPhotoViewSet
 
 router = DefaultRouter()
 router.register(prefix="memberNomination", viewset=MemberNominationViewSet)
+router.register(prefix="nominationMemberPhoto", viewset=NominationMemberPhotoViewSet)
 urlpatterns = [
     path("", include(router.urls)),
 ]
