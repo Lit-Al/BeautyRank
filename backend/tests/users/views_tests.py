@@ -7,47 +7,42 @@ from users.models import User
 
 class TestUser:
     @pytest.mark.parametrize(
-        "user_data,request_data,check,error_text",
+        "user_data,request_data,check",
         [
             [
                 {"phone_number": "123", "password": "123"},
                 {"phone_number": "123", "password": "123"},
                 "in",
-                None,
             ],
             [
                 {"phone_number": "123", "password": "123"},
                 {"phone_number": "123", "password": "321"},
                 "not in pass",
-                "Пароль введен неверно!",
             ],
             [
                 {"phone_number": "123", "password": "123"},
                 {"phone_number": "321", "password": "123"},
                 "not user of num",
-                "Пользователь не найден!",
             ],
             [
                 {"phone_number": "123", "password": "123"},
                 {"phone_number": "", "password": "123"},
                 "not num or pas",
-                "Не были отправлены номер или пароль!",
             ],
             [
                 {"phone_number": "123", "password": "123"},
                 {"phone_number": "123", "password": ""},
                 "not num or pas",
-                "Не были отправлены номер или пароль!",
             ],
         ],
     )
     @pytest.mark.django_db
     def test_authorization(
-        self, api_client, user_data, request_data, check, error_text
+            self, api_client, user_data, request_data, check
     ):
-        path = reverse("user-check-code")
+        path = reverse("token_obtain_pair")
         data = {
-            "phone_number": request_data["phone_number"],
+            "username": request_data["phone_number"],
             "password": request_data["password"],
         }
 
@@ -58,16 +53,13 @@ class TestUser:
 
         match check:
             case "in":
-                assert "success" in response.data
+                assert "access" in response.data
             case "not in pass":
-                assert "success" not in response.data
-                assert any([x["detail"] == error_text for x in response.data["errors"]])
+                assert "access" not in response.data
             case "not user of num":
-                assert "success" not in response.data
-                assert any([x["detail"] == error_text for x in response.data["errors"]])
+                assert "access" not in response.data
             case "not num or pas":
-                assert "success" not in response.data
-                assert any([x["detail"] == error_text for x in response.data["errors"]])
+                assert "access" not in response.data
 
     @pytest.mark.parametrize(
         "user_data,request_data,check,error_text",
@@ -106,7 +98,7 @@ class TestUser:
     )
     @pytest.mark.django_db
     def test_input_phone_number_in_existing_user(
-        self, api_client, user_data, request_data, check, error_text
+            self, api_client, user_data, request_data, check, error_text
     ):
         path = reverse("user-login-in")
         data = {"phone_number": request_data["phone_number"]}

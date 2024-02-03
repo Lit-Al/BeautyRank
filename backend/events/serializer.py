@@ -2,6 +2,12 @@ from .models import *
 from rest_framework import serializers
 
 
+class ResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Result
+        fields = ("member_nomination", "score", "eventstaff", "score_retail")
+
+
 class MemberNominationPhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = MemberNominationPhoto
@@ -21,7 +27,6 @@ class MemberNominationSerializer(serializers.ModelSerializer):
     )
     member = serializers.CharField(source="member.user", read_only=True)
     result_sum = serializers.IntegerField(source="result_all", read_only=True)
-    first_photo = serializers.SerializerMethodField()
 
     class Meta:
         model = MemberNomination
@@ -31,14 +36,49 @@ class MemberNominationSerializer(serializers.ModelSerializer):
             "nomination_info",
             "category",
             "member",
-            "result_sum",
-            "first_photo",
+            "result_sum"
         )
         read_only_fields = ["id"]
 
-    def get_first_photo(self, obj):
-        first_photo = obj.photos.first()
-        if first_photo:
-            return first_photo.photo.url
-        else:
-            return None
+    # def get_first_photo(self, obj):
+    #     first_photo = obj.photos.first()
+    #     if first_photo:
+    #         return first_photo.photo.url
+    #     else:
+    #         return None
+
+
+class CategoryNominationSerializer(serializers.ModelSerializer):
+    member_nomination = MemberNominationSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = CategoryNomination
+        fields = ("event_category", "nomination", "member_nomination")
+
+
+class EventSerializer(serializers.ModelSerializer):
+    win_nominations = CategoryNominationSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Event
+        fields = ("id", "name", "win_nominations")
+        read_only_fields = ["id", "name", "win_nominations"]
+
+
+class MemberNominationSerializerForWinners(serializers.ModelSerializer):
+    member = serializers.CharField(source="member.user", read_only=True)
+    result_sum = serializers.IntegerField(source="result_all", read_only=True)
+
+    class Meta:
+        model = MemberNomination
+        fields = (
+            "id",
+            "member",
+            "result_sum"
+        )
+        read_only_fields = ["id"]
+
+
+class WinnersSerializer(serializers.Serializer):
+    nomination_or_category = serializers.CharField()
+    members = MemberNominationSerializerForWinners(many=True)

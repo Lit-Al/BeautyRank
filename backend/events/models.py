@@ -98,7 +98,7 @@ class EventStaff(models.Model):
 
 class EventCategory(models.Model):
     event = models.ForeignKey("Event", models.PROTECT)
-    category = models.ForeignKey("Category", models.PROTECT)
+    category = models.ForeignKey("Category", models.PROTECT, related_name="categories_in_EventCategoryModel")
 
     class Meta:
         verbose_name = "Категории мероприятия"
@@ -164,7 +164,7 @@ class MemberNominationPhoto(models.Model):
 
 
 class Result(models.Model):
-    membernomination = models.ForeignKey(
+    member_nomination = models.ForeignKey(
         "MemberNomination", models.PROTECT, related_name="results"
     )
     score = models.IntegerField()
@@ -176,9 +176,9 @@ class Result(models.Model):
         verbose_name_plural = "Оценки"
         constraints = [
             constraints.UniqueConstraint(
-                "membernomination", "eventstaff", name="unique_lower_name_category"
+                "member_nomination", "eventstaff", name="unique_lower_name_category"
             )
         ]
 
     def __str__(self) -> str:
-        return f"{self.score} --- {self.membernomination}"
+        return f"{self.score} --- {self.member_nomination}"
