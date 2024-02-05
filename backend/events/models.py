@@ -98,7 +98,9 @@ class EventStaff(models.Model):
 
 class EventCategory(models.Model):
     event = models.ForeignKey("Event", models.PROTECT)
-    category = models.ForeignKey("Category", models.PROTECT, related_name="categories_in_EventCategoryModel")
+    category = models.ForeignKey(
+        "Category", models.PROTECT, related_name="categories_in_EventCategoryModel"
+    )
 
     class Meta:
         verbose_name = "Категории мероприятия"

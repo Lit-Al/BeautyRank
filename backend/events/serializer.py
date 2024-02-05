@@ -1,5 +1,6 @@
-from .models import *
 from rest_framework import serializers
+
+from .models import *
 
 
 class ResultSerializer(serializers.ModelSerializer):
@@ -36,7 +37,7 @@ class MemberNominationSerializer(serializers.ModelSerializer):
             "nomination_info",
             "category",
             "member",
-            "result_sum"
+            "result_sum",
         )
         read_only_fields = ["id"]
 
@@ -71,11 +72,7 @@ class MemberNominationSerializerForWinners(serializers.ModelSerializer):
 
     class Meta:
         model = MemberNomination
-        fields = (
-            "id",
-            "member",
-            "result_sum"
-        )
+        fields = ("id", "member", "result_sum")
         read_only_fields = ["id"]
 
 

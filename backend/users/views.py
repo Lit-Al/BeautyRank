@@ -1,13 +1,13 @@
 import random
+
+from django.db.models import Q
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.mixins import ListModelMixin, UpdateModelMixin, RetrieveModelMixin
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.decorators import action
-from rest_framework import status
-from django.db.models import Q
+
 from .serializer import *
-from rest_framework import viewsets
 
 
 def check_phone(phone_number: str):
@@ -49,7 +49,7 @@ class UserViewSet(viewsets.GenericViewSet):
             user.set_password(random_number)
             # user.expiration_password = timezone.now() + timedelta(days=7)
             user.save()
-            # НЕ ЗАБЫТЬ УДАЛИТЬ PASSWORD И PHONE_NUMBER ИЗ ОТВЕТА НИЖЕ, ОНИ ТАМ НЕ НУЖНЫ, НУЖНЫ БЫЛИ САШКЕ ДЛЯ РАБОТЫ!!!!!!!
+            # TODO: НЕ ЗАБЫТЬ УДАЛИТЬ PASSWORD И PHONE_NUMBER ИЗ ОТВЕТА НИЖЕ, ОНИ ТАМ НЕ НУЖНЫ, НУЖНЫ БЫЛИ САШКЕ ДЛЯ РАБОТЫ!!!!!!!
             return Response(
                 {
                     "success": "Успешно!",

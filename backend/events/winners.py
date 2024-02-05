@@ -1,5 +1,6 @@
+from django.db.models import Count, Sum
+
 from events.models import Member
-from django.db.models import Sum, Count
 
 
 def get_members(event):
@@ -19,14 +20,15 @@ def get_members_gte_3(event):
 
 
 def get_sorted_members(members):
-    return members.annotate(
-        total_score=Sum("membernom__results__score")
-    ).order_by("-total_score")
+    return members.annotate(total_score=Sum("membernom__results__score")).order_by(
+        "-total_score"
+    )
 
 
 def get_sorted_members_for_top3(members):
-    members = members.prefetch_related("membernom__category_nomination__nomination",
-                                       "membernom__results")
+    members = members.prefetch_related(
+        "membernom__category_nomination__nomination", "membernom__results"
+    )
     members_with_scores = {}
 
     for member in members:

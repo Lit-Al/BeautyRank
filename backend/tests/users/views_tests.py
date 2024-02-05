@@ -1,5 +1,4 @@
 import pytest
-import requests
 from django.urls import reverse
 
 from users.models import User
@@ -37,9 +36,7 @@ class TestUser:
         ],
     )
     @pytest.mark.django_db
-    def test_authorization(
-            self, api_client, user_data, request_data, check
-    ):
+    def test_authorization(self, api_client, user_data, request_data, check):
         path = reverse("token_obtain_pair")
         data = {
             "username": request_data["phone_number"],
@@ -98,7 +95,7 @@ class TestUser:
     )
     @pytest.mark.django_db
     def test_input_phone_number_in_existing_user(
-            self, api_client, user_data, request_data, check, error_text
+        self, api_client, user_data, request_data, check, error_text
     ):
         path = reverse("user-login-in")
         data = {"phone_number": request_data["phone_number"]}
