@@ -29,12 +29,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 SECRET_KEY = env("SECRET_KEY", default="super-secret-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG", default=True, cast=bool)
-
-# SMS_C INFO
-USERNAME_SMSC = env("USERNAME_SMSC")
-PASSWORD_SMSC = env("PASSWORD_SMSC")
-#
+DEBUG = env("DEBUG", cast=bool, default=True)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -175,3 +170,7 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
 }
+
+USERNAME_SMSC = env("USERNAME_SMSC", default="fake_user")
+PASSWORD_SMSC = env("PASSWORD_SMSC", default="fake_password")
+DEFAULT_SENDER = "74956665610"
