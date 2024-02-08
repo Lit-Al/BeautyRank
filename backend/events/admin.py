@@ -6,14 +6,8 @@ from users.models import User
 from .models import *
 
 
-@admin.register(
-    Category,
-    NominationAttribute,
-    Event,
-    EventCategory,
-    CategoryNomination
-)
-class DefaultEventAdmin(admin.ModelAdmin):
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
     pass
 
 
@@ -27,18 +21,32 @@ class NominationAdmin(admin.ModelAdmin):
     inlines = [NominationAttributeInline]
 
 
-class MemberNominationInline(admin.TabularInline):
-    model = MemberNomination
+@admin.register(NominationAttribute)
+class NominationAttributeAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(Member)
 class MemberAdmin(admin.ModelAdmin):
-    inlines = [MemberNominationInline]
-
     def get_form(self, request, obj=None, **kwargs):
         form = super(MemberAdmin, self).get_form(request, obj, **kwargs)
         form.base_fields["user"].queryset = User.objects.filter(is_staff=False)
         return form
+
+
+@admin.register(EventCategory)
+class EventCategoryAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(CategoryNomination)
+class CategoryNominationAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(MemberNomination)
@@ -57,8 +65,6 @@ class MemberNominationPhotoAdmin(admin.ModelAdmin):
 
 @admin.register(EventStaff)
 class EventStaffAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "category_nomination")
-    list_display_links = ("id", "user", "category_nomination")
     ordering = ["user"]
 
     def get_form(self, request, obj=None, **kwargs):
@@ -69,9 +75,7 @@ class EventStaffAdmin(admin.ModelAdmin):
 
 @admin.register(Result)
 class ResultAdmin(admin.ModelAdmin):
-    list_display = ("id", "eventstaff", "score", "member_nomination")
-    list_display_links = ("id", "eventstaff", "score", "member_nomination")
-    ordering = ["eventstaff"]
+    pass
 
 
 admin.site.site_title = "Админ-панель BeautyRank"
