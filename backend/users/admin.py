@@ -13,15 +13,6 @@ class CustomUserAdmin(ModelAdmin):
     list_display_links = ("last_name", "phone_number")
     search_fields = ("last_name", "phone_number")
     ordering = ["last_name"]
-    add_fieldsets = (
-        (
-            None,
-            {
-                "classes": ("wide",),
-                "fields": ("username", "phone_number"),
-            },
-        ),
-    )
     fieldsets = (
         (
             _("Personal info"),

@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import constraints
+from django.db.models import constraints, Count, Sum
 
 
 class Category(models.Model):
@@ -66,20 +66,33 @@ class Event(models.Model):
         verbose_name = "Мероприятие"
         verbose_name_plural = "Мероприятия"
 
+    @property
+    def members_with_current_num(self, min=1, max=99):
+        return (self.members
+                .annotate(count_nom=Count("membernom"))
+                .filter(count_nom__range=[min, max])
+                )
+
     def __str__(self):
         return self.name
 
 
 class Member(models.Model):
     user = models.ForeignKey("users.User", models.PROTECT)
-    event = models.ForeignKey("Event", models.PROTECT)
+    event = models.ForeignKey("Event", models.PROTECT, related_name="members")
 
     class Meta:
         verbose_name = "Участник"
         verbose_name_plural = "Участники"
 
+    @property
+    def get_sorted_members(members):
+        return members.annotate(total_score=Sum("membernom__results__score")).order_by(
+            "-total_score"
+        )
+
     def __str__(self) -> str:
-        return f"Участник {self.user} в мероприятии {self.event}"
+        return f"Участник {self.user} --- {self.event}"
 
 
 class EventStaff(models.Model):
@@ -93,7 +106,7 @@ class EventStaff(models.Model):
         verbose_name_plural = "Судьи"
 
     def __str__(self) -> str:
-        return f"Судья {self.user} в мероприятии {self.category_nomination}"
+        return f"Судья {self.user}"
 
 
 class EventCategory(models.Model):
@@ -183,4 +196,4 @@ class Result(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.score} --- {self.member_nomination}"
+        return f"{self.score} --- {self.eventstaff.user}"
