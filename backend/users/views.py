@@ -29,7 +29,7 @@ class UserViewSet(viewsets.GenericViewSet):
             if user is None:
                 user = User.objects.create(phone_number=phone_number)
             random_number = generate_password()
-            sms.send_sms(phone_number, random_number)
+            # sms.send_sms(phone_number, random_number)
             user.set_password(random_number)
             user.save()
             # TODO: НЕ ЗАБЫТЬ УДАЛИТЬ PASSWORD И PHONE_NUMBER ИЗ ОТВЕТА НИЖЕ

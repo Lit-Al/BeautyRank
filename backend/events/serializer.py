@@ -77,5 +77,5 @@ class MemberNominationSerializerForWinners(serializers.ModelSerializer):
 
 
 class WinnersSerializer(serializers.Serializer):
-    nomination_or_category = serializers.CharField()
+    name = serializers.CharField()
     members = MemberNominationSerializerForWinners(many=True)

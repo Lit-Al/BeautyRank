@@ -67,11 +67,59 @@ class Event(models.Model):
         verbose_name_plural = "Мероприятия"
 
     @property
-    def members_with_current_num(self, min=1, max=99):
-        return (self.members
-                .annotate(count_nom=Count("membernom"))
-                .filter(count_nom__range=[min, max])
+    def get_winners_nominations(self):
+        win_nominations = []
+        nominations = CategoryNomination.objects.all()
+        member_nominations_all = (
+            MemberNomination.objects.all()
+            .filter(category_nomination__event_category__event=self.id)
+            .annotate(result_all=Sum("results__score"))
+            .order_by("-result_all")
+        )
+        for nomination in nominations:
+            member_nominations = member_nominations_all.filter(
+                category_nomination=nomination
+            )
+
+            if member_nominations.exists():
+                top_three = member_nominations[:3]
+                win_nominations.append(
+                    {"name": str(nomination), "members": top_three}
                 )
+        return win_nominations
+
+    def get_winners_categories(self):
+        win_categories = []
+        categories = Category.objects.filter(
+            categories_in_EventCategoryModel__event=self.id
+        )
+        for category in categories:
+            member_nominations = MemberNomination.objects.filter(
+                category_nomination__event_category__category=category
+            )
+            members = set(member_nominations.values_list("member", flat=True))
+            top_three = []
+            members_in_current_event = Member.objects.filter(event=self.id)
+            for member in members:
+                result_all = sum(
+                    Result.objects.filter(
+                        member_nomination__member=member,
+                        member_nomination__category_nomination__event_category__category=category,
+                    ).values_list("score", flat=True)
+                )
+                top_three.append(
+                    {
+                        "member": members_in_current_event.get(pk=member),
+                        "result_all": result_all,
+                    }
+                )
+            top_three = sorted(top_three, reverse=True, key=lambda x: x["result_all"])[
+                        :3
+                        ]
+            win_categories.append(
+                {"name": str(category), "members": top_three}
+            )
+        return win_categories
 
     def __str__(self):
         return self.name
@@ -84,12 +132,6 @@ class Member(models.Model):
     class Meta:
         verbose_name = "Участник"
         verbose_name_plural = "Участники"
-
-    @property
-    def get_sorted_members(members):
-        return members.annotate(total_score=Sum("membernom__results__score")).order_by(
-            "-total_score"
-        )
 
     def __str__(self) -> str:
         return f"Участник {self.user} --- {self.event}"
