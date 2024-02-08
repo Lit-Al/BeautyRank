@@ -23,20 +23,22 @@ function checkInputLength(event: React.ChangeEvent<HTMLInputElement>) {
   }
 }
 
-const Input: React.ForwardRefRenderFunction<HTMLInputElement, InputProps> = ({
-  type = 'text',
-  minLength,
-  placeholder,
-  ref,
-  maxLength,
-  value,
-  onChange,
-  onInput = checkInputLength,
-  pattern,
-  error,
-  icon = '',
-  required = false,
-}) => {
+const Input: React.ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
+  {
+    type = 'text',
+    minLength,
+    placeholder,
+    maxLength,
+    value,
+    onChange,
+    onInput = checkInputLength,
+    pattern,
+    error,
+    icon = '',
+    required = false,
+  },
+  ref
+) => {
   return (
     <div
       className={`${styles.input_box} ${styles[icon]} ${
@@ -44,6 +46,7 @@ const Input: React.ForwardRefRenderFunction<HTMLInputElement, InputProps> = ({
       }`}
     >
       <input
+        autoFocus
         className={`${styles.UI_input} ${error && styles.UI_input_error}`}
         type={type}
         placeholder={placeholder}

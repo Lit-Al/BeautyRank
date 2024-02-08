@@ -1,35 +1,35 @@
 @import '../../styles/variables.scss';
 
 .UserBack {
-    height: 100%;
-    background: linear-gradient(155deg, #FFFFEA 48.82%, #FF55A0 111.42%);   
+  height: 100%;
+  background: linear-gradient(155deg, #ffffea 48.82%, #ff55a0 111.42%);
 }
 
 .user_name {
-    margin-top: 6px;
-    color: $grey;
-    font-size: 14px;
-    font-weight: 500;
+  margin-top: 6px;
+  color: $grey;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .user_role {
-    color: $black;
-    font-size: 24px;
-    font-weight: 800;
-    margin: 14px;
+  color: $black;
+  font-size: 24px;
+  font-weight: 800;
+  margin: 14px;
 }
 
 .user_action {
-    color: $grey;
-    font-size: 14px;
-    font-weight: 500;
+  color: $grey;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .user_avatar {
-    width: 111px;
-    height: 111px;
-    margin-top: 20px;
-    border-radius: 50%;
-    object-fit: cover;
-    background-color: #ff559f;
+  width: 112px;
+  height: 112px;
+  margin-top: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #ff559f;
 }

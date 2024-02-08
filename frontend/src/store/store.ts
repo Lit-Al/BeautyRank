@@ -1,25 +1,21 @@
-import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { IUser } from '../models/IUser';
 
-// let initialUser: UserState | null = null;
+let initialUser: IUser | null = null;
+let initialAccess: string | null = null;
+let initialRefresh: string | null = null;
 
-// if (typeof window !== 'undefined') {
-//   const storedUser = localStorage.getItem('user');
-//   initialUser = storedUser ? JSON.parse(storedUser) : null;
-// }
-
-interface AuthState {
-    accessToken: string | null
-    isLoading: boolean
-    error: string | null
+if (typeof window !== 'undefined') {
+  const storedUser = localStorage.getItem('user');
+  const storedAccess = localStorage.getItem('accessToken');
+  const storedRefresh = localStorage.getItem('refreshToken');
+  initialUser = storedUser ? JSON.parse(storedUser) : null;
+  initialAccess = storedAccess ? storedAccess : null;
+  initialRefresh = storedRefresh ? storedRefresh : null;
 }
 
-export const authData = atom<AuthState | null>(null)
+export const accessTokenAtom = atomWithStorage<string | null>('accessToken', initialAccess)
 
-export const userAtom = atomWithStorage<IUser | null>('user', null);
+export const refreshTokenAtom = atomWithStorage<string | null>('refreshToken', initialRefresh)
 
-export const avatarAtom = atom(null);
-
-export const avatarExistAtom = atom(false);
-
+export const userAtom = atomWithStorage<IUser | null>('user', initialUser);

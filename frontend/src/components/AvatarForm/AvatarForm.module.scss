@@ -1,43 +1,43 @@
 @import '../../styles/variables.scss';
 
 .auth_form {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    gap: 27px;
-    width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 27px;
+  width: 100%;
 }
 
 .auth_label {
-    font-size: 14px;
-    font-weight: 500;
-    color: $grey;
-    position: relative;
-    width: 100%;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 23px;
+  font-size: 14px;
+  font-weight: 500;
+  color: $grey;
+  position: relative;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 23px;
 }
 
 .avatar_input {
-    position: absolute;
-    z-index: -1;
-    opacity: 0;
-    display: block;
-    width: 0;
-    height: 0;
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+  display: block;
+  width: 0;
+  height: 0;
 
-    &_style {
+  &_style {
     position: relative;
-    color: #FF3E9B;
+    color: #ff3e9b;
     font-size: 14px;
     font-weight: 500;
     border-radius: 4px;
@@ -45,7 +45,7 @@
     height: 50px;
     width: 100%;
     border-radius: 50px;
-    border: 1px solid #FF3E9B;
+    border: 1px solid #ff3e9b;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -54,13 +54,13 @@
     justify-content: center;
     -webkit-box-align: center;
     -ms-flex-align: center;
-    align-items: center
-    }
+    align-items: center;
+  }
 }
 
 .avatar_preview {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
 }

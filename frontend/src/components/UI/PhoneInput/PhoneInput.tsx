@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { Ref } from 'react';
 import styles from '../Input/Input.module.scss';
-import InputMask from 'react-input-mask';
+import InputMask, { ReactInputMask } from 'react-input-mask';
 
 interface InputProps {
   type?: string;
@@ -10,18 +10,15 @@ interface InputProps {
   error?: string;
   icon?: string;
   maxLength?: number;
-  ref?: any;
   required?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onInput?: any;
+  ref?: Ref<HTMLInputElement>; // Изменил тип на Ref
 }
 
-const PhoneInput: React.ForwardRefRenderFunction<HTMLInputElement, InputProps> = ({
-  value,
-  onChange,
-  error,
-  icon = '',
-}) => {
+const PhoneInput: React.ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
+  { value = '', onChange, error, icon = '' },
+  ref
+) => {
   return (
     <div
       className={`${styles.input_box} ${styles[icon]} ${
@@ -34,6 +31,7 @@ const PhoneInput: React.ForwardRefRenderFunction<HTMLInputElement, InputProps> =
         placeholder={error ? error : '+7 (988) 515-15-55'}
         value={value}
         onChange={onChange}
+        ref={ref as Ref<ReactInputMask>} // Приведение типа
       />
     </div>
   );

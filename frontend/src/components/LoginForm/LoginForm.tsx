@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from './LoginForm.module.scss';
@@ -7,43 +6,13 @@ import { useMutation } from 'react-query';
 import Input from '../UI/Input/Input';
 import PhoneInput from '../UI/PhoneInput/PhoneInput';
 import Button from '../UI/Button/Button';
-import MockAdapter from 'axios-mock-adapter';
 import { useSetAtom } from 'jotai';
-import { userAtom } from '../../store/store';
-
-// ДЛЯ ТЕСТОВ
-// const mock = new MockAdapter(axios);
-
-// mock
-//   .onPost('http://192.168.110.52:8000/api/v1/users/login_in/')
-//   .reply((config) => {
-//     return new Promise((resolve) => {
-//       setTimeout(() => {
-//         resolve([200, { data: 'Mocked data' }]);
-//       }, 500); // Задержка ответа на 1 секунду
-//     });
-//   });
-
-// mock
-//   .onPost('http://192.168.110.52:8000/api/v1/users/check_code/')
-//   .reply((config) => {
-//     return new Promise((resolve) => {
-//       setTimeout(() => {
-//         resolve([
-//           200,
-//           {
-//             user: {
-//               id: 1,
-//               first_name: 'Кара',
-//               last_name: 'Делевинь',
-//               is_staff: false,
-//               image: null,
-//             },
-//           },
-//         ]);
-//       }, 500); // Задержка ответа на 2 секунды
-//     });
-//   });
+import { refreshTokenAtom, userAtom } from '../../store/store';
+import { accessTokenAtom } from '../../store/store';
+import { login } from '../../api/auth';
+import { getMe } from '../../api/users';
+import { ENDPOINTS } from '../../api/endpoints';
+import { ILoginRequest } from 'api/auth/types';
 
 interface LoginFormValues {
   phone: string;
@@ -60,8 +29,8 @@ const LoginForm: React.FC = () => {
     formState: { errors },
   } = useForm<LoginFormValues>();
   const setUser = useSetAtom(userAtom);
-
-  const router = useRouter();
+  const setAccess = useSetAtom(accessTokenAtom);
+  const setRefresh = useSetAtom(refreshTokenAtom);
 
   useEffect(() => {
     // При переходе на новую форму сбрасываем значения полей
@@ -70,8 +39,8 @@ const LoginForm: React.FC = () => {
 
   const loginUserMutation = useMutation(async (phone: string) => {
     try {
-      const response = await axios.post<any>(
-        'http://192.168.110.52:8000/api/v1/users/login_in/',
+      const response = await axios.post<ILoginRequest>(
+        ENDPOINTS.AUTH.SMS_CALL,
         {
           phone_number: phone,
         }
@@ -86,20 +55,24 @@ const LoginForm: React.FC = () => {
     }
   });
 
-  // БЕЗ JWT ТОКЕНА
   const verifyCodeMutation = useMutation(async (data: LoginFormValues) => {
     try {
-      const response = await axios.post<any>(
-        'http://192.168.110.52:8000/api/v1/users/check_code/',
-        {
-          password: data.code,
-          phone_number: data.phone,
-        }
-      );
+      const response = await login({
+        password: data.code,
+        username: data.phone,
+      });
+      console.log(response.data);
 
-      setUser(response.data.user);
-      // Перенаправляем на другую страницу после успешного ответа
-      router.replace('/avatar');
+      setAccess(response.data.access);
+      setRefresh(response.data.refresh);
+
+      try {
+        const response = await getMe();
+        console.log(response);
+        setUser(response.data);
+      } catch (e) {
+        console.log(e);
+      }
 
       return response;
     } catch (error) {

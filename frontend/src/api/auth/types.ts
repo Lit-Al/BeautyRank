@@ -1,8 +1,13 @@
 export interface ILoginRequest{
+    username: string,
+    password: string
+}
+
+export interface ISmsRequest{
     phone_number: string,
-    code: string
 }
 
 export interface ILoginResponse{
-    accessToken: string
+    access: string,
+    refresh: string
 }

@@ -9,18 +9,18 @@ function MyApp({ Component, pageProps }: AppProps) {
   const queryClient = new QueryClient();
   const user = useAtomValue(userAtom);
 
-  // useEffect(() => {
-  //   if (typeof window !== 'undefined') {
-  //     const router = require('next/router').default; // Импорт router только на клиентской стороне
-  //     if (!user) {
-  //       router.push('/');
-  //     } else if (user && user.image) {
-  //       router.push('/user');
-  //     } else {
-  //       router.push('/avatar');
-  //     }
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const router = require('next/router').default;
+      if (!user) {
+        router.replace('/');
+      } else if (user.image && !(user.image instanceof File)) {
+        router.replace('/user');
+      } else {
+        router.replace('/avatar');
+      }
+    }
+  }, [user]);
 
   return (
     <QueryClientProvider client={queryClient}>

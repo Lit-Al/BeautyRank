@@ -7,12 +7,13 @@ import CheckMark from '../../components/Animations/CheckMark';
 import { useAtom } from 'jotai';
 import { userAtom } from '../../store/store';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import Head from 'next/head';
 
 export default function AvatarPage() {
   const queryClient = new QueryClient();
   const [user] = useAtom(userAtom);
 
-  const [showCheckMark, setShowCheckMark] = useState(true);
+  const [showCheckMark, setShowCheckMark] = useState(false);
 
   let isFirstVisit = false;
   if (typeof window !== 'undefined') {
@@ -32,21 +33,26 @@ export default function AvatarPage() {
   }, []);
 
   return (
-    <div className={user?.is_staff ? styles.AuthBack_staff : styles.AuthBack}>
-      {showCheckMark && <CheckMark />}
-      <div className="container">
-        <Image
-          src={logo}
-          className={styles.logo}
-          alt="Логотип"
-          width={196}
-          height={105}
-        />
-        <h1 className={styles.auth_title}>Красота!</h1>
-        <QueryClientProvider client={queryClient}>
-          <AvatarForm />
-        </QueryClientProvider>
+    <>
+      <Head>
+        <title>Выбор Аватара</title>
+      </Head>
+      <div className={user?.is_staff ? styles.AuthBack_staff : styles.AuthBack}>
+        {showCheckMark && <CheckMark />}
+        <div className="container">
+          <Image
+            src={logo}
+            className={styles.logo}
+            alt="Логотип"
+            width={196}
+            height={105}
+          />
+          <h1 className={styles.auth_title}>Красота!</h1>
+          <QueryClientProvider client={queryClient}>
+            <AvatarForm />
+          </QueryClientProvider>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

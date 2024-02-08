@@ -2,7 +2,8 @@ import { useState, useRef } from 'react';
 import AvatarEditor from 'react-avatar-editor';
 import styles from './AvatarEditor.module.scss';
 import { useSetAtom } from 'jotai';
-import { avatarAtom, avatarExistAtom } from '../../store/store';
+import { userAtom } from '../../store/store';
+import { IUser } from 'models/IUser';
 
 const Avatar = () => {
   const [scale, setScale] = useState(2);
@@ -12,15 +13,13 @@ const Avatar = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [rotate, setRotate] = useState(180);
-  const setAvatarExistAtom = useSetAtom(avatarExistAtom);
-  const setAvatar = useSetAtom<any>(avatarAtom);
+  const setAvatar = useSetAtom<any>(userAtom);
 
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setShowModal(true);
       const file = event.target.files[0];
       setSelectedImage(URL.createObjectURL(file));
-      setPreview(URL.createObjectURL(file)); // Создание превью изображения и установка его в состояние preview
     }
   };
 
@@ -28,19 +27,23 @@ const Avatar = () => {
     setShowModal(false);
     if (editorRef.current) {
       const dataUrl = editorRef.current.getImage().toDataURL();
-      setPreview(dataUrl); // Обновляем preview сразу после получения data URL
-      setAvatar(dataUrl);
-      setAvatarExistAtom(true);
-      fetch(dataUrl)
-        .then((result) => result.blob())
-        .then((blob) => setPreview(URL.createObjectURL(blob)))
-        .catch((error) => console.log(error));
+      setPreview(dataUrl);
+      const base64Data = dataUrl.replace(/^data:image\/\w+;base64,/, '');
+      const buffer = Buffer.from(base64Data, 'base64');
+      const file = new File([buffer], 'avatar.jpg', { type: 'image/jpeg' });
+      setAvatar((prev: IUser) => ({
+        ...prev,
+        image: file,
+      }));
     }
   };
 
   const handleClose = () => {
     setShowModal(false);
-    setAvatarExistAtom(false);
+    setAvatar((prev: IUser) => ({
+      ...prev,
+      image: null,
+    }));
     setPreview(null);
   };
 

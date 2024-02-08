@@ -1,43 +1,42 @@
 @import '../../../styles/variables.scss';
 
 .UI_button {
-    width: 180px;
-    height: 50px;
-    border-radius: 50px;
-    background: $pink;
-    border: 0;
-    color: #FFF;
-    font-size: 14px;
-    font-weight: 500;
-    -webkit-transition: all .1s ease;
-    -o-transition: all .1s ease;
-    transition: all .1s ease;
-    text-decoration: none;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    transition: all ease-in-out .1s;
+  width: 180px;
+  height: 50px;
+  border-radius: 50px;
+  background: $pink;
+  border: 0;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  -webkit-transition: all 0.1s ease;
+  -o-transition: all 0.1s ease;
+  transition: all 0.1s ease;
+  text-decoration: none;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  transition: all ease-in-out 0.1s;
 
-    &:not([disabled]):hover {
-        background: darken($pink, 3%);
-        scale: 1.01;
-        -webkit-box-shadow: 0px 10px 20px #ffb8da;
-        box-shadow: 0px 10px 20px #ffb8da;
-    }
+  &:not([disabled]):hover {
+    background: darken($pink, 3%);
+    scale: 1.01;
+    -webkit-box-shadow: 0px 10px 20px #ffb8da;
+    box-shadow: 0px 10px 20px #ffb8da;
+  }
 
-    &:disabled {
-        background: $grey;
-    }
+  &:disabled {
+    background: $grey;
+  }
 
-    &:not([disabled]):active {
-        background: darken($pink, 5%);
-        scale: .95;
-    }
+  &:not([disabled]):active {
+    background: darken($pink, 5%);
+    scale: 0.95;
+  }
 }
-
