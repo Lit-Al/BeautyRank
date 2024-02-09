@@ -8,10 +8,10 @@ def generate_password() -> str:
 
     position = random.choice(["start", "middle", "end"])
     if position == "start":
-        password = pair + ''.join(remaining_digits)
+        password = pair + "".join(remaining_digits)
     elif position == "middle":
         password = remaining_digits[0] + pair + remaining_digits[1]
     else:
-        password = ''.join(remaining_digits) + pair
+        password = "".join(remaining_digits) + pair
 
     return password

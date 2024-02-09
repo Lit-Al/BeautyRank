@@ -44,7 +44,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("__debug__/", include("debug_toolbar.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
-    path("api/v1/", include(api_urlpatterns_v1))
+    path("api/v1/", include(api_urlpatterns_v1)),
 ]
 urlpatterns += swagger_urlpatterns
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

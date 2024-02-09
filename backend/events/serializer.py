@@ -6,7 +6,7 @@ from .models import *
 class ResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = Result
-        fields = ("member_nomination", "score", "eventstaff", "score_retail")
+        fields = ("member_nomination", "score", "event_staff", "score_retail")
 
 
 class MemberNominationPhotoSerializer(serializers.ModelSerializer):

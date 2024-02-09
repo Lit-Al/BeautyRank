@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import constraints, Count, Sum
+from django.db.models import Count, Sum, constraints
 
 
 class Category(models.Model):
@@ -83,9 +83,7 @@ class Event(models.Model):
 
             if member_nominations.exists():
                 top_three = member_nominations[:3]
-                win_nominations.append(
-                    {"name": str(nomination), "members": top_three}
-                )
+                win_nominations.append({"name": str(nomination), "members": top_three})
         return win_nominations
 
     def get_winners_categories(self):
@@ -113,12 +111,8 @@ class Event(models.Model):
                         "result_all": result_all,
                     }
                 )
-            top_three = sorted(top_three, reverse=True, key=lambda x: x["result_all"])[
-                        :3
-                        ]
-            win_categories.append(
-                {"name": str(category), "members": top_three}
-            )
+            top_three = sorted(top_three, reverse=True, key=lambda x: x["result_all"])[:3]
+            win_categories.append({"name": str(category), "members": top_three})
         return win_categories
 
     def __str__(self):
@@ -135,20 +129,6 @@ class Member(models.Model):
 
     def __str__(self) -> str:
         return f"Участник {self.user} --- {self.event}"
-
-
-class EventStaff(models.Model):
-    user = models.ForeignKey("users.User", models.PROTECT)
-    category_nomination = models.ForeignKey(
-        "CategoryNomination", models.PROTECT, default=1, related_name="staffs"
-    )
-
-    class Meta:
-        verbose_name = "Судья"
-        verbose_name_plural = "Судьи"
-
-    def __str__(self) -> str:
-        return f"Судья {self.user}"
 
 
 class EventCategory(models.Model):
@@ -168,6 +148,9 @@ class EventCategory(models.Model):
 class CategoryNomination(models.Model):
     event_category = models.ForeignKey("EventCategory", models.PROTECT)
     nomination = models.ForeignKey("Nomination", models.PROTECT, related_name="nom")
+    event_staff = models.ManyToManyField(
+        "users.User", blank=True, related_name="staffs"
+    )
 
     class Meta:
         verbose_name = "Номинации категорий"
@@ -225,7 +208,7 @@ class Result(models.Model):
         "MemberNomination", models.PROTECT, related_name="results"
     )
     score = models.IntegerField()
-    eventstaff = models.ForeignKey("EventStaff", models.PROTECT)
+    event_staff = models.ForeignKey("users.User", models.PROTECT)
     score_retail = models.JSONField(default=None, null=True)
 
     class Meta:
@@ -233,9 +216,9 @@ class Result(models.Model):
         verbose_name_plural = "Оценки"
         constraints = [
             constraints.UniqueConstraint(
-                "member_nomination", "eventstaff", name="unique_lower_name_category"
+                "member_nomination", "event_staff", name="unique_lower_name_category"
             )
         ]
 
     def __str__(self) -> str:
-        return f"{self.score} --- {self.eventstaff.user}"
+        return f"{self.score} --- {self.event_staff}"

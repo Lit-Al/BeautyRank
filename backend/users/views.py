@@ -5,9 +5,10 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from . import smsc_api as sms
 from users.serializer import *
 from users.utils import generate_password
+
+from . import smsc_api as sms
 
 
 class UserViewSet(viewsets.GenericViewSet):
@@ -44,9 +45,7 @@ class UserViewSet(viewsets.GenericViewSet):
             detail="Номер введён неверно", code=status.HTTP_400_BAD_REQUEST
         )
 
-    @action(
-        detail=False, methods=["get", "patch"]
-    )
+    @action(detail=False, methods=["get", "patch"])
     def me(self, request, *args, **kwargs):
         if request.method == "PATCH":
             serializer = UserSerializer(request.user, data=request.data, partial=True)

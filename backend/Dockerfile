@@ -1,20 +1,21 @@
-# Используй базовый образ Python
-FROM python:3.9
+# Используйте официальный образ Python
+FROM python:3.9-alpine
 
-# Устанавливаем переменную окружения для запуска в режиме "продакшн"
-ENV PYTHONUNBUFFERED 1
-
-# Создаем директорию для приложения в контейнере
-RUN mkdir /app
-
-# Устанавливаем рабочую директорию
+# Установите рабочую директорию внутри контейнера
 WORKDIR /app
 
-# Копируем зависимости проекта в контейнер
-COPY requirements.txt /app/
+# Установите зависимости PostgreSQL для Python
+RUN apk add --no-cache postgresql-libs
 
-# Устанавливаем зависимости проекта
-RUN pip install -r requirements.txt
+# Установите зависимости для компиляции пакетов Python
+RUN apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev
 
-# Копируем все файлы проекта в контейнер
-COPY . /app/
+# Скопируйте зависимости и файлы проекта в контейнер
+COPY requirements.txt ./
+COPY . .
+
+# Установите зависимости Python
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Установите команду запуска приложения
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

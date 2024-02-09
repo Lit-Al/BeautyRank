@@ -11,7 +11,6 @@ from .models import *
     NominationAttribute,
     Event,
     EventCategory,
-    CategoryNomination
 )
 class DefaultEventAdmin(admin.ModelAdmin):
     pass
@@ -41,6 +40,14 @@ class MemberAdmin(admin.ModelAdmin):
         return form
 
 
+@admin.register(CategoryNomination)
+class CategoryNominationAdmin(admin.ModelAdmin):
+    filter_horizontal = ("event_staff",)
+    list_display = ("event_category", "nomination")
+    list_display_links = ("event_category", "nomination")
+    ordering = ["event_category", "nomination"]
+
+
 @admin.register(MemberNomination)
 class MemberNominationAdmin(admin.ModelAdmin):
     list_display = ("id", "member", "category_nomination")
@@ -55,23 +62,11 @@ class MemberNominationPhotoAdmin(admin.ModelAdmin):
     ordering = ["member_nomination"]
 
 
-@admin.register(EventStaff)
-class EventStaffAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "category_nomination")
-    list_display_links = ("id", "user", "category_nomination")
-    ordering = ["user"]
-
-    def get_form(self, request, obj=None, **kwargs):
-        form = super(EventStaffAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields["user"].queryset = User.objects.filter(is_staff=True)
-        return form
-
-
 @admin.register(Result)
 class ResultAdmin(admin.ModelAdmin):
-    list_display = ("id", "eventstaff", "score", "member_nomination")
-    list_display_links = ("id", "eventstaff", "score", "member_nomination")
-    ordering = ["eventstaff"]
+    list_display = ("id", "event_staff", "score", "member_nomination")
+    list_display_links = ("id", "event_staff", "score", "member_nomination")
+    ordering = ["event_staff"]
 
 
 admin.site.site_title = "Админ-панель BeautyRank"
