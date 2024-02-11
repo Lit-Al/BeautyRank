@@ -1,7 +1,7 @@
+from django.db.models import Q, Case, When, F, BooleanField
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.mixins import (CreateModelMixin, ListModelMixin,
-                                   RetrieveModelMixin)
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
 from rest_framework.response import Response
 
 from .permissions import IsMemberOrReadOnly, IsStaffOrReadOnly
@@ -21,13 +21,32 @@ class MemberNominationViewSet(
     ordering_fields = ["result_all"]
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        if self.request.user.is_staff:
-            queryset = queryset.filter(
-                category_nomination__staffs__user=self.request.user
+        queryset = (
+            super()
+            .get_queryset()
+            .annotate(
+                count_results=Count("results"),
+                count_staffs=Count("category_nomination__event_staff"),
             )
-        else:
-            queryset = queryset.filter(member__user=self.request.user)
+            .annotate(
+                is_done=Case(
+                    When(count_results=F("count_staffs"), then=True),
+                    default=False,
+                    output_field=BooleanField(),
+                )
+            )
+            .filter(
+                Q(member__user=self.request.user)
+                | Q(category_nomination__event_staff=self.request.user)
+                | Q(
+                    category_nomination__event_category__event__owners=self.request.user
+                )
+                | Q(
+                    category_nomination__event_category__event__members__user=self.request.user,
+                    is_done=True,
+                )
+            )
+        )  # TODO: сделать такое же для другие эндрпоинтов
         return queryset
 
 
@@ -40,16 +59,20 @@ class MemberNominationPhotoViewSet(
     ordering_fields = ["before_after"]
     permission_classes = [IsMemberOrReadOnly]
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        if self.request.user.is_staff:
-            queryset = queryset.filter(
-                member_nomination__category_nomination__staffs__user=self.request.user
+    def get_queryset(self):  # TODO: доделать аналогию как с эндпоинтом выше
+        queryset = (
+            super()
+            .get_queryset()
+            .filter(
+                Q(member_nomination__member__user=self.request.user)
+                | Q(
+                    member_nomination__category_nomination__event_staff=self.request.user
+                )
+                | Q(
+                    member_nomination__category_nomination__event_category__event__owners=self.request.user
+                )
             )
-        else:
-            queryset = queryset.filter(
-                member_nomination__member__user=self.request.user
-            )
+        )
         return queryset
 
 

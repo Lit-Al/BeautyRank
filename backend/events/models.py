@@ -61,6 +61,9 @@ class Event(models.Model):
         help_text="Введите название мероприятия",
         verbose_name="Название мероприятия",
     )
+    owners = models.ManyToManyField(
+        "users.User", blank=True, related_name="owner_events"
+    )
 
     class Meta:
         verbose_name = "Мероприятие"
@@ -111,7 +114,9 @@ class Event(models.Model):
                         "result_all": result_all,
                     }
                 )
-            top_three = sorted(top_three, reverse=True, key=lambda x: x["result_all"])[:3]
+            top_three = sorted(top_three, reverse=True, key=lambda x: x["result_all"])[
+                :3
+            ]
             win_categories.append({"name": str(category), "members": top_three})
         return win_categories
 
@@ -170,11 +175,11 @@ class MemberNomination(models.Model):
         verbose_name = "Номинация участника"
         verbose_name_plural = "Номинации участника"
 
-    @property
-    def is_done(self):
-        count_referee = self.category_nomination.staffs.count()
-        count_results = self.results.count()
-        return count_results == count_referee
+    # @property
+    # def is_done(self):
+    #     count_referee = self.category_nomination.staffs.count()
+    #     count_results = self.results.count()
+    #     return count_results == count_referee
 
     def __str__(self) -> str:
         return f"{self.member} --- {self.category_nomination}"

@@ -15,6 +15,14 @@ class MemberNominationPhotoSerializer(serializers.ModelSerializer):
         fields = ("id", "member_nomination", "photo", "before_after", "name")
         read_only_fields = ["id"]
 
+    def validate(self, attrs):
+        member_nomination = MemberNomination.objects.filter(
+            id=attrs["member_nomination"]
+        ).first()
+        if self.context["request"].user != member_nomination.member.user:
+            raise serializers.ValidationError("Запрещено загружать фото в чужую работу")
+        return super().validate(attrs)
+
 
 class MemberNominationSerializer(serializers.ModelSerializer):
     nomination = serializers.CharField(
@@ -28,6 +36,7 @@ class MemberNominationSerializer(serializers.ModelSerializer):
     )
     member = serializers.CharField(source="member.user", read_only=True)
     result_sum = serializers.IntegerField(source="result_all", read_only=True)
+    is_done = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = MemberNomination
@@ -38,6 +47,7 @@ class MemberNominationSerializer(serializers.ModelSerializer):
             "category",
             "member",
             "result_sum",
+            "is_done",
         )
         read_only_fields = ["id"]
 
