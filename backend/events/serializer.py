@@ -16,10 +16,7 @@ class MemberNominationPhotoSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
     def validate(self, attrs):
-        member_nomination = MemberNomination.objects.filter(
-            id=attrs["member_nomination"]
-        ).first()
-        if self.context["request"].user != member_nomination.member.user:
+        if self.context["request"].user != attrs["member_nomination"].member.user:
             raise serializers.ValidationError("Запрещено загружать фото в чужую работу")
         return super().validate(attrs)
 
@@ -51,13 +48,6 @@ class MemberNominationSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ["id"]
 
-    # def get_first_photo(self, obj):
-    #     first_photo = obj.photos.first()
-    #     if first_photo:
-    #         return first_photo.photo.url
-    #     else:
-    #         return None
-
 
 class CategoryNominationSerializer(serializers.ModelSerializer):
     member_nomination = MemberNominationSerializer(many=True, read_only=True)
@@ -69,11 +59,26 @@ class CategoryNominationSerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
     win_nominations = CategoryNominationSerializer(many=True, read_only=True)
+    role = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
-        fields = ("id", "name", "win_nominations")
-        read_only_fields = ["id", "name", "win_nominations"]
+        fields = ("id", "name", "win_nominations", "role")
+        read_only_fields = ["id", "name", "win_nominations", "role"]
+
+    def get_role(self, obj):
+        user = self.context.get("request").user
+        event = obj
+        if CategoryNomination.objects.filter(event_staff=user).exists():
+            return "Судья"
+
+        if Member.objects.filter(user=user).exists():
+            return "Мастер(участник)"
+
+        if Event.objects.filter(pk=event.pk, owners=user).exists():
+            return "Организатор"
+
+        return "Unknown role"
 
 
 class MemberNominationSerializerForWinners(serializers.ModelSerializer):

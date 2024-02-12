@@ -46,7 +46,8 @@ class MemberNominationViewSet(
                     is_done=True,
                 )
             )
-        )  # TODO: сделать такое же для другие эндрпоинтов
+            .distinct()
+        )
         return queryset
 
 
@@ -63,6 +64,17 @@ class MemberNominationPhotoViewSet(
         queryset = (
             super()
             .get_queryset()
+            .annotate(
+                count_results=Count("member_nomination__results"),
+                count_staffs=Count("member_nomination__category_nomination__event_staff"),
+            )
+            .annotate(
+                is_done=Case(
+                    When(count_results=F("count_staffs"), then=True),
+                    default=False,
+                    output_field=BooleanField(),
+                )
+            )
             .filter(
                 Q(member_nomination__member__user=self.request.user)
                 | Q(
@@ -71,7 +83,12 @@ class MemberNominationPhotoViewSet(
                 | Q(
                     member_nomination__category_nomination__event_category__event__owners=self.request.user
                 )
+                | Q(
+                    member_nomination__category_nomination__event_category__event__members__user=self.request.user,
+                    is_done=True,
+                )
             )
+            .distinct()
         )
         return queryset
 
@@ -99,5 +116,4 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
         event = self.get_object()
         win_categories = event.get_winners_categories()
         serializer = WinnersSerializer(win_categories, many=True)
-
         return Response(serializer.data)

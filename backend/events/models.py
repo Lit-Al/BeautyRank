@@ -69,24 +69,32 @@ class Event(models.Model):
         verbose_name = "Мероприятие"
         verbose_name_plural = "Мероприятия"
 
-    @property
     def get_winners_nominations(self):
         win_nominations = []
-        nominations = CategoryNomination.objects.all()
-        member_nominations_all = (
-            MemberNomination.objects.all()
-            .filter(category_nomination__event_category__event=self.id)
-            .annotate(result_all=Sum("results__score"))
-            .order_by("-result_all")
-        )
-        for nomination in nominations:
-            member_nominations = member_nominations_all.filter(
-                category_nomination=nomination
+        category_nominations = CategoryNomination.objects.filter(event_category__event=self.id)
+        for category_nomination in category_nominations:
+            member_nominations = MemberNomination.objects.filter(
+                category_nomination=category_nomination
             )
+            members = set(member_nominations.values_list("member", flat=True))
+            top_three = []
+            members_in_current_event = Member.objects.filter(event=self.id)
 
-            if member_nominations.exists():
-                top_three = member_nominations[:3]
-                win_nominations.append({"name": str(nomination), "members": top_three})
+            for member in members:
+                result_all = sum(
+                    Result.objects.filter(
+                        member_nomination__member=member,
+                        member_nomination__category_nomination=category_nomination,
+                    ).values_list("score", flat=True)
+                )
+                top_three.append(
+                    {
+                        "member": members_in_current_event.get(pk=member),
+                        "result_all": result_all,
+                    }
+                )
+            top_three = sorted(top_three, reverse=True, key=lambda x: x["result_all"])[:3]
+            win_nominations.append({"name": str(category_nomination.nomination), "members": top_three})
         return win_nominations
 
     def get_winners_categories(self):
@@ -115,8 +123,8 @@ class Event(models.Model):
                     }
                 )
             top_three = sorted(top_three, reverse=True, key=lambda x: x["result_all"])[
-                :3
-            ]
+                        :3
+                        ]
             win_categories.append({"name": str(category), "members": top_three})
         return win_categories
 
