@@ -1,5 +1,5 @@
 import { atomWithStorage } from 'jotai/utils';
-import { IUser } from '../models/IUser';
+import { IUser } from 'common/shared/types';
 
 let initialUser: IUser | null = null;
 let initialAccess: string | null = null;

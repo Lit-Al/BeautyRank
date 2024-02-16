@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import styles from './avatar.module.scss';
-import logo from '../../../public/images/logo.svg';
-import Image from 'next/image';
-import AvatarForm from '../../components/AvatarForm/AvatarForm';
-import CheckMark from '../../components/Animations/CheckMark';
+import AvatarForm from 'common/features/select-avatar/ui/AvatarForm/AvatarForm';
+import CheckMark from 'common/shared/ui/checkmark-animation/CheckMark';
 import { useAtom } from 'jotai';
-import { userAtom } from '../../store/store';
+import { userAtom } from 'store';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import Head from 'next/head';
+import { Logo } from 'common/shared/ui/logo';
+import { Layout } from 'common/shared/ui/layout';
 
 export default function AvatarPage() {
   const queryClient = new QueryClient();
@@ -34,24 +33,15 @@ export default function AvatarPage() {
 
   return (
     <>
-      <Head>
-        <title>Выбор Аватара</title>
-      </Head>
+      {showCheckMark && <CheckMark />}
       <div className={user?.is_staff ? styles.AuthBack_staff : styles.AuthBack}>
-        {showCheckMark && <CheckMark />}
-        <div className="container">
-          <Image
-            src={logo}
-            className={styles.logo}
-            alt="Логотип"
-            width={196}
-            height={105}
-          />
+        <Layout pageTitle="Выбор Аватара">
+          <Logo />
           <h1 className={styles.auth_title}>Красота!</h1>
           <QueryClientProvider client={queryClient}>
             <AvatarForm />
           </QueryClientProvider>
-        </div>
+        </Layout>
       </div>
     </>
   );

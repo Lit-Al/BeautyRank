@@ -175,3 +175,5 @@ SIMPLE_JWT = {
 USERNAME_SMSC = env("USERNAME_SMSC", default="fake_user")
 PASSWORD_SMSC = env("PASSWORD_SMSC", default="fake_password")
 DEFAULT_SENDER = "74956665610"
+
+CORS_ORIGIN_WHITELIST = ["http://localhost:3000"]

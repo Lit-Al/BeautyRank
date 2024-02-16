@@ -1,0 +1,73 @@
+@import '../../styles/variables.scss';
+
+.UI_input {
+  border-radius: 50px;
+  border: 1px solid $pink;
+  width: 100%;
+  background-color: transparent;
+  height: 50px;
+  font-size: 16px;
+  font-weight: 500;
+  color: $pink;
+  padding: 0 10px 0 63px;
+
+  &::placeholder {
+    color: $pink;
+    opacity: 0.7;
+  }
+
+  &:focus {
+    outline: 1px solid $pink;
+    -webkit-box-shadow: 0px 10px 20px #ffb8da;
+    box-shadow: 0px 10px 20px #ffb8da;
+  }
+
+  &_error {
+    border-color: $error;
+
+    &::placeholder {
+      color: $error;
+    }
+  }
+}
+
+.convert {
+  &::before {
+    background-image: url(../../../../../public/images/convert.svg)
+  }
+  &_error::before {
+    background-image: url(../../../../../public/images/convertError.svg);
+  }
+}
+
+.lock {
+  &::before {
+    background-image: url(../../../../../public/images/lock.svg);
+  }
+  &_error::before {
+    background-image: url(../../../../../public/images/lockError.svg);
+  }
+}
+
+.input_box {
+  position: relative;
+  width: 100%;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 8%;
+  }
+}
+
+.input__error {
+  position: absolute;
+  width: 100%;
+  bottom: -20px;
+  font-size: 16px;
+  color: $error;
+}

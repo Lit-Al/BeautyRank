@@ -1,0 +1,10 @@
+node_modules
+.git
+Dockerfile
+.vscode
+.dockerignore
+.gitignore
+**/*.test.*
+**/*.stories.*
+.next
+.eslintrc.json
