@@ -1,16 +1,22 @@
 from django.db.models import Q, Case, When, F, BooleanField
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
+from rest_framework.mixins import (
+    CreateModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+)
 from rest_framework.response import Response
 
-from .permissions import IsMemberOrReadOnly, IsStaffOrReadOnly
+from .permissions import IsMemberOrReadOnly, IsStaffOrReadOnly, TelegramBotUpdate
 from .serializer import *
 
 
 class MemberNominationViewSet(
     ListModelMixin,
     RetrieveModelMixin,
+    UpdateModelMixin,
     viewsets.GenericViewSet,
 ):
     queryset = MemberNomination.objects.all().annotate(
@@ -19,36 +25,39 @@ class MemberNominationViewSet(
     serializer_class = MemberNominationSerializer
     filterset_fields = ["category_nomination__event_category__event"]
     ordering_fields = ["result_all"]
+    permission_classes = [TelegramBotUpdate]
 
     def get_queryset(self):
-        queryset = (
-            super()
-            .get_queryset()
-            .annotate(
-                count_results=Count("results"),
-                count_staffs=Count("category_nomination__event_staff"),
-            )
-            .annotate(
-                is_done=Case(
-                    When(count_results=F("count_staffs"), then=True),
-                    default=False,
-                    output_field=BooleanField(),
+        if not self.request.data.get("user", "client") == "telegram":
+            queryset = (
+                super()
+                .get_queryset()
+                .annotate(
+                    count_results=Count("results"),
+                    count_staffs=Count("category_nomination__event_staff"),
                 )
-            )
-            .filter(
-                Q(member__user=self.request.user)
-                | Q(category_nomination__event_staff=self.request.user)
-                | Q(
-                    category_nomination__event_category__event__owners=self.request.user
+                .annotate(
+                    is_done=Case(
+                        When(count_results=F("count_staffs"), then=True),
+                        default=False,
+                        output_field=BooleanField(),
+                    )
                 )
-                | Q(
-                    category_nomination__event_category__event__members__user=self.request.user,
-                    is_done=True,
+                .filter(
+                    Q(member__user=self.request.user)
+                    | Q(category_nomination__event_staff=self.request.user)
+                    | Q(
+                        category_nomination__event_category__event__owners=self.request.user
+                    )
+                    | Q(
+                        category_nomination__event_category__event__members__user=self.request.user,
+                        is_done=True,
+                    )
                 )
+                .distinct()
             )
-            .distinct()
-        )
-        return queryset
+            return queryset
+        return super().get_queryset()
 
 
 class MemberNominationPhotoViewSet(
@@ -60,13 +69,15 @@ class MemberNominationPhotoViewSet(
     ordering_fields = ["before_after"]
     permission_classes = [IsMemberOrReadOnly]
 
-    def get_queryset(self):  # TODO: доделать аналогию как с эндпоинтом выше
+    def get_queryset(self):
         queryset = (
             super()
             .get_queryset()
             .annotate(
                 count_results=Count("member_nomination__results"),
-                count_staffs=Count("member_nomination__category_nomination__event_staff"),
+                count_staffs=Count(
+                    "member_nomination__category_nomination__event_staff"
+                ),
             )
             .annotate(
                 is_done=Case(

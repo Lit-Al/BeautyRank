@@ -29,7 +29,6 @@ def send_sms(phone, random_number):
                 recipient=phone,
                 type="voice",
                 payload=dict(
-                    # убедитесь, что имя отправителя добавлено в ЛК в разделе Компоненты(https://online.sigmasms.ru/#/components)
                     sender=settings.DEFAULT_SENDER,
                     text=random_number,
                 ),

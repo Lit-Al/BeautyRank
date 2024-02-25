@@ -101,11 +101,11 @@ WSGI_APPLICATION = "RateOnline.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("DB_NAME"),
-        "USER": env("DB_USER"),
-        "PASSWORD": env("DB_PASSWORD"),
-        "HOST": env("DB_HOST"),
-        "PORT": env("DB_PORT"),
+        "NAME": env("POSTGRES_DB"),
+        "USER": env("POSTGRES_USER"),
+        "PASSWORD": env("POSTGRES_PASSWORD"),
+        "HOST": env("POSTGRES_HOST"),
+        "PORT": env("POSTGRES_PORT"),
     }
 }
 
@@ -143,7 +143,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 STATICFILES_DIRS = [BASE_DIR / "static"]
-STATIC_URL = "static/"
+STATIC_URL = "django-static/"
 STATIC_ROOT = BASE_DIR / "static_root"
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "media/"
@@ -177,3 +177,9 @@ PASSWORD_SMSC = env("PASSWORD_SMSC", default="fake_password")
 DEFAULT_SENDER = "74956665610"
 
 CORS_ORIGIN_WHITELIST = ["http://localhost:3000"]
+
+
+# TELEGRAM SETTINGS
+
+TELEGRAM_SECRET_KEY = env("SECRET_KEY_TELEGRAM")
+TELEGRAM_CHAT_ID = env("TELEGRAM_CHAT_ID")

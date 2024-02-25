@@ -2,14 +2,10 @@ FROM node
 
 WORKDIR /app    
 
-COPY package.json . /app
+COPY package.json .
 
 RUN yarn install
 
-RUN yarn build
-
-COPY . .
+COPY . /app
 
 EXPOSE 3000
-
-CMD ["yarn", "start"]

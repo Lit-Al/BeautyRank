@@ -1,5 +1,9 @@
 from django.db import models
 from django.db.models import Count, Sum, constraints
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+from integrations.telegram import TelegramIntegration
 
 
 class Category(models.Model):
@@ -61,6 +65,7 @@ class Event(models.Model):
         help_text="Введите название мероприятия",
         verbose_name="Название мероприятия",
     )
+    image = models.ImageField()
     owners = models.ManyToManyField(
         "users.User", blank=True, related_name="owner_events"
     )
@@ -71,7 +76,9 @@ class Event(models.Model):
 
     def get_winners_nominations(self):
         win_nominations = []
-        category_nominations = CategoryNomination.objects.filter(event_category__event=self.id)
+        category_nominations = CategoryNomination.objects.filter(
+            event_category__event=self.id
+        )
         for category_nomination in category_nominations:
             member_nominations = MemberNomination.objects.filter(
                 category_nomination=category_nomination
@@ -93,8 +100,12 @@ class Event(models.Model):
                         "result_all": result_all,
                     }
                 )
-            top_three = sorted(top_three, reverse=True, key=lambda x: x["result_all"])[:3]
-            win_nominations.append({"name": str(category_nomination.nomination), "members": top_three})
+            top_three = sorted(top_three, reverse=True, key=lambda x: x["result_all"])[
+                :3
+            ]
+            win_nominations.append(
+                {"name": str(category_nomination.nomination), "members": top_three}
+            )
         return win_nominations
 
     def get_winners_categories(self):
@@ -123,8 +134,8 @@ class Event(models.Model):
                     }
                 )
             top_three = sorted(top_three, reverse=True, key=lambda x: x["result_all"])[
-                        :3
-                        ]
+                :3
+            ]
             win_categories.append({"name": str(category), "members": top_three})
         return win_categories
 
@@ -178,6 +189,8 @@ class MemberNomination(models.Model):
     category_nomination = models.ForeignKey(
         "CategoryNomination", models.PROTECT, related_name="categ"
     )
+    url_video = models.TextField(default="", blank=True)
+    url_message_video = models.TextField(default="", blank=True)
 
     class Meta:
         verbose_name = "Номинация участника"
@@ -235,3 +248,10 @@ class Result(models.Model):
 
     def __str__(self) -> str:
         return f"{self.score} --- {self.event_staff}"
+
+
+@receiver(post_save, sender=MemberNomination)
+def save_url(sender, instance, **kwargs):
+    if instance.url_video and not instance.url_message_video:
+        integration = TelegramIntegration()
+        integration.send_video_to_telegram_channel(instance)
