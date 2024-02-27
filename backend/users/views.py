@@ -33,7 +33,6 @@ class UserViewSet(viewsets.GenericViewSet):
             # sms.send_sms(phone_number, random_number)
             user.set_password(random_number)
             user.save()
-            # TODO: НЕ ЗАБЫТЬ УДАЛИТЬ PASSWORD И PHONE_NUMBER ИЗ ОТВЕТА НИЖЕ
             return Response(
                 {
                     "success": "Успешно!",

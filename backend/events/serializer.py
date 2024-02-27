@@ -45,6 +45,8 @@ class MemberNominationSerializer(serializers.ModelSerializer):
             "member",
             "result_sum",
             "is_done",
+            "url_video",
+            "url_message_video",
         )
         read_only_fields = ["id"]
 
