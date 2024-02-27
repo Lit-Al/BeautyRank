@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Ref } from 'react';
 import styles from './Input.module.scss';
 
 interface InputProps {
@@ -10,7 +10,7 @@ interface InputProps {
   icon?: string;
   maxLength?: number;
   minLength?: number;
-  ref?: any;
+  ref?: Ref<HTMLInputElement>;
   required?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onInput?: any;
@@ -27,23 +27,21 @@ function checkInputLength(event: React.ChangeEvent<HTMLInputElement>) {
 export const Input: React.ForwardRefRenderFunction<
   HTMLInputElement,
   InputProps
-> = (
-  {
-    type = 'text',
-    minLength,
-    placeholder,
-    maxLength,
-    value,
-    onChange,
-    onInput = checkInputLength,
-    pattern,
-    error,
-    icon = '',
-    autofocus,
-    required = false,
-  },
-  ref
-) => {
+> = ({
+  type = 'text',
+  minLength,
+  placeholder,
+  maxLength,
+  value,
+  onChange,
+  onInput = checkInputLength,
+  pattern,
+  error,
+  icon = '',
+  autofocus,
+  required = false,
+  ref,
+}) => {
   return (
     <div
       className={`${styles.input_box} ${styles[icon]} ${
@@ -52,7 +50,7 @@ export const Input: React.ForwardRefRenderFunction<
     >
       <input
         autoFocus={autofocus}
-        className={`${styles.UI_input} ${error && styles.UI_input_error}`}
+        className={`${styles.UI_input} ${error ? styles.UI_input_error : ''}`}
         type={type}
         placeholder={placeholder}
         value={value}

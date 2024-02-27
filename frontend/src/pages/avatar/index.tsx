@@ -7,11 +7,10 @@ import { userAtom } from 'store';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Logo } from 'common/shared/ui/logo';
 import { Layout } from 'common/shared/ui/layout';
+import router from 'next/router';
 
 export default function AvatarPage() {
   const queryClient = new QueryClient();
-  const [user] = useAtom(userAtom);
-
   const [showCheckMark, setShowCheckMark] = useState(false);
 
   let isFirstVisit = false;
@@ -34,7 +33,7 @@ export default function AvatarPage() {
   return (
     <>
       {showCheckMark && <CheckMark />}
-      <div className={user?.is_staff ? styles.AuthBack_staff : styles.AuthBack}>
+      <div className={styles.AuthBack}>
         <Layout pageTitle="Выбор Аватара">
           <Logo />
           <h1 className={styles.auth_title}>Красота!</h1>

@@ -13,7 +13,6 @@
   background-color: transparent;
   height: 50px;
   font-size: 16px;
-  font-weight: 500;
   color: $pink;
   padding: 0 10px 0 63px;
 
@@ -64,6 +63,16 @@
   }
 }
 
+.profile {
+  &::before {
+    background-image: url(../../../../../public/images/profile.svg);
+  }
+
+  &_error::before {
+    background-image: url(../../../../../public/images/lockError.svg);
+  }
+}
+
 .input_box {
   position: relative;
   width: 100%;
@@ -71,8 +80,8 @@
   &::before {
     content: '';
     position: absolute;
-    width: 20px;
-    height: 20px;
+    width: 21px;
+    height: 21px;
     top: 50%;
     transform: translateY(-50%);
     left: 8%;

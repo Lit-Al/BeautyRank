@@ -6,5 +6,5 @@ import { AxiosPromise } from 'axios';
 export const getMe = (): AxiosPromise<IUser> =>
   axiosInstanse.get(ENDPOINTS.USERS.ME);
   
-export const setAvatar = (avatar: FormData): AxiosPromise<IUser> =>
-  axiosInstanse.patch(ENDPOINTS.USERS.ME, avatar,);
+export const setUser = (userData: IUser): AxiosPromise<IUser> =>
+  axiosInstanse.patch(ENDPOINTS.USERS.ME, userData,);

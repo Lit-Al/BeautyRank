@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './Button.module.scss';
 
 interface ButtonProps {
@@ -12,15 +12,25 @@ export const Button: React.FC<ButtonProps> = ({
   children,
   disabled,
   onClick,
-  className,
+  className = '',
 }) => {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
-    <button
-      className={`${styles.UI_button} ${className}`}
-      disabled={disabled}
-      onClick={onClick}
-    >
-      {children}
-    </button>
+    <>
+      {isClient && (
+        <button
+          className={`${styles.UI_button} ${className}`}
+          disabled={disabled}
+          onClick={onClick}
+        >
+          {children}
+        </button>
+      )}
+    </>
   );
 };

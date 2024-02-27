@@ -13,7 +13,6 @@
     position: relative;
     color: #ff3e9b;
     font-size: 16px;
-    font-weight: 500;
     cursor: pointer;
     border-radius: 4px;
     background-color: transparent;
@@ -55,9 +54,6 @@
 }
 
 .auth_label {
-  font-size: 16px;
-  font-weight: 500;
-  color: $grey;
   position: relative;
   width: 100%;
   text-align: center;

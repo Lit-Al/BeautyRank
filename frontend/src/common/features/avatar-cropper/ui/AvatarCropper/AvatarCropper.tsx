@@ -1,10 +1,10 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import AvatarEditor from 'react-avatar-editor';
 import styles from './AvatarCropper.module.scss';
-import { useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { userAtom } from 'store';
 import { IUser } from 'common/shared/types';
-
+import Avatar from 'common/shared/ui/avatar/Avatar';
 interface AvatarCropperProps {
   children?: React.ReactNode;
   childrenClassName?: string;
@@ -19,6 +19,7 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
   const [showModal, setShowModal] = useState(false);
   const [rotate, setRotate] = useState(180);
   const setAvatar = useSetAtom<any>(userAtom);
+  const user = useAtomValue(userAtom);
 
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -42,11 +43,12 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
 
   const handleClose = () => {
     setShowModal(false);
-    setAvatar((prev: IUser) => ({
-      ...prev,
-      image: null,
-    }));
-    setPreview(null);
+    if (!user?.image) {
+      setAvatar((prev: IUser) => ({
+        ...prev,
+        image: null,
+      }));
+    }
   };
 
   return (
@@ -122,13 +124,15 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
             />
             <span className={styles.avatar_input_style}>Выбрать фото</span>
           </label>
-          {preview && (
+          {user?.image && <Avatar />}
+
+          {/* {preview && (
             <img
               src={preview}
               className={styles.avatar_preview}
               alt="Preview"
             />
-          )}
+          )} */}
         </>
       )}
     </>

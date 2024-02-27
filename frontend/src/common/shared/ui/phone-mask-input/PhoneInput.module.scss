@@ -7,7 +7,6 @@
   background-color: transparent;
   height: 50px;
   font-size: 16px;
-  font-weight: 500;
   color: $pink;
   padding: 0 10px 0 63px;
 
@@ -33,7 +32,7 @@
 
 .convert {
   &::before {
-    background-image: url(../../../../../public/images/convert.svg)
+    background-image: url(../../../../../public/images/convert.svg);
   }
   &_error::before {
     background-image: url(../../../../../public/images/convertError.svg);

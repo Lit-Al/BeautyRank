@@ -43,14 +43,11 @@ axiosInstanse.interceptors.request.use(async (config: any) => {
     try {
       const tokenInfo = token.split('.')[1];
       const tokenInfoDecoded = window.atob(tokenInfo);
-      const { exp, iat }: IAuthTokenInfo = JSON.parse(tokenInfoDecoded);
-      const LIFE_TIME_TO_UPDATE_MULTIPLIER = 0.5;
+      const { exp }: IAuthTokenInfo = JSON.parse(tokenInfoDecoded);
+      const LIFE_TIME_TO_UPDATE_MULTIPLIER = 50;
+      const tokenLifeTime = exp - Math.round(+new Date() / 1000);
 
-      const tokenLeftTime = exp - Math.round(+new Date() / 1000);
-
-      const timeForUpdate = (exp - iat) * LIFE_TIME_TO_UPDATE_MULTIPLIER;
-
-      return tokenLeftTime < timeForUpdate;
+      return tokenLifeTime < LIFE_TIME_TO_UPDATE_MULTIPLIER;
     } catch (e) {
       console.log(e);
       return true;
@@ -63,6 +60,8 @@ axiosInstanse.interceptors.request.use(async (config: any) => {
       const accessToken = accessTokenStorage?.replace(/"/g, '');
 
       if (!accessToken || isTokenExpired(accessToken)) {
+        console.log('Токен устарел или не существует');
+
         if (refreshTokenRequest === null) {
           refreshTokenRequest = api.auth.refreshToken({
             refresh: refreshToken,
@@ -70,7 +69,6 @@ axiosInstanse.interceptors.request.use(async (config: any) => {
         }
 
         const res = await refreshTokenRequest;
-        console.log(res);
 
         refreshTokenRequest = null;
 

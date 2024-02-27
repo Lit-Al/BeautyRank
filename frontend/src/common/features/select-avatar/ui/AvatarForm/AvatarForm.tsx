@@ -5,25 +5,26 @@ import { userAtom, accessTokenAtom } from 'store';
 import { Button } from 'common/shared/ui/button';
 import styles from './AvatarForm.module.scss';
 import AvatarCropper from 'common/features/avatar-cropper/ui/AvatarCropper/AvatarCropper';
-import { setAvatar } from 'common/shared/api/users';
+import { setUser } from 'common/shared/api/users';
 import { Loader } from 'common/shared/ui/loader';
 import { base64ToFileFunction } from 'common/shared/helpers';
+import router from 'next/router';
+import { IUser } from 'common/shared/types';
 
 const AvatarForm: React.FC = () => {
-  const setUser = useSetAtom(userAtom);
+  const setStoreUser = useSetAtom(userAtom);
   const { handleSubmit } = useForm<FormData>();
   const user = useAtomValue(userAtom);
   const avatarFile = user?.image && base64ToFileFunction(user.image);
-
   const accessToken = useAtomValue(accessTokenAtom);
 
-  const uploadAvatar = async (formData: FormData) => {
+  const uploadAvatar = async (formData: IUser) => {
     try {
       if (accessToken) {
         try {
-          const response = await setAvatar(formData);
-          console.log(response);
-          setUser(response.data);
+          const { data } = await setUser(formData);
+          setStoreUser(data);
+          router.replace('/profile-edit');
         } catch (e) {
           console.log(e);
         }
@@ -37,13 +38,9 @@ const AvatarForm: React.FC = () => {
   const mutation = useMutation(uploadAvatar);
 
   const onSubmit = () => {
-    if (user?.image) {
-      console.log(avatarFile);
-
-      const formData = new FormData();
-      formData.append('image', avatarFile!);
-      mutation.mutate(formData);
-    }
+    const formData = new FormData();
+    formData.append('image', avatarFile!);
+    mutation.mutate(formData as unknown as IUser);
   };
 
   return (
@@ -53,7 +50,7 @@ const AvatarForm: React.FC = () => {
       onSubmit={handleSubmit(onSubmit)}
     >
       <AvatarCropper />
-      <Button disabled={!avatarFile}>Войти</Button>
+      <Button disabled={!user?.image}>Войти</Button>
       {mutation.isLoading && <Loader />}
     </form>
   );

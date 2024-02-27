@@ -1,0 +1,120 @@
+@import 'common/shared/styles/variables.scss';
+
+.UserBack {
+  height: 100%;
+  background: linear-gradient(155deg, #ffffea 48.82%, #ff55a0 111.42%);
+}
+
+.profile {
+  &__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  &__button {
+    margin-top: 30px;
+    transition: 0.3s !important;
+    &:disabled {
+      transform: scale(0.7);
+      opacity: 0;
+      cursor: auto;
+    }
+  }
+  &__validation {
+    text-align: center;
+    color: $error;
+    opacity: 0;
+    transition: 0.3s;
+    font-size: 17px;
+    transform: scale(0.9);
+
+    &_error {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
+.avatar {
+  margin-bottom: 32px;
+}
+
+.champs {
+  &__list {
+    width: max-content;
+    margin-top: 20px;
+    max-height: 230px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 26px;
+
+    li {
+      padding: 5px;
+    }
+
+    &::-webkit-scrollbar {
+      display: block;
+      width: 12px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 3px;
+      background: #ff3e9ba6;
+      box-shadow: 0px 2px 5px 0px rgba(255, 0, 138, 0.5);
+    }
+
+    &::-webkit-scrollbar-track-piece:end {
+      background: #d0d0d08a;
+      margin-bottom: 50px;
+      border: 0.2px solid #00000010;
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-track-piece:start {
+      background: #d0d0d08a;
+      margin-top: 50px;
+      border: 0.2px solid #00000010;
+      border-radius: 3px;
+    }
+  }
+
+  &__btn {
+    border: 0;
+    background-color: transparent;
+    border: 2px solid #fd94bc59;
+    border-radius: 6px;
+    transition: 0.2s;
+    width: 278px;
+    height: 92px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+
+    &_active {
+      border: 2px solid #ff006b;
+    }
+
+    &:hover {
+      border: 2px solid #ff006b;
+      transform: scale(1.03);
+    }
+
+    &:active {
+      transform: scale(0.96);
+    }
+  }
+}

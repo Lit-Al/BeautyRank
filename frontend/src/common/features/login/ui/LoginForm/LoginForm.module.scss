@@ -1,5 +1,6 @@
 @import '../../../../shared/styles/variables.scss';
 
+
 .auth_form {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -16,8 +17,5 @@
 }
 
 .auth_label {
-    font-size: 14px;
-    font-weight: 500;
-    color: $grey;
     position: relative;
 }

@@ -12,4 +12,7 @@ export const ENDPOINTS = {
   MODELS: {
     MODELS: `${BASE_URL}/api/v1/memberNomination/`,
   },
+  EVENTS: {
+    CHAMP: `${BASE_URL}/api/v1/event/`,
+  }
 };

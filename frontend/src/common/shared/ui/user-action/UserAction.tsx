@@ -1,10 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './UserAction.module.scss';
 
-export const UserAction = ({ is_staff }: { is_staff: boolean }) => {
-  return is_staff ? (
-    <p className={styles.user_action}>Выберите модель для оценки работы</p>
-  ) : (
-    <p className={styles.user_action}>Выберите модель с которой работаете</p>
+export const UserAction = ({ role }: { role: string }) => {
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  return (
+    <>
+      {isClient && (
+        <>
+          {role === 'Судья' && (
+            <p className={styles.user_action}>
+              Выберите модель для оценки работы
+            </p>
+          )}
+          {role === 'Мастер' && (
+            <p className={styles.user_action}>
+              Выберите модель с которой работаете
+            </p>
+          )}
+          {role === 'Организатор' && (
+            <p className={styles.user_action}>
+              Вы Организатор, делайте, что пожелаете
+            </p>
+          )}
+        </>
+      )}
+    </>
   );
 };

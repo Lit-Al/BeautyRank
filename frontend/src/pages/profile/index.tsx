@@ -1,47 +1,43 @@
 import styles from './profile.module.scss';
 import { useAtomValue } from 'jotai';
-import { userAtom } from 'store';
-import { useState, useEffect } from 'react';
+import { champAtom, userAtom } from 'store';
 import { useMutation } from 'react-query';
 import { getModels } from 'common/shared/api/models';
 import Avatar from 'common/shared/ui/avatar/Avatar';
-import { Loader } from 'common/shared/ui/loader';
 import { UserName } from 'common/shared/ui/user-name';
 import { UserRole } from 'common/shared/ui/user-role';
 import { UserAction } from 'common/shared/ui/user-action';
 import { Layout } from 'common/shared/ui/layout';
+import Link from 'next/link';
+import { useEffect } from 'react';
 
 function ProfilePage() {
   const user = useAtomValue(userAtom);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-    getModelsList.mutate(); // Вызываем функцию getModelsList при заходе на страницу
-  }, []);
+  const champ = useAtomValue(champAtom);
 
   const getModelsList = useMutation(async () => {
     try {
-      const response = await getModels();
-      console.log(response);
+      const { data } = await getModels();
+      console.log(data);
     } catch (e) {
       console.log(e);
     }
   });
 
+  useEffect(() => {
+    getModelsList.mutateAsync();
+  }, []);
   return (
     <div className={styles.UserBack}>
       <Layout pageTitle="Профиль">
-        {user && isClient ? (
-          <>
+        <>
+          <Link href="/profile-edit">
             <Avatar />
-            <UserName />
-            <UserRole />
-            <UserAction is_staff={user?.is_staff} />
-          </>
-        ) : (
-          <Loader />
-        )}
+          </Link>
+          <UserName />
+          <UserRole />
+          <UserAction role={champ?.role!} />
+        </>
       </Layout>
     </div>
   );

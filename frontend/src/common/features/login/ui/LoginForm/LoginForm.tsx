@@ -13,8 +13,9 @@ import { getMe } from 'common/shared/api/users';
 import { loginUser } from '../../model';
 import { Loader } from 'common/shared/ui/loader';
 import { LoginFormValues } from '../../model';
+import router from 'next/router';
 
-const LoginForm: React.FC = () => {
+export const LoginForm: React.FC = () => {
   const [showCodePage, setShowCodePage] = useState(false);
   const {
     control,
@@ -27,35 +28,29 @@ const LoginForm: React.FC = () => {
   const setAccess = useSetAtom(accessTokenAtom);
   const setRefresh = useSetAtom(refreshTokenAtom);
 
-  useEffect(() => {
-    // При переходе на новую форму сбрасываем значения полей
-    setValue('code', '');
-  }, [showCodePage]);
-
   const loginUserMutation = useMutation(async (phone: string) => {
     return await loginUser(phone);
   });
 
-  const verifyCodeMutation = useMutation(async (data: LoginFormValues) => {
+  const verifyCodeMutation = useMutation(async (loginData: LoginFormValues) => {
     try {
-      const response = await login({
-        password: data.code,
-        username: data.phone,
+      const { data } = await login({
+        password: loginData.code,
+        username: loginData.phone,
       });
-      console.log(response.data);
-
-      setAccess(response.data.access);
-      setRefresh(response.data.refresh);
-
+      setAccess(data.access);
+      setRefresh(data.refresh);
       try {
-        const response = await getMe();
-        console.log(response);
-        setUser(response.data);
+        const { data } = await getMe();
+        setUser(data);
+        if (data.image) {
+          router.replace('/profile-edit');
+        }
       } catch (e) {
         console.log(e);
       }
 
-      return response;
+      return data;
     } catch (error) {
       // Обработка ошибки
       console.log(error);
@@ -173,5 +168,3 @@ const LoginForm: React.FC = () => {
     </>
   );
 };
-
-export default LoginForm;
