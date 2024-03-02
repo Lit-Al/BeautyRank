@@ -8,7 +8,9 @@ class TelegramIntegration:
 
     def send_video_to_telegram_channel(self, instance):
         message = self.telegram.send_video(
-            settings.TELEGRAM_CHAT_ID, instance.url_video
+            settings.TELEGRAM_CHAT_ID,
+            instance.url_video,
+            caption=f" Работа с номером - {instance.id}",
         )
         instance.url_message_video = f"https://t.me/BeautyRankVideo/{message.id}"
         instance.save()

@@ -75,7 +75,7 @@ class EventSerializer(serializers.ModelSerializer):
             return "Судья"
 
         if Member.objects.filter(user=user).exists():
-            return "Мастер(участник)"
+            return "Мастер"
 
         if Event.objects.filter(pk=event.pk, owners=user).exists():
             return "Организатор"
