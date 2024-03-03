@@ -33,6 +33,7 @@ class MemberNominationSerializer(serializers.ModelSerializer):
     )
     member = serializers.CharField(source="member.user", read_only=True)
     result_sum = serializers.IntegerField(source="result_all", read_only=True)
+    preview = serializers.SerializerMethodField()
     is_done = serializers.BooleanField(read_only=True)
 
     class Meta:
@@ -45,10 +46,18 @@ class MemberNominationSerializer(serializers.ModelSerializer):
             "member",
             "result_sum",
             "is_done",
+            "preview",
             "url_video",
             "url_message_video",
         )
         read_only_fields = ["id"]
+
+    def get_preview(self, obj):
+        preview = obj.photos.first()
+        if preview:
+            return preview.photo.url
+        else:
+            return None
 
 
 class CategoryNominationSerializer(serializers.ModelSerializer):
