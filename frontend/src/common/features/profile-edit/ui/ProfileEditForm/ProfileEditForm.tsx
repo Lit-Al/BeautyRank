@@ -4,42 +4,22 @@ import { Input } from 'common/shared/ui/input';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import styles from './ProfileEditForm.module.scss';
 import Avatar from 'common/shared/ui/avatar/Avatar';
-import { literalValidation } from 'common/shared/helpers/literalValidation';
+import { literalValidation } from 'common/shared/helpers';
 import { setUser } from 'common/shared/api/users';
-import { accessTokenAtom, champAtom, userAtom } from 'store';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { IChamp, IUser } from 'common/shared/types';
+import { champAtom, userAtom } from 'store';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { IUser } from 'common/shared/types';
 import { useMutation } from 'react-query';
 import { base64ToFileFunction, isBase64Image } from 'common/shared/helpers';
 import router from 'next/router';
-import { getChamps } from 'common/shared/api/champs';
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import { ChampsList } from 'common/widgets/champs-list';
 
 export const ProfileEditForm: React.FC = () => {
   const { control, handleSubmit } = useForm();
   const user = useAtomValue(userAtom);
   const setStoreUser = useSetAtom(userAtom);
   const avatarFile = base64ToFileFunction(user?.image!);
-  const accessToken = useAtomValue(accessTokenAtom);
-  const [champs, setChamps] = useState<IChamp[]>();
-  const [selectedChamp, setSelectedChamp] = useAtom(champAtom);
-
-  const getChampsMutation = useMutation(async () => {
-    try {
-      const { data } = await getChamps();
-      setChamps(data);
-      return data;
-    } catch (error) {
-      // Обработка ошибки
-      console.log(error);
-      throw error;
-    }
-  });
-
-  useEffect(() => {
-    getChampsMutation.mutateAsync();
-  }, []);
+  const selectedChamp = useAtomValue(champAtom);
 
   const name = useWatch({
     control,
@@ -66,14 +46,12 @@ export const ProfileEditForm: React.FC = () => {
 
   const uploadUser = async (formData: IUser) => {
     try {
-      if (accessToken) {
         try {
           const { data } = await setUser(formData);
           setStoreUser(data);
         } catch (e) {
           console.log(e);
-        }
-      }
+        }  
     } catch (error: any) {
       // Обработка ошибок
       console.error(error);
@@ -101,7 +79,7 @@ export const ProfileEditForm: React.FC = () => {
         onSubmit={handleSubmit(onSubmitProfile)}
       >
         <AvatarCropper>
-          <Avatar className={styles.avatar} />
+          <Avatar edit />
         </AvatarCropper>
 
         <div className={styles.profile__inputs}>
@@ -158,28 +136,7 @@ export const ProfileEditForm: React.FC = () => {
           />
         </div>
         <h3>Доступные Чемпионаты:</h3>
-        <ul className={styles.champs__list}>
-          {champs?.map((champ) => {
-            return (
-              <li className={styles.champs__item}>
-                <button
-                  type="button"
-                  className={`${styles.champs__btn} ${
-                    selectedChamp?.id === champ.id && styles.champs__btn_active
-                  }`}
-                  onClick={() => setSelectedChamp(champ)}
-                >
-                  <Image
-                    width={280}
-                    height={90}
-                    src={''}
-                    alt={champ.name}
-                  />
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+        <ChampsList />
         <Button className={styles.profile__button} disabled={isButtonDisabled}>
           Подтвердить
         </Button>

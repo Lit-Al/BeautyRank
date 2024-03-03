@@ -15,7 +15,7 @@ interface InputProps {
   ref?: Ref<HTMLInputElement>;
 }
 
-const PhoneInput: React.ForwardRefRenderFunction<
+export const PhoneInput: React.ForwardRefRenderFunction<
   HTMLInputElement,
   InputProps
 > = ({ value = '', onChange, error, icon = '' }, ref) => {

@@ -11,8 +11,9 @@ export const ENDPOINTS = {
   },
   MODELS: {
     MODELS: `${BASE_URL}/api/v1/memberNomination/`,
+    PHOTOS: `${BASE_URL}/api/v1/memberNominationPhoto/`,
   },
   EVENTS: {
     CHAMP: `${BASE_URL}/api/v1/event/`,
-  }
+  },
 };

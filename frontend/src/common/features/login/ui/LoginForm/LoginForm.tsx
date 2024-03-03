@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styles from './LoginForm.module.scss';
 import { useForm, Controller } from 'react-hook-form';
 import { useMutation } from 'react-query';
-import Input from 'common/shared/ui/input/Input';
+import { Input } from 'common/shared/ui/input';
 import PhoneInput from 'common/shared/ui/phone-mask-input/PhoneInput';
 import { Button } from 'common/shared/ui/button';
 import { useSetAtom } from 'jotai';

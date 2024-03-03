@@ -66,4 +66,3 @@ export const Input: React.ForwardRefRenderFunction<
   );
 };
 
-export default React.forwardRef(Input);

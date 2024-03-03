@@ -1,8 +1,30 @@
 .user_avatar {
   width: 150px;
   height: 150px;
-  margin-top: 20px;
   border-radius: 50%;
   object-fit: cover;
   background-color: #ff559f;
+  position: relative;
+
+  &_edit {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 100%;
+    display: flex;
+
+    &:hover {
+      transform: scale(1.03);
+      box-shadow: 0px 10px 20px #e0adc6c4;
+    }
+    &::after {
+      content: '';
+      background-image: url(../../../../../public/images/pen.svg);
+      width: 18px;
+      height: 18px;
+      position: absolute;
+      bottom: 2px;
+      right: 13px;
+    }
+  }
 }

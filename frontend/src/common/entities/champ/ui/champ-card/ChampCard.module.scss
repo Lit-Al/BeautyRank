@@ -1,0 +1,28 @@
+.champs {
+  &__btn {
+    border: 0;
+    background-color: transparent;
+    border: 2px solid #fd94bc59;
+    border-radius: 6px;
+    transition: 0.2s;
+    width: 278px;
+    height: 92px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+
+    &_active {
+      border: 2px solid #ff006b;
+    }
+
+    &:hover {
+      border: 2px solid #ff006b;
+      transform: scale(1.03);
+    }
+
+    &:active {
+      transform: scale(0.96);
+    }
+  }
+}

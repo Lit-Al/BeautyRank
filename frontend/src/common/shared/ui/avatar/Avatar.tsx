@@ -6,11 +6,10 @@ import { useState, useEffect } from 'react';
 import { userAtom } from 'store';
 
 interface IAvatarProps {
-  className?: string;
-  alt?: string;
+  edit?: boolean;
 }
 
-const Avatar = ({ className }: IAvatarProps) => {
+const Avatar = ({ edit = false }: IAvatarProps) => {
   const user = useAtomValue(userAtom);
   const isBase64 = isBase64Image(user?.image);
   const avatarUrl = isBase64 ? user?.image : `${BASE_URL}${user?.image}`;
@@ -22,13 +21,15 @@ const Avatar = ({ className }: IAvatarProps) => {
   return (
     <>
       {isClient && (
-        <img
-          src={avatarUrl ? avatarUrl : ''}
-          className={`${styles.user_avatar} ${className}`}
-          alt={`${user?.first_name} ${user?.last_name}`}
-          width={112}
-          height={112}
-        />
+        <div className={`${edit ? styles.user_avatar_edit : ''}`}>
+          <img
+            src={avatarUrl ? avatarUrl : ''}
+            className={`${styles.user_avatar} `}
+            alt={`${user?.first_name} ${user?.last_name}`}
+            width={112}
+            height={112}
+          />
+        </div>
       )}
     </>
   );

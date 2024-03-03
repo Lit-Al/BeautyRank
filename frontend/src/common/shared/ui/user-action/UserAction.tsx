@@ -16,7 +16,7 @@ export const UserAction = ({ role }: { role: string }) => {
               Выберите модель для оценки работы
             </p>
           )}
-          {role === 'Мастер' && (
+          {role === 'Мастер(участник)' && (
             <p className={styles.user_action}>
               Выберите модель с которой работаете
             </p>

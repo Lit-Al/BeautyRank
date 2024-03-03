@@ -1,0 +1,96 @@
+@import '../../common/shared/styles/variables.scss';
+
+.UserBack {
+  height: 100%;
+  background: linear-gradient(155deg, #ffffea 48.82%, #ff55a0 111.42%);
+}
+
+.upload_photo {
+  &__form {
+    display: flex;
+    gap: 18px;
+  }
+
+  &__box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+
+    &:first-of-type {
+      border-right: 1px solid #959595;
+      padding-right: 18px;
+    }
+  }
+
+  &__list {
+    display: flex;
+    gap: 18px;
+    max-width: 210px;
+    overflow: auto;
+    padding: 20px 5px;
+    height: 100%;
+
+    &::-webkit-scrollbar {
+      display: block;
+      width: 12px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 3px;
+      background: #ff3e9ba6;
+      box-shadow: 0px 2px 5px 0px rgba(255, 0, 138, 0.5);
+    }
+
+    &::-webkit-scrollbar-track-piece:end {
+      background: #d0d0d08a;
+      margin-bottom: 50px;
+      border: 0.2px solid #00000010;
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-track-piece:start {
+      background: #d0d0d08a;
+      margin-top: 50px;
+      border: 0.2px solid #00000010;
+      border-radius: 3px;
+    }
+
+    input {
+      display: none;
+    }
+  }
+
+  &__label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 100px;
+    cursor: pointer;
+  }
+
+  &__btn {
+    border-radius: 5px !important;
+    width: 140px !important;
+    height: 35px !important;
+    margin-top: 70px;
+  }
+
+  &__title {
+    margin: 30px;
+    color: $black;
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  &__nomination {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 40px;
+  }
+
+  &__image {
+    border-radius: 100%;
+  }
+}

@@ -1,0 +1,55 @@
+@import '../../../../../common/shared/styles/variables.scss';
+
+.models {
+  &__item {
+    border-top: 1px solid #959595;
+    padding: 4.5px 2px;
+  }
+  &__content {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    width: 100%;
+    padding: 3px 18px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    transition: all 0.1s;
+    outline: 2px solid transparent;
+
+    &:hover {
+      transition: all 0.1s;
+      background: rgba(255, 255, 255, 0.604);
+      outline-color: lighten($pink, 10%);
+      outline-offset: -2px;
+    }
+  }
+  &__number {
+    color: #ff3e9b;
+    font-size: 24px;
+    font-weight: 500;
+  }
+  &__service {
+    width: 166px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+  &__nomination {
+    color: #959595;
+    font-size: 16px;
+    font-weight: 500;
+    width: 200px;
+    text-align: center;
+  }
+  &__points {
+    color: #494949;
+    font-size: 16px;
+    font-weight: 800;
+    width: 167px;
+    text-align: center;
+  }
+}
