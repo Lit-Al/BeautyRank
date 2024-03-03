@@ -8,8 +8,6 @@ import { ModelCardProps } from 'common/entities/model/lib';
 import { BASE_URL } from 'common/shared/api/endpoints';
 
 export const ModelItem: React.FC<ModelCardProps> = ({ model }) => {
-  console.log(model.preview);
-
   return (
     <li className={styles.models__item} key={model.id}>
       <Link
@@ -29,8 +27,9 @@ export const ModelItem: React.FC<ModelCardProps> = ({ model }) => {
           width={55}
           height={55}
           className={styles.models__avatar}
-          src={`${BASE_URL}${model.preview}` || unknownAvatar}
-          alt={`${model.nomination} ${model.category}`}
+          // src={`${BASE_URL}${model.preview}` || unknownAvatar}
+          src={unknownAvatar}
+          alt={`${(model.nomination, model.category)}`}
         />
       </Link>
     </li>

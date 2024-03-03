@@ -19,9 +19,7 @@ class MemberNominationViewSet(
     UpdateModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = MemberNomination.objects.all().annotate(
-        result_all=Sum("results__score", default=0)
-    )
+    queryset = MemberNomination.objects.all()
     serializer_class = MemberNominationSerializer
     filterset_fields = ["category_nomination__event_category__event"]
     ordering_fields = ["result_all"]

@@ -38,7 +38,7 @@ export const ProfileEditForm: React.FC = () => {
   };
 
   const isButtonDisabled =
-    (!selectedChamp && selectedChamp !== null) ||
+    (!selectedChamp && selectedChamp === null) ||
     !name ||
     !lastname ||
     validationUserFlag.lastname ||
@@ -46,12 +46,12 @@ export const ProfileEditForm: React.FC = () => {
 
   const uploadUser = async (formData: IUser) => {
     try {
-        try {
-          const { data } = await setUser(formData);
-          setStoreUser(data);
-        } catch (e) {
-          console.log(e);
-        }  
+      try {
+        const { data } = await setUser(formData);
+        setStoreUser(data);
+      } catch (e) {
+        console.log(e);
+      }
     } catch (error: any) {
       // Обработка ошибок
       console.error(error);

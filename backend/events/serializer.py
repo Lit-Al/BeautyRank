@@ -52,6 +52,17 @@ class MemberNominationSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ["id"]
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        unique_results = instance.results.order_by(
+            'event_staff'
+        ).distinct('event_staff')
+
+        representation['result_sum'] = sum(result.score for result in unique_results)
+
+        return representation
+
     def get_preview(self, obj):
         preview = obj.photos.first()
         if preview:
