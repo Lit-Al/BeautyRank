@@ -2,13 +2,14 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import (EventViewSet, MemberNominationPhotoViewSet,
-                    MemberNominationViewSet, ResultViewSet)
+                    MemberNominationViewSet, ResultViewSet, NominationAttributeViewSet)
 
 router = DefaultRouter()
 router.register(prefix="memberNomination", viewset=MemberNominationViewSet)
 router.register(prefix="memberNominationPhoto", viewset=MemberNominationPhotoViewSet)
 router.register(prefix="result", viewset=ResultViewSet)
 router.register(prefix="event", viewset=EventViewSet)
+router.register(prefix="nominationAttribute", viewset=NominationAttributeViewSet)
 urlpatterns = [
     path("", include(router.urls)),
 ]

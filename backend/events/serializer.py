@@ -63,7 +63,7 @@ class MemberNominationSerializer(serializers.ModelSerializer):
 
         return representation
 
-    def get_preview(self, obj):
+    def get_preview(self, obj) -> str:
         preview = obj.photos.first()
         if preview:
             return preview.photo.url
@@ -88,7 +88,7 @@ class EventSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "win_nominations", "role")
         read_only_fields = ["id", "name", "win_nominations", "role"]
 
-    def get_role(self, obj):
+    def get_role(self, obj) -> str:
         user = self.context.get("request").user
         event = obj
         if CategoryNomination.objects.filter(event_staff=user).exists():
@@ -116,3 +116,10 @@ class MemberNominationSerializerForWinners(serializers.ModelSerializer):
 class WinnersSerializer(serializers.Serializer):
     name = serializers.CharField()
     members = MemberNominationSerializerForWinners(many=True)
+
+
+class NominationAttributesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NominationAttribute
+        fields = ("name", "max_score")
+        read_only_fields = ["id", "name", "max_score"]
