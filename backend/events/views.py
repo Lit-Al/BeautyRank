@@ -126,3 +126,9 @@ class EventViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
         win_categories = event.get_winners_categories()
         serializer = WinnersSerializer(win_categories, many=True)
         return Response(serializer.data)
+
+
+class NominationAttributeViewSet(ListModelMixin, viewsets.GenericViewSet):
+    queryset = NominationAttribute.objects.all()
+    serializer_class = NominationAttributesSerializer
+    filterset_fields = ["nomination__nom__categ__id"]
