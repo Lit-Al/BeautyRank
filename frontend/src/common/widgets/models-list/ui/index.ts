@@ -1,1 +1,1 @@
-export * from './models-list'
+export * from './modelsList'

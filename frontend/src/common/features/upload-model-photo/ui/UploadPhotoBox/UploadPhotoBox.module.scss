@@ -1,0 +1,13 @@
+.upload_photo {
+  &__box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+
+    &:first-of-type {
+      border-right: 1px solid #959595;
+      padding-right: 18px;
+    }
+  }
+}

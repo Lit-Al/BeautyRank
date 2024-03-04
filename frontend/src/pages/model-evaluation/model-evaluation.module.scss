@@ -1,0 +1,115 @@
+@import '../../common/shared/styles/variables.scss';
+
+.UserBack {
+  height: 100%;
+  background: linear-gradient(155deg, #ffffea 48.82%, #ff55a0 111.42%);
+}
+
+.evaluation {
+  &__title {
+    font-weight: 700;
+    font-size: 24px;
+    color: $black;
+    margin-bottom: 20px;
+    margin-top: 12px;
+  }
+
+  &__box {
+    display: grid; // Изменяем на grid
+    grid-template-columns: repeat(
+      2,
+      minmax(0, 1fr)
+    ); // Создаем две колонки с равной шириной
+    grid-gap: 10px; // Заменяем gap на grid-gap
+    max-width: 700px; // Максимальная ширина для двух колонок (350px на каждую)
+    width: 100%; // Ширина будет резиновой
+
+    div {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+
+      &:first-of-type {
+        border-right: 1px solid #959595;
+        padding-right: 10px;
+
+        ul {
+          flex-direction: row-reverse;
+        }
+
+        p {
+          text-align: right;
+        }
+      }
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    overflow: auto;
+    width: 100%;
+    max-width: 350px; // Максимальная ширина
+    height: 95%;
+    padding-bottom: 10px;
+
+    &::-webkit-scrollbar {
+      display: block;
+      width: 12px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 3px;
+      background: #ff3e9ba6;
+      box-shadow: 0px 2px 5px 0px rgba(255, 0, 138, 0.5);
+    }
+
+    &::-webkit-scrollbar-track-piece:end {
+      background: #d0d0d08a;
+      margin-bottom: 50px;
+      border: 0.2px solid #00000010;
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-track-piece:start {
+      background: #d0d0d08a;
+      margin-top: 50px;
+      border: 0.2px solid #00000010;
+      border-radius: 3px;
+    }
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 120px;
+    gap: 5px;
+  }
+
+  &__img {
+    border-radius: 100%;
+    object-fit: cover;
+  }
+
+  &__separation {
+    text-align: left;
+    padding: 0 20px;
+    font-weight: 800;
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+
+  &__name {
+    font-size: 14px;
+  }
+
+  &__category {
+    color: $black;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 30px 0 20px;
+  }
+}

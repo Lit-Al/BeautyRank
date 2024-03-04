@@ -13,13 +13,20 @@ import { useMutation } from 'react-query';
 import { base64ToFileFunction, isBase64Image } from 'common/shared/helpers';
 import router from 'next/router';
 import { ChampsList } from 'common/widgets/champs-list';
+import { Loader } from 'common/shared/ui/loader';
+import { useEffect, useState } from 'react';
 
 export const ProfileEditForm: React.FC = () => {
   const { control, handleSubmit } = useForm();
   const user = useAtomValue(userAtom);
+  const [isClient, setIsClient] = useState(false);
   const setStoreUser = useSetAtom(userAtom);
   const avatarFile = base64ToFileFunction(user?.image!);
   const selectedChamp = useAtomValue(champAtom);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const name = useWatch({
     control,
@@ -73,74 +80,82 @@ export const ProfileEditForm: React.FC = () => {
 
   return (
     <>
-      <form
-        encType="multipart/form-data"
-        className={styles.profile__form}
-        onSubmit={handleSubmit(onSubmitProfile)}
-      >
-        <AvatarCropper>
-          <Avatar edit />
-        </AvatarCropper>
+      {user && isClient ? (
+        <form
+          encType="multipart/form-data"
+          className={styles.profile__form}
+          onSubmit={handleSubmit(onSubmitProfile)}
+        >
+          <AvatarCropper>
+            <Avatar edit />
+          </AvatarCropper>
 
-        <div className={styles.profile__inputs}>
-          <Controller
-            control={control}
-            defaultValue={user?.first_name}
-            name="first_name"
-            render={({ field }) => (
-              <>
-                <label
-                  className={`${styles.profile__validation} ${
-                    validationUserFlag.name && styles.profile__validation_error
-                  }`}
-                >
-                  Недопустимые символы
-                </label>
-                <Input
-                  maxLength={255}
-                  minLength={2}
-                  autofocus
-                  icon="profile"
-                  type="text"
-                  placeholder="Имя"
-                  error={validationUserFlag.name}
-                  {...field}
-                />
-              </>
-            )}
-          />
-          <Controller
-            control={control}
-            defaultValue={user?.last_name}
-            name="last_name"
-            render={({ field }) => (
-              <>
-                <Input
-                  maxLength={255}
-                  minLength={2}
-                  icon="profile"
-                  placeholder="Фамилия"
-                  error={validationUserFlag.lastname}
-                  {...field}
-                />
-                <label
-                  className={`${styles.profile__validation} ${
-                    validationUserFlag.lastname &&
-                    styles.profile__validation_error
-                  }`}
-                >
-                  Недопустимые символы
-                </label>
-              </>
-            )}
-          />
-        </div>
-        <h3>Доступные Чемпионаты:</h3>
-        <ChampsList />
-        <Button className={styles.profile__button} disabled={isButtonDisabled}>
-          Подтвердить
-        </Button>
-      </form>
+          <div className={styles.profile__inputs}>
+            <Controller
+              control={control}
+              defaultValue={user?.first_name}
+              name="first_name"
+              render={({ field }) => (
+                <>
+                  <label
+                    className={`${styles.profile__validation} ${
+                      validationUserFlag.name &&
+                      styles.profile__validation_error
+                    }`}
+                  >
+                    Недопустимые символы
+                  </label>
+                  <Input
+                    maxLength={255}
+                    minLength={2}
+                    autofocus
+                    icon="profile"
+                    type="text"
+                    placeholder="Имя"
+                    error={validationUserFlag.name}
+                    {...field}
+                  />
+                </>
+              )}
+            />
+            <Controller
+              control={control}
+              defaultValue={user?.last_name}
+              name="last_name"
+              render={({ field }) => (
+                <>
+                  <Input
+                    maxLength={255}
+                    minLength={2}
+                    icon="profile"
+                    placeholder="Фамилия"
+                    error={validationUserFlag.lastname}
+                    {...field}
+                  />
+                  <label
+                    className={`${styles.profile__validation} ${
+                      validationUserFlag.lastname &&
+                      styles.profile__validation_error
+                    }`}
+                  >
+                    Недопустимые символы
+                  </label>
+                </>
+              )}
+            />
+          </div>
+          <h3>Доступные Чемпионаты:</h3>
+          <ChampsList />
+          <Button
+            className={styles.profile__button}
+            disabled={isButtonDisabled}
+          >
+            Подтвердить
+          </Button>
+        </form>
+      ) : (
+        <Loader />
+      )}
     </>
   );
 };
