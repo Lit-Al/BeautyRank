@@ -2,7 +2,7 @@
 
 .models {
   &__item {
-    border-top: 1px solid #959595;
+    border-top: 1px solid #D0D0D0;
     padding: 4.5px 2px;
   }
   &__content {
@@ -24,6 +24,21 @@
       background: rgba(255, 255, 255, 0.604);
       outline-color: lighten($pink, 10%);
       outline-offset: -2px;
+    }
+
+    &_other {
+      background: rgba(219, 173, 255, 0.74);
+
+      &:hover {
+        transition: all 0.1s;
+        background: rgba(219, 173, 255, 0.466);
+        outline-color: #b24eff;
+        outline-offset: -2px;
+      }
+    }
+
+    &_done {
+      background: rgba(189, 255, 173, 0.74);
     }
   }
   &__number {
@@ -51,5 +66,9 @@
     font-weight: 800;
     width: 167px;
     text-align: center;
+  }
+  &__avatar {
+    border-radius: 100%;
+    object-fit: cover;
   }
 }
