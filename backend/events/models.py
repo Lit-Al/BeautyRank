@@ -84,7 +84,7 @@ class Event(models.Model):
                 category_nomination=category_nomination
             )
             members = set(member_nominations.values_list("member", flat=True))
-            top_three = []
+            top = []
             members_in_current_event = Member.objects.filter(event=self.id)
 
             for member in members:
@@ -94,17 +94,15 @@ class Event(models.Model):
                         member_nomination__category_nomination=category_nomination,
                     ).values_list("score", flat=True)
                 )
-                top_three.append(
+                top.append(
                     {
                         "member": members_in_current_event.get(pk=member),
                         "result_all": result_all,
                     }
                 )
-            top_three = sorted(top_three, reverse=True, key=lambda x: x["result_all"])[
-                :3
-            ]
+            top = sorted(top, reverse=True, key=lambda x: x["result_all"])
             win_nominations.append(
-                {"name": str(category_nomination.nomination), "members": top_three}
+                {"name": str(category_nomination.nomination), "members": top}
             )
         return win_nominations
 
@@ -118,7 +116,7 @@ class Event(models.Model):
                 category_nomination__event_category__category=category
             )
             members = set(member_nominations.values_list("member", flat=True))
-            top_three = []
+            top = []
             members_in_current_event = Member.objects.filter(event=self.id)
             for member in members:
                 result_all = sum(
@@ -127,16 +125,14 @@ class Event(models.Model):
                         member_nomination__category_nomination__event_category__category=category,
                     ).values_list("score", flat=True)
                 )
-                top_three.append(
+                top.append(
                     {
                         "member": members_in_current_event.get(pk=member),
                         "result_all": result_all,
                     }
                 )
-            top_three = sorted(top_three, reverse=True, key=lambda x: x["result_all"])[
-                :3
-            ]
-            win_categories.append({"name": str(category), "members": top_three})
+            top = sorted(top, reverse=True, key=lambda x: x["result_all"])
+            win_categories.append({"name": str(category), "members": top})
         return win_categories
 
     def __str__(self):
