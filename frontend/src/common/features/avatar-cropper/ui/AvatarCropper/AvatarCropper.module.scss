@@ -56,11 +56,11 @@
 .auth_label {
   position: relative;
   width: 100%;
+  max-width: 420px;
   text-align: center;
   display: flex;
   flex-direction: column;
   gap: 23px;
-
 }
 
 .modal {

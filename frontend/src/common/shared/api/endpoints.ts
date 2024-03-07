@@ -9,11 +9,15 @@ export const ENDPOINTS = {
   USERS: {
     ME: `${BASE_URL}/api/v1/users/me/`,
   },
-  MODELS: {
-    MODELS: `${BASE_URL}/api/v1/memberNomination/`,
+  MEMBERS: {
+    MEMBERS: `${BASE_URL}/api/v1/memberNomination/`,
     PHOTOS: `${BASE_URL}/api/v1/memberNominationPhoto/`,
   },
   EVENTS: {
     CHAMP: `${BASE_URL}/api/v1/event/`,
+  },
+  ASSESSMENTS: {
+    ATTRIBUTE: `${BASE_URL}/api/v1/nominationAttribute/`,
+    RESULTS: `${BASE_URL}/api/v1/result/`,
   },
 };

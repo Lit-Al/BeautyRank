@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import logo from '../../../../../public/images/logo.svg';
+import logo from '@public/images/logo.svg';
 import styles from './Logo.module.scss';
 
 export const Logo = () => {

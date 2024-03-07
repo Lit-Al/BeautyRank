@@ -7,9 +7,9 @@ import { UserRole } from 'common/shared/ui/user-role';
 import { UserAction } from 'common/shared/ui/user-action';
 import { Layout } from 'common/shared/ui/layout';
 import Link from 'next/link';
-import { ModelsList } from 'common/widgets/models-list';
 import { Loader } from 'common/shared/ui/loader';
 import { useEffect, useState } from 'react';
+import { MembersList } from 'common/widgets/members-list/';
 
 function ProfilePage() {
   const champ = useAtomValue(champAtom);
@@ -31,7 +31,7 @@ function ProfilePage() {
             <UserName />
             <UserRole />
             <UserAction role={champ?.role!} />
-            <ModelsList />
+            <MembersList />
           </>
         ) : (
           <Loader />

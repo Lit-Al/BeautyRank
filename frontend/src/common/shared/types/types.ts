@@ -8,6 +8,7 @@ export interface IUser {
 export interface ILoginRequest {
   username: string;
   password: string;
+  success?: string;
 }
 
 export interface ISmsRequest {
@@ -18,4 +19,3 @@ export interface ILoginResponse {
   access: string;
   refresh: string;
 }
-

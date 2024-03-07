@@ -1,0 +1,124 @@
+@import '../../../../shared/styles/variables.scss';
+
+.evaluation {
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px 16px;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 100px;
+    gap: 5px;
+  }
+
+  &__img {
+    border-radius: 100%;
+    object-fit: cover;
+  }
+
+  &__name {
+    font-size: 14px;
+  }
+
+  &__total {
+    font-weight: 700;
+    font-size: 16px;
+    color: #494949;
+
+    span {
+      font-size: 20px;
+    }
+  }
+
+  &__modal_btn {
+    border-radius: 5px !important;
+    opacity: 0.8;
+    margin-top: 8px;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__modal {
+    width: fit-content;
+    border-radius: 11px;
+    border: 1px solid #fd76b53d;
+    backdrop-filter: blur(4px);
+    background-color: rgba(245, 245, 245, 0.3);
+    position: absolute;
+    top: 280px;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    padding: 15px 26px 15px;
+
+    .evaluation__modal_btn {
+      padding: 7px;
+      width: 100px;
+      font-size: 14px;
+      margin: 0 auto;
+    }
+  }
+
+  &__modal_box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transform: scale(1);
+    transition: all ease 0.5s;
+
+    &_close {
+      transform: scale(0);
+      opacity: 0;
+      visibility: hidden;
+      transition: scale ease 0.5s opacity ease 1s;
+    }
+  }
+
+  &__close {
+    background-color: transparent;
+    border: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 10px;
+  }
+
+  &__modal_separation {
+    font-weight: 700;
+    font-size: 14px;
+    color: #494949;
+    margin-bottom: 5px;
+  }
+
+  &__comment {
+    margin-bottom: 20px;
+    font-weight: 700;
+    font-size: 16px;
+    color: #494949;
+  }
+}
+
+.blur {
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  background: rgba(243, 243, 243, 0.63);
+  height: 100%;
+  width: 100%;
+}

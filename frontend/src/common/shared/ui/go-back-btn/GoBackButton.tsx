@@ -12,7 +12,7 @@ export const GoBackButton = () => {
   return (
     <>
       {isClient && (
-        <button className={styles.UI_button} onClick={() => router.back()}>
+        <button className={styles.go_back_button} onClick={() => router.back()}>
           Назад
         </button>
       )}

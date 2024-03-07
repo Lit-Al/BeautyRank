@@ -1,18 +1,23 @@
-FROM node:21 as builder
+FROM node as build
 
-WORKDIR /app    
+WORKDIR /frontend
 
-COPY package.json package-lock.json . 
+COPY package.json package-lock.json . /frontend
 
 RUN yarn install
 
+COPY . .
+
 RUN yarn build
 
-FROM node:21-alpine
+FROM node as production
 
-WORKDIR /app
+WORKDIR /frontend
 
-COPY --from=builder /app/dist .
+COPY --from=build /frontend/.next ./.next
+COPY --from=build /frontend/package.json ./package.json
+COPY --from=build /frontend/public ./public
+COPY --from=build /frontend/node_modules ./node_modules
 
 EXPOSE 3000
 

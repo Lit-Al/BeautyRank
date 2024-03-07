@@ -51,6 +51,8 @@
 .input_box {
   position: relative;
   width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
 
   &::before {
     content: '';
@@ -59,7 +61,7 @@
     height: 20px;
     top: 50%;
     transform: translateY(-50%);
-    left: 8%;
+    left: 7%;
   }
 }
 

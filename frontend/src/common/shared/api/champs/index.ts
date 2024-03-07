@@ -1,10 +1,10 @@
 import { axiosInstanse } from '../instanse';
 import { ENDPOINTS } from '../endpoints';
 import { AxiosPromise } from 'axios';
-import { TChamp } from 'common/entities/champ';
+import { IChamp } from 'common/entities/champ';
 
-export const getChamps = (): AxiosPromise<TChamp[]> =>
+export const getChamps = (): AxiosPromise<IChamp[]> =>
   axiosInstanse.get(ENDPOINTS.EVENTS.CHAMP);
 
-export const getChamp = (idChamp: number): AxiosPromise<TChamp> =>
+export const getChamp = (idChamp: number): AxiosPromise<IChamp> =>
   axiosInstanse.get(ENDPOINTS.EVENTS.CHAMP + idChamp);

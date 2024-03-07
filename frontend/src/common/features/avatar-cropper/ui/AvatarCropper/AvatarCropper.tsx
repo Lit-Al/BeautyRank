@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import AvatarEditor from 'react-avatar-editor';
 import styles from './AvatarCropper.module.scss';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { userAtom } from 'store';
 import { IUser } from 'common/shared/types';
 import Avatar from 'common/shared/ui/avatar/Avatar';
@@ -125,14 +125,6 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
             <span className={styles.avatar_input_style}>Выбрать фото</span>
           </label>
           {user?.image && <Avatar />}
-
-          {/* {preview && (
-            <img
-              src={preview}
-              className={styles.avatar_preview}
-              alt="Preview"
-            />
-          )} */}
         </>
       )}
     </>

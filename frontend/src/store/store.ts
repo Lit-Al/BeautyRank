@@ -1,5 +1,6 @@
 import { atomWithStorage } from 'jotai/utils';
-import { IChamp, IUser } from 'common/shared/types';
+import { IUser } from 'common/shared/types';
+import { IChamp } from 'common/entities/champ';
 
 let initialUser: IUser | null = null;
 let initialChamp: IChamp | null = null;
@@ -17,9 +18,15 @@ if (typeof window !== 'undefined') {
   initialRefresh = storedRefresh ? storedRefresh : null;
 }
 
-export const accessTokenAtom = atomWithStorage<string | null>('accessToken', initialAccess)
+export const accessTokenAtom = atomWithStorage<string | null>(
+  'accessToken',
+  initialAccess
+);
 
-export const refreshTokenAtom = atomWithStorage<string | null>('refreshToken', initialRefresh)
+export const refreshTokenAtom = atomWithStorage<string | null>(
+  'refreshToken',
+  initialRefresh
+);
 
 export const userAtom = atomWithStorage<IUser | null>('user', initialUser);
 

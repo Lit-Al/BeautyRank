@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './ChampCard.module.scss';
 import Image from 'next/image';
-import logo from '@/public/images/logo.svg';
+import logo from '@public/images/logo.svg';
 import { ChampCardProps } from '../../lib';
 import { useAtom } from 'jotai';
 import { champAtom } from 'store';
