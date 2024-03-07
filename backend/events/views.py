@@ -102,7 +102,7 @@ class MemberNominationPhotoViewSet(
         return queryset
 
 
-class ResultViewSet(RetrieveModelMixin, CreateModelMixin, viewsets.GenericViewSet):
+class ResultViewSet(ListModelMixin, CreateModelMixin, viewsets.GenericViewSet):
     queryset = Result.objects.all()
     serializer_class = ResultSerializer
     filterset_fields = ["member_nomination"]
