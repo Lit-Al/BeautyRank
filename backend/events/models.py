@@ -2,7 +2,6 @@ from django.db import models
 from django.db.models import Count, Sum, constraints
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
 from integrations.telegram import TelegramIntegration
 
 
@@ -166,7 +165,9 @@ class EventCategory(models.Model):
 
 
 class CategoryNomination(models.Model):
-    event_category = models.ForeignKey("EventCategory", models.PROTECT)
+    event_category = models.ForeignKey(
+        "EventCategory", models.PROTECT, default=None, null=True
+    )
     nomination = models.ForeignKey("Nomination", models.PROTECT, related_name="nom")
     event_staff = models.ManyToManyField(
         "users.User", blank=True, related_name="staffs"

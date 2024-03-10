@@ -55,11 +55,11 @@ class MemberNominationSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
 
-        unique_results = instance.results.order_by(
-            'event_staff'
-        ).distinct('event_staff')
+        unique_results = instance.results.order_by("event_staff").distinct(
+            "event_staff"
+        )
 
-        representation['result_sum'] = sum(result.score for result in unique_results)
+        representation["result_sum"] = sum(result.score for result in unique_results)
 
         return representation
 
@@ -80,7 +80,6 @@ class CategoryNominationSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
-    win_nominations = CategoryNominationSerializer(many=True, read_only=True)
     role = serializers.SerializerMethodField()
 
     class Meta:
