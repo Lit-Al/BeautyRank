@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django_json_widget.widgets import JSONEditorWidget
+
 from users.models import User
 
 from .models import *

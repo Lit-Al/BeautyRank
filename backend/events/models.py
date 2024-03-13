@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Count, Sum, constraints
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
 from integrations.telegram import TelegramIntegration
 
 

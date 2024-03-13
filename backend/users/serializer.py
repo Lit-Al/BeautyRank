@@ -1,12 +1,13 @@
 from rest_framework import serializers
 
+import users.models
 from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("id", "first_name", "last_name", "image")
+        fields = ("id", "first_name", "last_name", "phone_number", "image")
 
 
 class LoginSerializer(serializers.Serializer):
@@ -26,3 +27,7 @@ class LoginSerializer(serializers.Serializer):
                     detail="Номер телефона введен неверно!"
                 )
         raise serializers.ValidationError(detail="Номер телефона введен неверно!")
+
+
+class UserIdOfUserSerializer(serializers.Serializer):
+    user_id = serializers.IntegerField()

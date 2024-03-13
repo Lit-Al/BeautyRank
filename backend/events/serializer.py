@@ -1,12 +1,24 @@
 from rest_framework import serializers
 
+from users.models import User
 from .models import *
 
 
 class ResultSerializer(serializers.ModelSerializer):
+    event_staff_name = serializers.SerializerMethodField()
+
     class Meta:
         model = Result
-        fields = ("member_nomination", "score", "event_staff", "score_retail")
+        fields = (
+            "member_nomination",
+            "score",
+            "event_staff",
+            "event_staff_name",
+            "score_retail",
+        )
+
+    def get_event_staff_name(self, obj) -> str:
+        return str(obj.event_staff) if obj.event_staff else None
 
 
 class MemberNominationPhotoSerializer(serializers.ModelSerializer):
@@ -84,8 +96,8 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ("id", "name", "win_nominations", "role")
-        read_only_fields = ["id", "name", "win_nominations", "role"]
+        fields = ("id", "name", "role")
+        read_only_fields = ["id", "name", "role"]
 
     def get_role(self, obj) -> str:
         user = self.context.get("request").user

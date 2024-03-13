@@ -1,5 +1,4 @@
-from events.models import Result
-from rest_framework.permissions import SAFE_METHODS, BasePermission
+from rest_framework.permissions import BasePermission
 
 
 class IsStaffOrReadOnly(BasePermission):
@@ -7,7 +6,8 @@ class IsStaffOrReadOnly(BasePermission):
         if request.method in ["GET", "HEAD", "OPTIONS"]:
             return True
         category_nomination = obj.member_nomination.category_nomination
-        return category_nomination.event_staff.filter(id=request.user.id).exist()
+        print(category_nomination)
+        return category_nomination.event_staff.filter(id=request.user.id).exists()
 
 
 class IsMemberOrReadOnly(BasePermission):
