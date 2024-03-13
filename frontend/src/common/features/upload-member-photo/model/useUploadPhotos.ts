@@ -26,7 +26,7 @@ export const useUploadPhotos = ({ selectedFiles }: IUseUploadPhotos) => {
     }
   };
 
-  const mutation = useMutation(uploadPhotos);
+  const mutation = useMutation(['memberPhotos'], uploadPhotos);
 
   return { mutation };
 };

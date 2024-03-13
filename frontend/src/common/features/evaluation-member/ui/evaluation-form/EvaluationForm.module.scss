@@ -1,5 +1,4 @@
 @import '../../../../shared/styles/variables.scss';
-
 .evaluation {
   &__title {
     font-weight: 700;
@@ -9,88 +8,12 @@
     margin-top: 12px;
   }
 
-  &__box {
-    display: flex;
-    gap: 10px;
-
-    div {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      &:first-of-type {
-        border-right: 1px solid #959595;
-        padding-right: 10px;
-      }
-    }
-  }
-
-  &__list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 16px 16px;
-  }
-
-  &__item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    max-width: 100px;
-    gap: 5px;
-  }
-
-  &__img {
-    border-radius: 100%;
-    object-fit: cover;
-  }
-
-  &__separation {
-    text-align: left;
-    padding: 0 20px;
-    font-weight: 800;
-    font-size: 15px;
-    margin-bottom: 10px;
-  }
-
-  &__name {
-    font-size: 14px;
-  }
 
   &__category {
     color: $black;
     font-size: 16px;
     font-weight: 500;
-    margin: 30px 0 20px;
-  }
-
-  &__criteria_box {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    min-height: 50px;
-    border-bottom: 1px solid #95959580;
-    padding: 0 10px;
-  }
-
-  &__criteria_list {
-    display: flex;
-    justify-content: end;
-    align-items: center;
-    border-radius: 5px;
-    background: rgba(243, 243, 243, 0.5);
-    border: 0.5px solid rgba(102, 102, 102, 0.4);
-  }
-
-  &__criteria_form {
-    margin-bottom: 20px;
-  }
-
-  &__criteria_name {
-    font-weight: 400;
-    color: $black;
-    max-width: 370px;
+    margin: 20px 0 20px;
   }
 
   &__total {
@@ -110,40 +33,6 @@
 
     &:hover {
       opacity: 1;
-    }
-  }
-
-  &__radio {
-    display: none;
-
-    & + span {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #494949;
-      font-size: 24px;
-      font-weight: 500;
-      width: 40px;
-      height: 30px;
-      cursor: pointer;
-      position: relative;
-
-      &::after {
-        content: '';
-        background-color: rgba(149, 149, 149, 0.16);
-        width: 1px;
-        height: 20px;
-        z-index: 1;
-        position: absolute;
-        right: -1px;
-      }
-    }
-
-    &:checked + span {
-      border-radius: 5px;
-      color: #fff;
-      background-color: #ff3e9b;
-      opacity: 0.699999988079071;
     }
   }
 }

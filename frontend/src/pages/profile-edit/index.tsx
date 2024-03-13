@@ -3,7 +3,6 @@ import { Layout } from 'common/shared/ui/layout';
 import { ProfileEditForm } from 'common/features/profile-edit/ui/ProfileEditForm';
 
 function ProfilePageEdit() {
-
   return (
     <div className={styles.UserBack}>
       <Layout pageTitle="Редактирование Профиля">

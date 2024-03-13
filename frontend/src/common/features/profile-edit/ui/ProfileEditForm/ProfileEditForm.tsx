@@ -14,9 +14,9 @@ import { base64ToFileFunction, isBase64Image } from 'common/shared/helpers';
 import router from 'next/router';
 import { ChampsList } from 'common/widgets/champs-list';
 import { Loader } from 'common/shared/ui/loader';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
-export const ProfileEditForm: React.FC = () => {
+export const ProfileEditForm: FC = () => {
   const { control, handleSubmit } = useForm();
   const user = useAtomValue(userAtom);
   const [isClient, setIsClient] = useState(false);
@@ -65,7 +65,7 @@ export const ProfileEditForm: React.FC = () => {
     }
   };
 
-  const mutation = useMutation(uploadUser);
+  const mutation = useMutation(['user'], uploadUser);
 
   const onSubmitProfile = (data: Partial<IUser>) => {
     const formData = new FormData();
@@ -80,16 +80,15 @@ export const ProfileEditForm: React.FC = () => {
 
   return (
     <>
+      <AvatarCropper>
+        <Avatar edit />
+      </AvatarCropper>
       {user && isClient ? (
         <form
           encType="multipart/form-data"
           className={styles.profile__form}
           onSubmit={handleSubmit(onSubmitProfile)}
         >
-          <AvatarCropper>
-            <Avatar edit />
-          </AvatarCropper>
-
           <div className={styles.profile__inputs}>
             <Controller
               control={control}

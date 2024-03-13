@@ -22,6 +22,7 @@ export interface IMember {
   result_sum: number;
   is_done: boolean;
   preview: string;
+  url_message_video: string;
 }
 
 export interface MemberCardProps {

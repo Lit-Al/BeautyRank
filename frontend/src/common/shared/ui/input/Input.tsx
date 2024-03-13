@@ -1,4 +1,4 @@
-import React, { Ref } from 'react';
+import React, { ChangeEvent, ForwardRefRenderFunction, Ref } from 'react';
 import styles from './Input.module.scss';
 
 interface InputProps {
@@ -12,22 +12,19 @@ interface InputProps {
   minLength?: number;
   ref?: Ref<HTMLInputElement>;
   required?: boolean;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   onInput?: any;
   autofocus?: boolean;
 }
 
-function checkInputLength(event: React.ChangeEvent<HTMLInputElement>) {
+function checkInputLength(event: ChangeEvent<HTMLInputElement>) {
   const input = event.target;
   if (input.value.length > input.maxLength) {
     input.value = input.value.slice(0, input.maxLength);
   }
 }
 
-export const Input: React.ForwardRefRenderFunction<
-  HTMLInputElement,
-  InputProps
-> = ({
+export const Input: ForwardRefRenderFunction<HTMLInputElement, InputProps> = ({
   type = 'text',
   minLength,
   placeholder,
@@ -65,4 +62,3 @@ export const Input: React.ForwardRefRenderFunction<
     </div>
   );
 };
-

@@ -10,8 +10,9 @@ import { Loader } from 'common/shared/ui/loader';
 import { base64ToFileFunction } from 'common/shared/helpers';
 import router from 'next/router';
 import { IUser } from 'common/shared/types';
+import { FC } from 'react';
 
-const AvatarForm: React.FC = () => {
+const AvatarForm: FC = () => {
   const setStoreUser = useSetAtom(userAtom);
   const { handleSubmit } = useForm<FormData>();
   const user = useAtomValue(userAtom);
@@ -35,7 +36,7 @@ const AvatarForm: React.FC = () => {
     }
   };
 
-  const mutation = useMutation(uploadAvatar);
+  const mutation = useMutation(['user'], uploadAvatar);
 
   const onSubmit = () => {
     const formData = new FormData();

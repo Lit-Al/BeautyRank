@@ -8,7 +8,6 @@ import { champAtom } from 'store';
 
 export const ChampCard = ({ champ }: ChampCardProps) => {
   const [selectedChamp, setSelectedChamp] = useAtom(champAtom);
-
   return (
     <li className={styles.champs__item}>
       <button
@@ -18,7 +17,7 @@ export const ChampCard = ({ champ }: ChampCardProps) => {
         }`}
         onClick={() => setSelectedChamp(champ)}
       >
-        <Image width={280} height={90} src={logo} alt={champ.name} />
+        <Image width={280} height={90} src={champ?.image} alt={champ.name} />
       </button>
     </li>
   );

@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styles from './Layout.module.scss';
 import Head from 'next/head';
 
 interface LayoutProps {
   pageTitle: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export const Layout = ({ pageTitle, children }: LayoutProps) => {

@@ -29,11 +29,11 @@
     }
 
     &_other {
-      background: rgba(219, 173, 255, 0.74);
+      background: rgba(219, 173, 255, 0.74) !important;
 
       &:hover {
         transition: all 0.1s;
-        background: rgba(219, 173, 255, 0.466);
+        background: rgba(219, 173, 255, 0.466) !important;
         outline-color: #b24eff;
         outline-offset: -2px;
       }
@@ -49,7 +49,6 @@
     font-weight: 500;
   }
   &__service {
-    width: 166px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -59,14 +58,12 @@
     color: #959595;
     font-size: 16px;
     font-weight: 500;
-    width: 200px;
     text-align: center;
   }
   &__points {
     color: #494949;
     font-size: 16px;
     font-weight: 800;
-    width: 167px;
     text-align: center;
   }
   &__avatar {

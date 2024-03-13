@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import styles from './Button.module.scss';
 
 interface ButtonProps {
   children: string;
   disabled?: boolean;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  className?: string;
+  className?: string
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const Button: FC<ButtonProps> = ({
   children,
   disabled,
   onClick,

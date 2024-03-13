@@ -1,17 +1,15 @@
-import React from 'react';
+import React, { ChangeEvent, FC } from 'react';
 import { IPhoto } from '../../lib/types';
 import Image from 'next/image';
 import styles from './UploadPhotoList.module.scss';
 
 interface IPhotoListProps {
   photos: IPhoto[];
-  onChange: (
-    index: number
-  ) => (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (index: number) => (event: ChangeEvent<HTMLInputElement>) => void;
   getImageSrc: (index: number) => string;
 }
 
-const UploadPhotoList: React.FC<IPhotoListProps> = ({
+const UploadPhotoList: FC<IPhotoListProps> = ({
   photos,
   onChange,
   getImageSrc,

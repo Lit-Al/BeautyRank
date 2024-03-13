@@ -1,0 +1,24 @@
+.member_photos {
+  &__box {
+    display: flex;
+    gap: 10px;
+
+    div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      &:first-of-type {
+        border-right: 1px solid #959595;
+        padding-right: 10px;
+      }
+    }
+  }
+
+  &__separation {
+    text-align: left;
+    padding: 0 20px;
+    font-weight: 800;
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+}

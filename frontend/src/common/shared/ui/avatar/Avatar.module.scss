@@ -6,6 +6,10 @@
   background-color: #ff559f;
   position: relative;
 
+  &_box {
+    max-width: 150px;
+  }
+
   &_edit {
     position: relative;
     cursor: pointer;

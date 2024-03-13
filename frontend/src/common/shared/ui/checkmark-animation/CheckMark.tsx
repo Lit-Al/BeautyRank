@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './CheckMark.module.scss';
 function CheckMark() {
-  const [showCheckMark, setShowCheckMark] = React.useState<boolean>(true);
+  const [showCheckMark, setShowCheckMark] = useState<boolean>(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setTimeout(() => {
       setShowCheckMark(false);
     }, 1000);

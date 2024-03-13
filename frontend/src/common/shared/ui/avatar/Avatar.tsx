@@ -4,6 +4,7 @@ import { isBase64Image } from 'common/shared/helpers';
 import { useAtomValue } from 'jotai';
 import { useState, useEffect } from 'react';
 import { userAtom } from 'store';
+import Image from 'next/image';
 
 interface IAvatarProps {
   edit?: boolean;
@@ -21,13 +22,20 @@ const Avatar = ({ edit = false }: IAvatarProps) => {
   return (
     <>
       {isClient && (
-        <div className={`${edit ? styles.user_avatar_edit : ''}`}>
-          <img
+        <div
+          className={`${edit ? styles.user_avatar_edit : ''} ${
+            styles.user_avatar_box
+          }`}
+        >
+          <Image
             src={avatarUrl ? avatarUrl : ''}
             className={`${styles.user_avatar} `}
             alt={`${user?.first_name} ${user?.last_name}`}
             width={112}
             height={112}
+            quality={100}
+            layout="responsive"
+            priority
           />
         </div>
       )}

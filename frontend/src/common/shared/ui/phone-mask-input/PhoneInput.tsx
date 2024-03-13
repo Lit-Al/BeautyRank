@@ -1,4 +1,9 @@
-import React, { Ref } from 'react';
+import React, {
+  ChangeEvent,
+  ForwardRefRenderFunction,
+  Ref,
+  forwardRef,
+} from 'react';
 import styles from './PhoneInput.module.scss';
 import InputMask, { ReactInputMask } from 'react-input-mask';
 
@@ -11,11 +16,11 @@ interface InputProps {
   icon?: string;
   maxLength?: number;
   required?: boolean;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   ref?: Ref<HTMLInputElement>;
 }
 
-export const PhoneInput: React.ForwardRefRenderFunction<
+export const PhoneInput: ForwardRefRenderFunction<
   HTMLInputElement,
   InputProps
 > = ({ value = '', onChange, error, icon = '' }, ref) => {
@@ -37,4 +42,4 @@ export const PhoneInput: React.ForwardRefRenderFunction<
   );
 };
 
-export default React.forwardRef(PhoneInput);
+export default forwardRef(PhoneInput);

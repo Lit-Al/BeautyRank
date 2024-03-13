@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './MemberCard.module.scss';
@@ -8,8 +8,10 @@ import { MemberCardProps } from 'common/entities/member/lib';
 import { BASE_URL } from 'common/shared/api/endpoints';
 import { useAtomValue } from 'jotai';
 import { champAtom, userAtom } from 'store';
+import { getMemberResults } from 'common/shared/api/assessments';
+import { useQuery } from 'react-query';
 
-export const MemberCard: React.FC<MemberCardProps> = ({ member }) => {
+export const MemberCard: FC<MemberCardProps> = ({ member }) => {
   const user = useAtomValue(userAtom);
   const champ = useAtomValue(champAtom);
   const userIsStaff = champ?.role === 'Судья';
@@ -18,48 +20,88 @@ export const MemberCard: React.FC<MemberCardProps> = ({ member }) => {
     ? `${BASE_URL}${member.preview}`
     : unknownAvatar;
 
+  const { data: resultData } = useQuery(
+    ['memberResult', member.id],
+    () => getMemberResults(member.id),
+    {
+      enabled: !!member.id,
+    }
+  );
+
+  const isMyMark = () => {
+    if (userIsStaff) {
+      return resultData?.data
+        .map((result: any) => result.event_staff)
+        .includes(user?.id);
+    }
+    return true;
+  };
+
   const memberLink = () => {
     if (memberCurrent && !member.preview) {
       return `/upload-photo/${member.id}`;
     }
-    if (userIsStaff && member.preview) {
+    if (userIsStaff && member.preview && !isMyMark()) {
       return `/member-evaluation/${member.id}`;
     } else {
-      return '#';
+      return `/member-result/${member.id}`;
     }
   };
 
+  const memberPoints = () => {
+    if (member.preview && member.result_sum) {
+      return `${member.result_sum} ${declineNumberOfBalls(member.result_sum)}`;
+    }
+    if (!member.preview) {
+      return 'выберите фото';
+    }
+    if (userIsStaff && !member.result_sum) {
+      return 'оцените работу';
+    } else {
+      return 'оценивается';
+    }
+  };
+
+  const notPhotoMembers = () => {
+    if (!member.preview && userIsStaff) {
+      return true;
+    }
+    return false;
+  };
+
   return (
-    <li className={styles.members__item} key={member.id}>
-      <Link
-        href={memberLink()}
-        className={`${styles.members__content} ${
-          !memberCurrent && !userIsStaff && styles.members__content_other
-        } ${member.result_sum > 0 && styles.members__content_done}`}
-      >
-        <span className={styles.members__number}>№{member.id}</span>
-        <div className={styles.members__service}>
-          <p className={styles.members__nomination}>
-            {`${member.nomination} ${member.category}`}
-          </p>
-          <span className={styles.members__points}>
-            {!member.preview || userIsStaff || !memberCurrent ? (
-              <>
-                {member.result_sum} {declineNumberOfBalls(member.result_sum)}
-              </>
-            ) : (
-              'оценивается'
-            )}
-          </span>
-        </div>
-        <Image
-          width={55}
-          height={55}
-          className={styles.members__avatar}
-          src={memberPreview}
-          alt={`${(member.nomination, member.category)}`}
-        />
-      </Link>
-    </li>
+    <>
+      {!notPhotoMembers() && (
+        <li className={styles.members__item} key={member.id}>
+          <Link
+            href={memberLink()}
+            className={`${styles.members__content} ${
+              !memberCurrent && !userIsStaff && styles.members__content_other
+            } ${
+              member.result_sum > 0 &&
+              isMyMark() &&
+              styles.members__content_done
+            }`}
+          >
+            <span className={styles.members__number}>№{member.id}</span>
+
+            <div className={styles.members__service}>
+              <p className={styles.members__nomination}>
+                {`${member.nomination} ${member.category}`}
+              </p>
+              <span className={styles.members__points}>{memberPoints()}</span>
+            </div>
+            <Image
+              width={55}
+              height={55}
+              className={styles.members__avatar}
+              src={memberPreview}
+              alt={`${(member.nomination, member.category)}`}
+              quality={100}
+            />
+          </Link>
+        </li>
+      )}
+    </>
   );
 };

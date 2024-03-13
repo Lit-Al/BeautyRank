@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, ReactNode, ChangeEvent } from 'react';
 import AvatarEditor from 'react-avatar-editor';
 import styles from './AvatarCropper.module.scss';
 import { useAtomValue, useSetAtom } from 'jotai';
@@ -6,7 +6,7 @@ import { userAtom } from 'store';
 import { IUser } from 'common/shared/types';
 import Avatar from 'common/shared/ui/avatar/Avatar';
 interface AvatarCropperProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
   childrenClassName?: string;
 }
 
@@ -21,7 +21,7 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
   const setAvatar = useSetAtom<any>(userAtom);
   const user = useAtomValue(userAtom);
 
-  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelect = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setShowModal(true);
       const file = event.target.files[0];

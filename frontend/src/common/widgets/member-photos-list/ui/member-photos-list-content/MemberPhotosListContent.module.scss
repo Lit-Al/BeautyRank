@@ -1,0 +1,26 @@
+.member_photos {
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px 16px;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 100px;
+    gap: 5px;
+  }
+
+  &__img {
+    border-radius: 100%;
+    object-fit: cover;
+  }
+
+  &__name {
+    font-size: 14px;
+  }
+}

@@ -6,7 +6,9 @@ import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { refetchOnWindowFocus: false } },
+  });
   const user = useAtomValue(userAtom);
 
   useEffect(() => {

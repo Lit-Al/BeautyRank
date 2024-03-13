@@ -1,5 +1,7 @@
 export const BASE_URL = 'http://127.0.0.1:8000';
 
+export const BEAUTY_RANK_BOT = 'https://t.me/BeautyRankBot?start=';
+
 export const ENDPOINTS = {
   AUTH: {
     LOGIN: `${BASE_URL}/api/v1/token/`,

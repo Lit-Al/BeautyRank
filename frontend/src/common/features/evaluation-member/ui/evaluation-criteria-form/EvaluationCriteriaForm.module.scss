@@ -1,0 +1,75 @@
+@import '../../../../shared/styles/variables.scss';
+.evaluation {
+  &__criteria_box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    min-height: 50px;
+    border-bottom: 1px solid #95959580;
+    padding: 0 10px;
+  }
+
+  &__criteria_list {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    border-radius: 5px;
+    background: rgba(243, 243, 243, 0.5);
+    border: 0.5px solid rgba(102, 102, 102, 0.4);
+  }
+
+  &__criteria_form {
+    margin-bottom: 20px;
+  }
+
+  &__criteria_name {
+    font-weight: 400;
+    color: $black;
+    max-width: 370px;
+  }
+
+  &__total {
+    font-weight: 700;
+    font-size: 16px;
+    color: #494949;
+
+    span {
+      font-size: 20px;
+    }
+  }
+
+  &__radio {
+    display: none;
+
+    & + span {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #494949;
+      font-size: 24px;
+      font-weight: 500;
+      width: 40px;
+      height: 30px;
+      cursor: pointer;
+      position: relative;
+
+      &::after {
+        content: '';
+        background-color: rgba(149, 149, 149, 0.16);
+        width: 1px;
+        height: 20px;
+        z-index: 1;
+        position: absolute;
+        right: -1px;
+      }
+    }
+
+    &:checked + span {
+      border-radius: 5px;
+      color: #fff;
+      background-color: #ff3e9b;
+      opacity: 0.699999988079071;
+    }
+  }
+}

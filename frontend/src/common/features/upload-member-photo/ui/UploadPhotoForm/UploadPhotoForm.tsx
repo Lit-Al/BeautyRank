@@ -7,11 +7,13 @@ import { useRouter } from 'next/router';
 import UploadPhotoBox from '../UploadPhotoBox/UploadPhotoBox';
 import {
   useUploadPhotos,
-  useImageSrc,
+  useMemberImageSrc,
   useFileChange,
   useMember,
 } from 'common/features/upload-member-photo/model';
 import { Loader } from 'common/shared/ui/loader';
+import Link from 'next/link';
+import { BEAUTY_RANK_BOT } from 'common/shared/api/endpoints';
 
 const UploadPhotoForm = () => {
   const router = useRouter();
@@ -24,7 +26,7 @@ const UploadPhotoForm = () => {
     selectedFiles,
     setSelectedFiles,
   });
-  const { getImageSrc } = useImageSrc({ selectedFiles });
+  const { getImageSrc } = useMemberImageSrc({ selectedFiles });
   const { mutation } = useUploadPhotos({ selectedFiles });
 
   const buttonIsDisabled = () => {
@@ -70,6 +72,12 @@ const UploadPhotoForm = () => {
               }
             />
           </form>
+          <Link
+            href={`${BEAUTY_RANK_BOT} ${memberId}`}
+            className={styles.upload_photo__video_link}
+          >
+            Загрузить Видео
+          </Link>
           <Button
             disabled={buttonIsDisabled()}
             className={styles.upload_photo__btn}

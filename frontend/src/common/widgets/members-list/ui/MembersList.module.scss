@@ -10,7 +10,6 @@
     padding-right: 10px;
     position: relative;
     left: 10px;
-    width: 100%;
 
     &::-webkit-scrollbar {
       display: block;
@@ -38,7 +37,7 @@
     }
 
     &_staff {
-      max-height: 360px;
+      max-height: 460px;
     }
   }
 

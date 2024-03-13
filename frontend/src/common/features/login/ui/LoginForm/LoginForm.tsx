@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { FC, useState } from 'react';
 import styles from './LoginForm.module.scss';
 import { useForm, Controller } from 'react-hook-form';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { Input } from 'common/shared/ui/input';
 import PhoneInput from 'common/shared/ui/phone-mask-input/PhoneInput';
 import { Button } from 'common/shared/ui/button';
@@ -15,7 +15,7 @@ import { Loader } from 'common/shared/ui/loader';
 import { LoginFormValues } from '../../model';
 import router from 'next/router';
 
-export const LoginForm: React.FC = () => {
+export const LoginForm: FC = () => {
   const [showCodePage, setShowCodePage] = useState(false);
   const {
     control,
@@ -28,35 +28,40 @@ export const LoginForm: React.FC = () => {
   const setAccess = useSetAtom(accessTokenAtom);
   const setRefresh = useSetAtom(refreshTokenAtom);
 
-  const loginUserMutation = useMutation(async (phone: string) => {
+  const userQuery = useQuery('user', getMe, {
+    onSuccess: ({ data }) => {
+      setUser(data);
+      if (data.image) {
+        router.replace('/profile-edit');
+      }
+    },
+    enabled: false,
+  });
+
+  const loginUserMutation = useMutation(['login'], async (phone: string) => {
     return await loginUser(phone);
   });
 
-  const verifyCodeMutation = useMutation(async (loginData: LoginFormValues) => {
-    try {
-      const { data } = await login({
-        password: loginData.code,
-        username: loginData.phone,
-      });
-      setAccess(data.access);
-      setRefresh(data.refresh);
+  const verifyCodeMutation = useMutation(
+    ['sms_code'],
+    async (loginData: LoginFormValues) => {
       try {
-        const { data } = await getMe();
-        setUser(data);
-        if (data.image) {
-          router.replace('/profile-edit');
-        }
-      } catch (e) {
-        console.log(e);
-      }
+        const { data } = await login({
+          password: loginData.code,
+          username: loginData.phone,
+        });
+        setAccess(data.access);
+        setRefresh(data.refresh);
+        userQuery.refetch();
 
-      return data;
-    } catch (error) {
-      // Обработка ошибки
-      console.log(error);
-      throw error;
+        return data;
+      } catch (error) {
+        // Обработка ошибки
+        console.log(error);
+        throw error;
+      }
     }
-  });
+  );
 
   const onSubmitNumber = async (data: LoginFormValues) => {
     data.phone = data.phone?.replace(/\D/g, '');
