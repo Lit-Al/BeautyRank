@@ -2,13 +2,14 @@ from django.db.models import Q
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-
 from users.serializer import *
 from users.utils import generate_password
 
 from . import smsc_api as sms
+from .permissions import IsStaffOnly
 
 
 class UserViewSet(viewsets.GenericViewSet):
@@ -52,4 +53,26 @@ class UserViewSet(viewsets.GenericViewSet):
             serializer.save()
             request.user.refresh_from_db()
         serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+
+    @action(
+        detail=False,
+        methods=["post"],
+        serializer_class=UserIdOfUserSerializer,
+        permission_classes=[IsStaffOnly],
+    )
+    def phone_number_master(self, request, *args, **kwargs):
+        serializer = UserIdOfUserSerializer(
+            request.user, data=request.data, partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        user_id = serializer.validated_data["user_id"]
+
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response(
+                {"error": "Пользователь не найден"}, status=status.HTTP_404_NOT_FOUND
+            )
+        serializer = UserSerializer(user)
         return Response(serializer.data)

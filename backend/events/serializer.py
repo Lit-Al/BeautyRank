@@ -1,12 +1,24 @@
 from rest_framework import serializers
 
+from users.models import User
 from .models import *
 
 
 class ResultSerializer(serializers.ModelSerializer):
+    event_staff_name = serializers.SerializerMethodField()
+
     class Meta:
         model = Result
-        fields = ("member_nomination", "score", "event_staff", "score_retail")
+        fields = (
+            "member_nomination",
+            "score",
+            "event_staff",
+            "event_staff_name",
+            "score_retail",
+        )
+
+    def get_event_staff_name(self, obj) -> str:
+        return str(obj.event_staff) if obj.event_staff else None
 
 
 class MemberNominationPhotoSerializer(serializers.ModelSerializer):
@@ -55,11 +67,11 @@ class MemberNominationSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
 
-        unique_results = instance.results.order_by(
-            'event_staff'
-        ).distinct('event_staff')
+        unique_results = instance.results.order_by("event_staff").distinct(
+            "event_staff"
+        )
 
-        representation['result_sum'] = sum(result.score for result in unique_results)
+        representation["result_sum"] = sum(result.score for result in unique_results)
 
         return representation
 
@@ -80,13 +92,12 @@ class CategoryNominationSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
-    win_nominations = CategoryNominationSerializer(many=True, read_only=True)
     role = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
-        fields = ("id", "name", "win_nominations", "image", "role")
-        read_only_fields = ["id", "name", "win_nominations", "image", "role"]
+        fields = ("id", "name", "image", "role")
+        read_only_fields = ["id", "name", "image", "role"]
 
     def get_role(self, obj) -> str:
         user = self.context.get("request").user

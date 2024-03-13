@@ -2,7 +2,8 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import (EventViewSet, MemberNominationPhotoViewSet,
-                    MemberNominationViewSet, ResultViewSet, NominationAttributeViewSet)
+                    MemberNominationViewSet, NominationAttributeViewSet,
+                    ResultViewSet)
 
 router = DefaultRouter()
 router.register(prefix="memberNomination", viewset=MemberNominationViewSet)

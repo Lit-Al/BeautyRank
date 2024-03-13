@@ -1,15 +1,12 @@
-from django.db.models import Q, Case, When, F, BooleanField
+from django.db.models import BooleanField, Case, F, Q, When
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.mixins import (
-    CreateModelMixin,
-    ListModelMixin,
-    RetrieveModelMixin,
-    UpdateModelMixin,
-)
+from rest_framework.mixins import (CreateModelMixin, ListModelMixin,
+                                   RetrieveModelMixin, UpdateModelMixin)
 from rest_framework.response import Response
 
-from .permissions import IsMemberOrReadOnly, IsStaffOrReadOnly, TelegramBotUpdate
+from .permissions import (IsMemberOrReadOnly, IsStaffOrReadOnly,
+                          TelegramBotUpdate)
 from .serializer import *
 
 
