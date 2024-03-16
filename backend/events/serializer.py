@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from users.models import User
 from .models import *
 
 
@@ -38,11 +37,12 @@ class MemberNominationSerializer(serializers.ModelSerializer):
         source="category_nomination.nomination.name", read_only=True
     )
     nomination_info = serializers.JSONField(
-        source="category_nomination.nomination.photos_conf"
+        source="category_nomination.nomination.photos_conf", read_only=True
     )
     category = serializers.CharField(
         source="category_nomination.event_category.category.name", read_only=True
     )
+    id_member = serializers.CharField(source="member.user.id", read_only=True)
     member = serializers.CharField(source="member.user", read_only=True)
     result_sum = serializers.IntegerField(source="result_all", read_only=True)
     preview = serializers.SerializerMethodField()
@@ -55,6 +55,7 @@ class MemberNominationSerializer(serializers.ModelSerializer):
             "nomination",
             "nomination_info",
             "category",
+            "id_member",
             "member",
             "result_sum",
             "is_done",
@@ -62,7 +63,16 @@ class MemberNominationSerializer(serializers.ModelSerializer):
             "url_video",
             "url_message_video",
         )
-        read_only_fields = ["id"]
+        read_only_fields = [
+            "id",
+            "nomination",
+            "nomination_info",
+            "category",
+            "id_member",
+            "member",
+            "result_sum",
+            "is_done",
+        ]
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

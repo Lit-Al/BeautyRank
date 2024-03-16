@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-import users.models
 from .models import User
 
 
