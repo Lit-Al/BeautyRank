@@ -1,5 +1,7 @@
+import json
+
 from django.db import models
-from django.db.models import Count, Sum, constraints
+from django.db.models import constraints
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -69,6 +71,8 @@ class Event(models.Model):
     owners = models.ManyToManyField(
         "users.User", blank=True, related_name="owner_events"
     )
+    finished = models.BooleanField(default=False)
+    result = models.JSONField(default=dict, null=True)
 
     class Meta:
         verbose_name = "Мероприятие"
@@ -253,3 +257,45 @@ def save_url(sender, instance, **kwargs):
     if instance.url_video and not instance.url_message_video:
         integration = TelegramIntegration()
         integration.send_video_to_telegram_channel(instance)
+
+
+# @receiver(post_save, sender=Event)
+# def calculate_results(sender, instance, **kwargs):
+#
+#     if instance.finished:
+#         win_categories = instance.get_winners_categories()
+#         win_nominations = instance.get_winners_nominations()
+#         # result_data = {
+#         #     "winners_by_category": ,
+#         #     "winners_by_nomination": ,
+#         # }
+#         # result_json = json.dumps(result_data)
+#         # instance.result = result_json
+#         # instance.save()
+
+# @receiver(post_save, sender=Event)
+# def calculate_results(sender, instance, **kwargs):
+#
+#     if instance.finished:
+#         win_categories = instance.get_winners_categories()
+#         win_nominations = instance.get_winners_nominations()
+#
+#         # Сериализация данных о победителях
+#         serialized_winners_categories = [
+#             MemberNominationSerializerForWinners(winners, many=True).data
+#             for winners in win_categories
+#         ]
+#         serialized_winners_nominations = [
+#             MemberNominationSerializerForWinners(winners["members"], many=True).data
+#             for winners in win_nominations
+#         ]
+#
+#         # Подготовка данных для поля result
+#         result_data = {
+#             "winners_by_category": serialized_winners_categories,
+#             "winners_by_nomination": serialized_winners_nominations,
+#         }
+#
+#         # Обновление поля result
+#         instance.result = result_data
+#         instance.save()

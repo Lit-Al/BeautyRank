@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import *
+from events.models import *
 
 
 class ResultSerializer(serializers.ModelSerializer):
@@ -106,8 +106,8 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ("id", "name", "image", "role")
-        read_only_fields = ["id", "name", "image", "role"]
+        fields = ("id", "name", "image", "finished", "result", "role")
+        read_only_fields = ["id", "name", "result", "image", "role"]
 
     def get_role(self, obj) -> str:
         user = self.context.get("request").user

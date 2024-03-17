@@ -1,6 +1,7 @@
 from rest_framework.permissions import BasePermission
 
 from events.models import MemberNomination
+from users.models import User
 
 
 class IsStaffOrReadOnly(BasePermission):
@@ -28,4 +29,14 @@ class TelegramBotUpdate(BasePermission):
             return True
         if request.data.get("user", "client") == "telegram":
             return True
+        return False
+
+
+class IsOwnerOnly(BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        if obj.owners.filter(id=request.user.id).exists():
+            return True
+        if request.method in ["PATCH", "PUT"]:
+            return User.objects.filter(id=request.user.id, is_superuser=True).exists()
         return False

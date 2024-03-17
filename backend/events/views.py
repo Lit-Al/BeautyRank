@@ -1,4 +1,4 @@
-from django.db.models import BooleanField, Case, F, Q, When
+from django.db.models import BooleanField, Case, F, Q, When, Count
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.mixins import (
@@ -7,10 +7,16 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .permissions import IsMemberOrReadOnly, IsStaffOrReadOnly, TelegramBotUpdate
-from .serializer import *
+from events.permissions import (
+    IsMemberOrReadOnly,
+    IsStaffOrReadOnly,
+    TelegramBotUpdate,
+    IsOwnerOnly,
+)
+from events.serializer import *
 
 
 class MemberNominationViewSet(
@@ -109,18 +115,33 @@ class ResultViewSet(ListModelMixin, CreateModelMixin, viewsets.GenericViewSet):
     permission_classes = [IsStaffOrReadOnly]
 
 
-class EventViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
+class EventViewSet(
+    UpdateModelMixin, ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet
+):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
-    @action(detail=True, methods=["get"])
+    def get_permissions(self):
+        print(self.action)
+        if self.action in [
+            "partial_update",
+            "update",
+            "winners_nominations",
+            "winners_of_categories",
+        ]:
+            permission_classes = [IsOwnerOnly]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
+
+    @action(detail=True, methods=["get"], permission_classes=[IsOwnerOnly])
     def winners_nominations(self, request, *args, **kwargs):
         event = self.get_object()
         win_nominations = event.get_winners_nominations()
         serializer = WinnersSerializer(win_nominations, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=["get"])
+    @action(detail=True, methods=["get"], permission_classes=[IsOwnerOnly])
     def winners_of_categories(self, request, *args, **kwargs):
         event = self.get_object()
         win_categories = event.get_winners_categories()

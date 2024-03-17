@@ -28,6 +28,7 @@ class NominationAdmin(admin.ModelAdmin):
 
 class MemberNominationInline(admin.TabularInline):
     model = MemberNomination
+    exclude = ["url_video", "url_message_video"]
 
 
 @admin.register(Member)
@@ -36,7 +37,9 @@ class MemberAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(MemberAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields["user"].queryset = User.objects.filter(is_staff=False)
+        form.base_fields["user"].queryset = User.objects.filter(
+            is_staff=False
+        )  # TODO: сделать другой фильтр
         return form
 
 
