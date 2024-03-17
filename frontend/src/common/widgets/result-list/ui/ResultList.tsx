@@ -17,6 +17,9 @@ export const ResultList = () => {
     () => getMemberResults(memberId),
     {
       enabled: !!memberId,
+      refetchOnWindowFocus: true,
+      //запрос раз в 5 минут
+      refetchInterval: 50 * 60 * 100,
     }
   );
 
@@ -28,9 +31,13 @@ export const ResultList = () => {
     }
   );
 
-  const { data: memberData } = useQuery('member', () => getMember(memberId), {
-    enabled: !!memberId,
-  });
+  const { data: memberData } = useQuery(
+    ['member', memberId],
+    () => getMember(memberId),
+    {
+      enabled: !!memberId,
+    }
+  );
 
   const criteries = useMemo(() => {
     return resultData?.data[0]?.score_retail
@@ -50,14 +57,16 @@ export const ResultList = () => {
       {resultData.data.length > 0 ? (
         <ul className={styles.result__list}>
           {criteries.map((criteria, index) => (
-            <li className={styles.result__item}>
+            <li key={index} className={styles.result__item}>
               <p className={styles.result__criteria}>{criteria}</p>
               <p className={styles.result__score}>
                 {resultData?.data.map((item: IResult, itemIndex: number) => (
                   <div key={itemIndex}>
                     <span>{item.score_retail![criteria]}</span>
                     {index === criteries.length - 1 && (
-                      <p className={styles.result__staff}>{item.event_staff}</p>
+                      <p className={styles.result__staff}>
+                        {item.event_staff_name}
+                      </p>
                     )}
                   </div>
                 ))}

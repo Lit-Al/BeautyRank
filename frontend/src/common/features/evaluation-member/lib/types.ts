@@ -34,11 +34,13 @@ export interface IEvaluationModalProps {
   totalScore: number;
   memberAttributes: IMemberAssessmentsAttributes[];
   isAllAttributesFilled: boolean;
+  nomination: string;
 }
 
 export interface IResult {
   member_nomination: number;
   event_staff: number;
+  event_staff_name?: string;
   score: number;
   score_retail?: {
     [key: string]: number | string;

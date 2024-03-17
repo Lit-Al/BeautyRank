@@ -15,18 +15,22 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     user && user.image && router.replace('/profile');
+
+    document.body.classList.add('home-page');
+
+    return () => {
+      document.body.classList.remove('home-page');
+    };
   }, []);
 
   return (
-    <div className={styles.AuthBack}>
-      <Layout pageTitle="Авторизация">
-        <Logo />
-        <h1 className={styles.auth_title}>Добрый день!</h1>
-        <QueryClientProvider client={queryClient}>
-          <LoginForm />
-        </QueryClientProvider>
-      </Layout>
-    </div>
+    <Layout pageTitle="Авторизация">
+      <Logo />
+      <h1 className={styles.auth_title}>Добрый день!</h1>
+      <QueryClientProvider client={queryClient}>
+        <LoginForm />
+      </QueryClientProvider>
+    </Layout>
   );
 };
 

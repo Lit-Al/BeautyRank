@@ -1,4 +1,3 @@
-import styles from './profile.module.scss';
 import { useAtomValue } from 'jotai';
 import { champAtom, userAtom } from 'store';
 import Avatar from 'common/shared/ui/avatar/Avatar';
@@ -18,26 +17,30 @@ function ProfilePage() {
 
   useEffect(() => {
     setIsClient(true);
-  });
+
+    document.body.classList.add('profile-page');
+
+    return () => {
+      document.body.classList.remove('profile-page');
+    };
+  }, []);
 
   return (
-    <div className={styles.UserBack}>
-      <Layout pageTitle="Профиль">
-        {user && isClient ? (
-          <>
-            <Link className={styles.profile__avatar} href="/profile-edit">
-              <Avatar edit />
-            </Link>
-            <UserName />
-            <UserRole />
-            <UserAction role={champ?.role!} />
-            <MembersList />
-          </>
-        ) : (
-          <Loader />
-        )}
-      </Layout>
-    </div>
+    <Layout pageTitle="Профиль">
+      {user && isClient ? (
+        <>
+          <Link href="/profile-edit">
+            <Avatar edit />
+          </Link>
+          <UserName />
+          <UserRole />
+          <UserAction role={champ?.role!} />
+          <MembersList />
+        </>
+      ) : (
+        <Loader />
+      )}
+    </Layout>
   );
 }
 

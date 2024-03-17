@@ -84,6 +84,8 @@
     top: 50px;
     right: 50%;
     transform: translate(50%);
+    -webkit-writing-mode: vertical-lr;
+    -ms-writing-mode: tb-lr;
     writing-mode: vertical-lr;
     white-space: nowrap;
     font-weight: 400;

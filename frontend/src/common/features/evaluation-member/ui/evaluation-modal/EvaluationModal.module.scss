@@ -19,6 +19,7 @@
 
   &__img {
     border-radius: 100%;
+    -o-object-fit: cover;
     object-fit: cover;
   }
 
@@ -59,9 +60,12 @@
   }
 
   &__modal {
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
     width: fit-content;
     border-radius: 11px;
     border: 1px solid #fd76b53d;
+    -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
     background-color: rgba(245, 245, 245, 0.3);
     position: absolute;

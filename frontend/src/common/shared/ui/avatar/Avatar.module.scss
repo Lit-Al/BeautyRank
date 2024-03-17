@@ -2,12 +2,13 @@
   width: 150px;
   height: 150px;
   border-radius: 50%;
+  -o-object-fit: cover;
   object-fit: cover;
   background-color: #ff559f;
   position: relative;
 
   &_box {
-    max-width: 150px;
+    width: 150px;
   }
 
   &_edit {
@@ -20,6 +21,14 @@
     &:hover {
       transform: scale(1.03);
       box-shadow: 0px 10px 20px #e0adc6c4;
+    }
+    &:active {
+      transform: scale(0.9);
+      box-shadow: 0px 10px 20px #e0adc6;
+      -webkit-transform: scale(0.9);
+      -moz-transform: scale(0.9);
+      -ms-transform: scale(0.9);
+      -o-transform: scale(0.9);
     }
     &::after {
       content: '';

@@ -16,6 +16,26 @@
   color: $pink;
   padding: 0 10px 0 63px;
 
+  &::-webkit-input-placeholder {
+    color: $pink;
+    opacity: 0.7;
+  }
+
+  &::-moz-placeholder {
+    color: $pink;
+    opacity: 0.7;
+  }
+
+  &:-ms-input-placeholder {
+    color: $pink;
+    opacity: 0.7;
+  }
+
+  &::-ms-input-placeholder {
+    color: $pink;
+    opacity: 0.7;
+  }
+
   &::placeholder {
     color: $pink;
     opacity: 0.7;
@@ -23,7 +43,6 @@
 
   &:focus {
     outline: 1px solid $pink;
-    -webkit-box-shadow: 0px 10px 20px #ffb8da;
     box-shadow: 0px 10px 20px #ffb8da;
   }
 
@@ -33,8 +52,23 @@
 
     &:focus {
       outline: 1px solid $error;
-      -webkit-box-shadow: 0px 10px 20px lighten($error, 35%);
       box-shadow: 0px 10px 20px lighten($error, 35%);
+    }
+
+    &::-webkit-input-placeholder {
+      color: $error;
+    }
+
+    &::-moz-placeholder {
+      color: $error;
+    }
+
+    &:-ms-input-placeholder {
+      color: $error;
+    }
+
+    &::-ms-input-placeholder {
+      color: $error;
     }
 
     &::placeholder {

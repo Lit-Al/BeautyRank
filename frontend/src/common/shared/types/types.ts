@@ -3,6 +3,7 @@ export interface IUser {
   first_name: string;
   last_name: string;
   image: null | string;
+  phone_number: string
 }
 
 export interface ILoginRequest {

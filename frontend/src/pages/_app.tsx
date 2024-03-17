@@ -4,10 +4,13 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { userAtom } from 'store';
 import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
+import Head from 'next/head';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const queryClient = new QueryClient({
-    defaultOptions: { queries: { refetchOnWindowFocus: false } },
+    defaultOptions: {
+      queries: { refetchOnWindowFocus: false, refetchInterval: false },
+    },
   });
   const user = useAtomValue(userAtom);
 
@@ -24,6 +27,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <Head>
+        <link rel="icon" type="image/x-icon" href="/images/BR.ico" />
+      </Head>
       <Component {...pageProps} />
     </QueryClientProvider>
   );

@@ -8,6 +8,7 @@ export const VideoLink = ({ member }: { member: IMember }) => {
     <>
       {member?.url_message_video ? (
         <Link
+          target="_blank"
           href={member?.url_message_video}
           className={styles.result__video_link}
         >

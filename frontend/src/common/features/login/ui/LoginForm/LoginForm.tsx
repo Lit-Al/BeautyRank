@@ -1,9 +1,8 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import styles from './LoginForm.module.scss';
 import { useForm, Controller } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
 import { Input } from 'common/shared/ui/input';
-import PhoneInput from 'common/shared/ui/phone-mask-input/PhoneInput';
 import { Button } from 'common/shared/ui/button';
 import { useSetAtom } from 'jotai';
 import { refreshTokenAtom, userAtom } from 'store';
@@ -14,8 +13,9 @@ import { loginUser } from '../../model';
 import { Loader } from 'common/shared/ui/loader';
 import { LoginFormValues } from '../../model';
 import router from 'next/router';
+import PhoneInput from 'common/shared/ui/phone-input/PhoneInput';
 
-export const LoginForm: FC = () => {
+export const LoginForm = () => {
   const [showCodePage, setShowCodePage] = useState(false);
   const {
     control,
@@ -27,6 +27,11 @@ export const LoginForm: FC = () => {
   const setUser = useSetAtom(userAtom);
   const setAccess = useSetAtom(accessTokenAtom);
   const setRefresh = useSetAtom(refreshTokenAtom);
+
+  useEffect(() => {
+    // При переходе на новую форму сбрасываем значения полей
+    setValue('code', '');
+  }, [showCodePage]);
 
   const userQuery = useQuery('user', getMe, {
     onSuccess: ({ data }) => {
@@ -64,33 +69,19 @@ export const LoginForm: FC = () => {
   );
 
   const onSubmitNumber = async (data: LoginFormValues) => {
-    data.phone = data.phone?.replace(/\D/g, '');
     try {
-      if (data.phone.length !== 11) {
-        throw new Error('Вы ввели неполный номер телефона!');
-      }
-
-      await loginUserMutation.mutateAsync(data.phone);
+      const phoneNumber = data.phone;
+      await loginUserMutation.mutateAsync(phoneNumber);
       setShowCodePage(true);
     } catch (error: any) {
-      if (error.message === 'Вы ввели неполный номер телефона!') {
-        setValue('phone', '');
-        setError('phone', {
-          type: 'custom',
-          message: 'Вы ввели неполный номер телефона!',
-        });
-      } else {
-        setValue('phone', '');
-        setError('phone', {
-          type: 'custom',
-          message: 'Упс! вашего номера нет в программе!',
-        });
-      }
+      setError('phone', {
+        type: 'custom',
+        message: 'Упс! что-то пошло не так! Возможно номер - некорректный!',
+      });
     }
   };
 
   const onSubmitCode = async (data: LoginFormValues) => {
-    data.phone = data.phone?.replace(/\D/g, '');
     try {
       if (data.code.length < 4) {
         throw new Error('Вы не ввели весь код!');
@@ -129,6 +120,7 @@ export const LoginForm: FC = () => {
           <Controller
             control={control}
             name="code"
+            defaultValue=" "
             render={({ field }) => (
               <Input
                 autofocus
@@ -159,11 +151,7 @@ export const LoginForm: FC = () => {
             control={control}
             name="phone"
             render={({ field }) => (
-              <PhoneInput
-                icon="convert"
-                error={errors.phone?.message}
-                {...field}
-              />
+              <PhoneInput error={errors.phone?.message} {...field} />
             )}
           />
           <Button>Получить код</Button>

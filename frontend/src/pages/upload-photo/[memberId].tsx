@@ -1,17 +1,20 @@
-import React from 'react';
-import styles from './upload-photo.module.scss';
+import React, { useEffect } from 'react';
 import { Layout } from 'common/shared/ui/layout';
 import { GoBackButton } from 'common/shared/ui/go-back-btn';
 import UploadPhotoForm from 'common/features/upload-member-photo/ui/UploadPhotoForm/UploadPhotoForm';
 
 const UploadPhotoPage = () => {
+  useEffect(() => {
+    document.body.classList.add('upload-photo-page');
+    return () => {
+      document.body.classList.remove('upload-photo-page');
+    };
+  }, []);
   return (
-    <div className={styles.UserBack}>
-      <Layout pageTitle="Загрузите Фото">
-        <GoBackButton />
-        <UploadPhotoForm />
-      </Layout>
-    </div>
+    <Layout pageTitle="Загрузите Фото">
+      <GoBackButton />
+      <UploadPhotoForm />
+    </Layout>
   );
 };
 

@@ -73,7 +73,8 @@ const UploadPhotoForm = () => {
             />
           </form>
           <Link
-            href={`${BEAUTY_RANK_BOT} ${memberId}`}
+            target="_blank"
+            href={`${BEAUTY_RANK_BOT}${memberId}`}
             className={styles.upload_photo__video_link}
           >
             Загрузить Видео

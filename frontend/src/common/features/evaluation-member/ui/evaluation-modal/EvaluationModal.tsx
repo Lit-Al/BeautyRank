@@ -7,8 +7,10 @@ import { IEvaluationModalProps } from '../../lib';
 import CloseIcon from '@/public/images/close-icon.svg';
 import WhatsAppIcon from '@/public/images/whatsapp-icon.svg';
 import { useSetMemberResult } from '../../model';
+import { getUser } from 'common/shared/api/users';
+import { useQuery } from 'react-query';
 
-const EvaluationModal = ({
+export const EvaluationModal = ({
   isModalOpen,
   memberPhotos,
   setModalOpen,
@@ -16,12 +18,19 @@ const EvaluationModal = ({
   totalScore,
   memberAttributes,
   isAllAttributesFilled,
+  nomination,
 }: IEvaluationModalProps) => {
   const { mutateAsync: postResult } = useSetMemberResult({
     memberId: member?.id,
     totalScore,
     memberAttributes,
   });
+
+  const { data: master } = useQuery('master', () => getUser(member?.id), {
+    enabled: !!member?.id, // включить запрос только если member.id существует
+  });
+
+  const whatsappLink = `https://api.whatsapp.com/send/?phone=${master?.data.phone_number}&text=Добрый день, ${master?.data.first_name}! Я оценил(а) вашу работу в номинации - ${nomination}!`;
 
   return (
     <div>
@@ -68,7 +77,7 @@ const EvaluationModal = ({
             </p>
             <p className={styles.evaluation__comment}>
               Дать комментарий
-              <Link href="#">
+              <Link target="_blank" href={whatsappLink}>
                 <Image width={22} src={WhatsAppIcon} alt="WhatsApp" />
               </Link>
             </p>
@@ -85,5 +94,3 @@ const EvaluationModal = ({
     </div>
   );
 };
-
-export default EvaluationModal;

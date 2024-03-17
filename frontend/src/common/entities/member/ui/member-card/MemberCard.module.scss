@@ -68,6 +68,7 @@
   }
   &__avatar {
     border-radius: 100%;
+    -o-object-fit: cover;
     object-fit: cover;
   }
 }

@@ -2,15 +2,14 @@ import React, { useMemo, useState } from 'react';
 import styles from './EvaluationForm.module.scss';
 import { Button } from 'common/shared/ui/button';
 import { Loader } from 'common/shared/ui/loader';
-import EvaluationModal from '../evaluation-modal/EvaluationModal';
 import { IEvaluationFormProps } from '../../lib';
 import EvaluationCriteriaForm from '../evaluation-criteria-form/EvaluationCriteriaForm';
 import { useMember } from '../../model';
 import { MemberPhotosList } from 'common/widgets/member-photos-list';
-import Link from 'next/link';
 import { VideoLink } from 'common/shared/ui/video-link';
+import { EvaluationModal } from '../evaluation-modal';
 
-const EvaluationForm = ({ memberId }: IEvaluationFormProps) => {
+export const EvaluationForm = ({ memberId }: IEvaluationFormProps) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const {
     member,
@@ -58,9 +57,8 @@ const EvaluationForm = ({ memberId }: IEvaluationFormProps) => {
         totalScore={totalScore}
         memberAttributes={memberAttributes}
         isAllAttributesFilled={isAllAttributesFilled}
+        nomination={`${member?.nomination} ${member?.category}`}
       />
     </>
   );
 };
-
-export default EvaluationForm;

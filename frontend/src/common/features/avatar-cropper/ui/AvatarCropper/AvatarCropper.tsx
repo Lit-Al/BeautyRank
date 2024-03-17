@@ -5,6 +5,9 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { userAtom } from 'store';
 import { IUser } from 'common/shared/types';
 import Avatar from 'common/shared/ui/avatar/Avatar';
+import Image from 'next/image';
+import closeIcon from '@/public/images/close-icon.svg';
+import { Button } from 'common/shared/ui/button';
 interface AvatarCropperProps {
   children?: ReactNode;
   childrenClassName?: string;
@@ -15,9 +18,7 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
   const [position, setPosition] = useState({ x: 0.5, y: 0.5 });
   const editorRef = useRef<AvatarEditor | null>(null);
   const [selectedImage, setSelectedImage] = useState(''); // Состояние для хранения выбранного изображения
-  const [preview, setPreview] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [rotate, setRotate] = useState(180);
   const setAvatar = useSetAtom<any>(userAtom);
   const user = useAtomValue(userAtom);
 
@@ -33,7 +34,6 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
     setShowModal(false);
     if (editorRef.current) {
       const dataUrl = editorRef.current.getImage().toDataURL();
-      setPreview(dataUrl);
       setAvatar((prev: IUser) => ({
         ...prev,
         image: dataUrl,
@@ -55,21 +55,24 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
     <>
       {showModal && (
         <div className={styles.modal}>
+          <div
+            onClick={() => setShowModal(false)}
+            className={styles.blur}
+          ></div>
           <div className={styles.modal__content}>
             <AvatarEditor
               style={{ borderRadius: '10px' }}
               image={selectedImage} // Используем выбранное изображение для редактирования
-              width={330}
-              height={330}
-              border={20}
+              width={320}
+              height={320}
               borderRadius={180}
               scale={scale}
               position={position}
               disableHiDPIScaling
               onPositionChange={(newPosition: any) => setPosition(newPosition)}
-              ref={editorRef} // Привязываем ref к компоненту AvatarEditor
+              ref={editorRef}
               color={[243, 243, 243, 0.697]}
-              rotate={rotate - 180}
+              border={0}
             />
 
             <input
@@ -81,38 +84,27 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
               value={scale}
               onChange={(event) => setScale(parseFloat(event.target.value))}
             />
-            <input
-              className={styles.input_range}
-              type="range"
-              min="0"
-              max="360"
-              step="0.01"
-              value={rotate}
-              onChange={(event) => setRotate(parseInt(event.target.value))}
-            />
 
-            <button className={styles.UI_button} onClick={handleSave}>
+            <Button className={styles.UI_button} onClick={handleSave}>
               Сохранить
+            </Button>
+            <button onClick={handleClose} className={styles.close_modal}>
+              <Image src={closeIcon} alt="Закрыть"></Image>
             </button>
-            <button onClick={handleClose}>Закрыть</button>
           </div>
         </div>
       )}
-      {children && (
-        <>
-          <label className={childrenClassName}>
-            {children}
-            <input
-              className={styles.avatar_input}
-              type="file"
-              onChange={handleImageSelect}
-              accept="image/jpg, image/jpeg, image/png, image/svg"
-            />
-          </label>
-        </>
-      )}
-
-      {!children && (
+      {children ? (
+        <label className={childrenClassName}>
+          {children}
+          <input
+            className={styles.avatar_input}
+            type="file"
+            onChange={handleImageSelect}
+            accept="image/jpg, image/jpeg, image/png, image/svg"
+          />
+        </label>
+      ) : (
         <>
           <label className={styles.auth_label}>
             Загрузите ваше лучшее фото Профиля

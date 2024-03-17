@@ -39,7 +39,6 @@
   stroke: #fff;
   stroke-miterlimit: 10;
   margin: 0 auto;
-  -webkit-box-shadow: inset 0px 0px 0px #fff;
   box-shadow: inset 0px 0px 0px #fff;
   -webkit-animation: fill 0.4s ease-in-out 0.4s forwards,
     scale 0.3s ease-in-out 0.9s both;
@@ -58,8 +57,6 @@
   }
 
   &__check {
-    -webkit-transform-origin: 50% 50%;
-    -ms-transform-origin: 50% 50%;
     transform-origin: 50% 50%;
     stroke-dasharray: 48;
     stroke-dashoffset: 48;
@@ -83,12 +80,10 @@
 @-webkit-keyframes scale {
   0%,
   100% {
-    -webkit-transform: none;
     transform: none;
   }
 
   50% {
-    -webkit-transform: scale3d(1.1, 1.1, 1);
     transform: scale3d(1.1, 1.1, 1);
   }
 }
@@ -96,26 +91,22 @@
 @keyframes scale {
   0%,
   100% {
-    -webkit-transform: none;
     transform: none;
   }
 
   50% {
-    -webkit-transform: scale3d(1.1, 1.1, 1);
     transform: scale3d(1.1, 1.1, 1);
   }
 }
 
 @-webkit-keyframes fill {
   100% {
-    -webkit-box-shadow: inset 0px 0px 0px 30px #000;
     box-shadow: inset 0px 0px 0px 30px #000;
   }
 }
 
 @keyframes fill {
   100% {
-    -webkit-box-shadow: inset 0px 0px 0px 30px transparent;
     box-shadow: inset 0px 0px 0px 30px transparent;
   }
 }

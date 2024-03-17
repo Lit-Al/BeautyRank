@@ -49,19 +49,15 @@ export const MembersList = () => {
     <>
       {userIsStaff ? (
         <>
-          {members?.length ? (
-            <ul
-              className={`${styles.members__list} ${
-                userIsStaff && styles.members__list_staff
-              }`}
-            >
-              {members?.map((member) => (
-                <MemberCard key={member.id} member={member} />
-              ))}
-            </ul>
-          ) : (
-            <Loader />
-          )}
+          <ul
+            className={`${styles.members__list} ${
+              userIsStaff && styles.members__list_staff
+            }`}
+          >
+            {members?.map((member) => (
+              <MemberCard key={member.id} member={member} />
+            ))}
+          </ul>
         </>
       ) : (
         <>

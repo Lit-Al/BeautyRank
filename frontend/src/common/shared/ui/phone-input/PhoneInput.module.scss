@@ -1,0 +1,113 @@
+@import '../../styles/variables.scss';
+
+.phone_input {
+  background-color: transparent !important;
+  border-radius: 50px !important;
+  border: 1px solid $pink !important;
+  height: 50px !important;
+  font-size: 16px !important;
+  color: $pink;
+  width: 100% !important;
+  padding-left: 65px !important;
+  text-align: left !important;
+
+  &:focus {
+    outline: 1px solid $pink;
+    box-shadow: 0px 10px 20px #ffb8da;
+  }
+
+  &_error {
+    border-color: $error !important;
+
+    &::-webkit-input-placeholder {
+      color: $error !important;
+    }
+
+    &::-moz-placeholder {
+      color: $error !important;
+    }
+
+    &:-ms-input-placeholder {
+      color: $error !important;
+    }
+
+    &::-ms-input-placeholder {
+      color: $error !important;
+    }
+
+    &::placeholder {
+      color: $error !important;
+    }
+  }
+
+  &::-webkit-input-placeholder {
+    color: $pink;
+    opacity: 0.7;
+  }
+
+  &::-moz-placeholder {
+    color: $pink;
+    opacity: 0.7;
+  }
+
+  &:-ms-input-placeholder {
+    color: $pink;
+    opacity: 0.7;
+  }
+
+  &::-ms-input-placeholder {
+    color: $pink;
+    opacity: 0.7;
+  }
+
+  &::placeholder {
+    color: $pink;
+    opacity: 0.7;
+  }
+
+  &_box {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  &_button {
+    border-radius: 50px !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    width: 50px !important;
+    left: 20px;
+
+    & div {
+      background-color: transparent !important;
+    }
+  }
+
+  &_dropdown {
+    overflow: visible !important;
+
+    li {
+      & > * {
+        font-size: 16px;
+        font-family: 'SF Pro Display', sans-serif;
+      }
+    }
+  }
+
+  &_error {
+    color: $error;
+    height: 10px;
+    text-align: center;
+    width: 260px;
+    line-height: 20px;
+    margin-bottom: 10px;
+    margin-top: -10px;
+    opacity: 1;
+    transition: all 0.2s;
+
+    &_hidden {
+      height: 10px;
+      opacity: 0;
+      transition: all 0.2s;
+    }
+  }
+}

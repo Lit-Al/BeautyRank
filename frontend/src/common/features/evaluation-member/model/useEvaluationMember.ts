@@ -19,7 +19,7 @@ export const useMember = (memberId: number) => {
   );
 
   const { data: memberData, isLoading: isMemberLoading } = useQuery(
-    'member',
+    ['member', memberId],
     () => getMember(memberId),
     {
       enabled: !!memberId,
