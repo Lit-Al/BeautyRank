@@ -33,7 +33,6 @@ export interface IEvaluationModalProps {
   member: IMember;
   totalScore: number;
   memberAttributes: IMemberAssessmentsAttributes[];
-  isAllAttributesFilled: boolean;
   nomination: string;
 }
 

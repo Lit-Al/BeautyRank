@@ -112,10 +112,10 @@ class EventSerializer(serializers.ModelSerializer):
     def get_role(self, obj) -> str:
         user = self.context.get("request").user
         event = obj
-        if CategoryNomination.objects.filter(event_staff=user).exists():
+        if CategoryNomination.objects.filter(event_category__event__pk=event.pk ,event_staff=user).exists():
             return "Судья"
 
-        if Member.objects.filter(user=user).exists():
+        if Member.objects.filter(event__pk=event.pk ,user=user).exists():
             return "Мастер"
 
         if Event.objects.filter(pk=event.pk, owners=user).exists():
@@ -126,7 +126,7 @@ class EventSerializer(serializers.ModelSerializer):
 
 class MemberNominationSerializerForWinners(serializers.ModelSerializer):
     member = serializers.CharField(source="member.user", read_only=True)
-    result_sum = serializers.IntegerField(source="result_all", read_only=True)
+    result_sum = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = MemberNomination

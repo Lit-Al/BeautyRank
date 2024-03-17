@@ -72,7 +72,7 @@ class Event(models.Model):
         "users.User", blank=True, related_name="owner_events"
     )
     finished = models.BooleanField(default=False)
-    result = models.JSONField(default=dict, null=True)
+    result = models.JSONField(default=dict, blank=True)
 
     class Meta:
         verbose_name = "Мероприятие"

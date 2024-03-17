@@ -28,7 +28,6 @@ class MemberNominationViewSet(
     queryset = MemberNomination.objects.all()
     serializer_class = MemberNominationSerializer
     filterset_fields = ["category_nomination__event_category__event"]
-    ordering_fields = ["result_all"]
     permission_classes = [TelegramBotUpdate]
 
     def get_queryset(self):
@@ -58,7 +57,7 @@ class MemberNominationViewSet(
                         is_done=True,
                     )
                 )
-                .distinct()
+                .distinct().order_by("is_done")
             )
             return queryset
         return super().get_queryset()

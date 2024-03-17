@@ -14,8 +14,6 @@ class LoginSerializer(serializers.Serializer):
 
     def validate_phone_number(self, value):
         numbers = "".join([str(i) for i in str(value) if i.isdigit()])
-        if len(numbers) == 10:
-            return "7" + numbers
         if len(numbers) == 11:
             if numbers[0] == "7":
                 return numbers

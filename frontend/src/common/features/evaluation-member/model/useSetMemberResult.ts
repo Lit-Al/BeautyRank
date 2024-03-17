@@ -29,7 +29,10 @@ export const useSetMemberResult = ({
         });
 
         setMemberResults(result);
-        router.push('/profile');
+        router.push({
+          pathname: '/profile',
+          query: { evaluation: memberId, score: totalScore },
+        });
       }
     } catch (e) {
       console.log(e);

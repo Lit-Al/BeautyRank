@@ -1,16 +1,14 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import styles from './EvaluationForm.module.scss';
 import { Button } from 'common/shared/ui/button';
 import { Loader } from 'common/shared/ui/loader';
 import { IEvaluationFormProps } from '../../lib';
 import EvaluationCriteriaForm from '../evaluation-criteria-form/EvaluationCriteriaForm';
-import { useMember } from '../../model';
+import { useMember, useSetMemberResult } from '../../model';
 import { MemberPhotosList } from 'common/widgets/member-photos-list';
 import { VideoLink } from 'common/shared/ui/video-link';
-import { EvaluationModal } from '../evaluation-modal';
 
 export const EvaluationForm = ({ memberId }: IEvaluationFormProps) => {
-  const [isModalOpen, setModalOpen] = useState(false);
   const {
     member,
     memberPhotos,
@@ -23,6 +21,12 @@ export const EvaluationForm = ({ memberId }: IEvaluationFormProps) => {
   const isAllAttributesFilled = useMemo(() => {
     return memberAttributes.every((attribute) => attribute.score !== undefined);
   }, [memberAttributes]);
+
+  const { mutateAsync: postResult } = useSetMemberResult({
+    memberId: member?.id!,
+    totalScore,
+    memberAttributes,
+  });
 
   if (isLoading) {
     return <Loader />;
@@ -45,20 +49,10 @@ export const EvaluationForm = ({ memberId }: IEvaluationFormProps) => {
       <Button
         disabled={!isAllAttributesFilled}
         className={styles.evaluation__modal_btn}
-        onClick={() => setModalOpen(true)}
+        onClick={() => postResult()}
       >
         Подтвердить
       </Button>
-      <EvaluationModal
-        isModalOpen={isModalOpen}
-        setModalOpen={setModalOpen}
-        member={member!}
-        memberPhotos={memberPhotos!}
-        totalScore={totalScore}
-        memberAttributes={memberAttributes}
-        isAllAttributesFilled={isAllAttributesFilled}
-        nomination={`${member?.nomination} ${member?.category}`}
-      />
     </>
   );
 };

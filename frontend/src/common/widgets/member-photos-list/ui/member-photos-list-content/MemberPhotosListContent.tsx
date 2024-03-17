@@ -11,7 +11,6 @@ export const MemberPhotosListContent: FC<IMemberPhotoList> = ({
 }) => {
   useEffect(() => {
     Fancybox.bind('[data-fancybox]', {
-      // Thumbs: false,
       Toolbar: false,
       Images: {
         zoom: false,

@@ -75,12 +75,6 @@ class TestUser:
             ],
             [
                 {"phone_number": "79008005678"},
-                {"phone_number": "9008005678"},
-                "in",
-                None,
-            ],
-            [
-                {"phone_number": "79008005678"},
                 {"phone_number": "79008005678"},
                 "in",
                 None,

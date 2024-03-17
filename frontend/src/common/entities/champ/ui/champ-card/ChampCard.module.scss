@@ -25,4 +25,13 @@
       transform: scale(0.96);
     }
   }
+  &__item {
+    width: 290px;
+  }
+
+  &__not_member {
+    text-align: center;
+    top: -10px;
+    font-size: 15px;
+  }
 }
