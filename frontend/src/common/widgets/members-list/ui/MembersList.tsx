@@ -6,6 +6,8 @@ import { useQuery } from 'react-query';
 import { champAtom, userAtom } from 'store';
 import styles from './MembersList.module.scss';
 import { Loader } from 'common/shared/ui/loader';
+import { BeautyLoader } from 'common/shared/ui/beauty-loader';
+import { EvaluationModal } from 'common/features/evaluation-member/ui';
 
 export const MembersList = () => {
   const [members, setMembers] = useState<IMember[]>();
@@ -63,7 +65,9 @@ export const MembersList = () => {
         <>
           {currentMasterMembers.length !== 0 ? (
             <>
-              <h3 className={styles.members__title}>Ваши работы:</h3>
+              {champ?.role !== 'Организатор' && (
+                <h3 className={styles.members__title}>Ваши работы:</h3>
+              )}
               <ul className={styles.members__list}>
                 {currentMasterMembers.map((member) => (
                   <MemberCard key={member.id} member={member} />
@@ -73,7 +77,9 @@ export const MembersList = () => {
           ) : (
             <Loader />
           )}
-          <h3 className={styles.members__title}>Работы других мастеров:</h3>
+          {champ?.role !== 'Организатор' && (
+            <h3 className={styles.members__title}>Работы других мастеров:</h3>
+          )}
           {otherMasterMembers.length !== 0 ? (
             <>
               <ul
@@ -85,10 +91,11 @@ export const MembersList = () => {
               </ul>
             </>
           ) : (
-            <Loader />
+            <BeautyLoader />
           )}
         </>
       )}
+      <EvaluationModal />
     </>
   );
 };

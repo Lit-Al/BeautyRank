@@ -31,7 +31,7 @@ export default function AvatarPage() {
     return () => {
       document.body.classList.remove('avatar-page');
     };
-  }, []);
+  }, [isFirstVisit]);
 
   return (
     <>

@@ -14,7 +14,7 @@ const Home: NextPage = () => {
   const user = useAtomValue(userAtom);
 
   useEffect(() => {
-    user && user.image && router.replace('/profile');
+    user?.image && router.replace('/profile');
 
     document.body.classList.add('home-page');
 

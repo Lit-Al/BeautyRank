@@ -31,7 +31,7 @@ export const LoginForm = () => {
   useEffect(() => {
     // При переходе на новую форму сбрасываем значения полей
     setValue('code', '');
-  }, [showCodePage]);
+  }, [showCodePage, setValue]);
 
   const userQuery = useQuery('user', getMe, {
     onSuccess: ({ data }) => {

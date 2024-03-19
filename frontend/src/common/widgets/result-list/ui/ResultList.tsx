@@ -7,6 +7,7 @@ import React, { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import styles from './ResultList.module.scss';
 import { IResult } from 'common/features/evaluation-member/lib';
+import { BeautyLoader } from 'common/shared/ui/beauty-loader';
 
 export const ResultList = () => {
   const router = useRouter();
@@ -75,7 +76,7 @@ export const ResultList = () => {
           ))}
         </ul>
       ) : (
-        <Loader />
+        <BeautyLoader />
       )}
     </>
   );

@@ -5,7 +5,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['127.0.0.1'],
+    domains: ['127.0.0.1', 'beautyrank.ru'],
   },
   webpack: (config, { isServer }) => {
     config.resolve.alias['@public'] = path.join(__dirname, 'public');

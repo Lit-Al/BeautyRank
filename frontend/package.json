@@ -19,6 +19,7 @@
     "path": "^0.12.7",
     "react": "18.2.0",
     "react-avatar-editor": "^13.0.2",
+    "react-confetti": "^6.1.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.49.3",
     "react-input-mask": "^2.0.4",

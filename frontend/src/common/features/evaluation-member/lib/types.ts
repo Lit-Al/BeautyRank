@@ -1,4 +1,3 @@
-import { IMember } from 'common/entities/member';
 import { IPhoto } from 'common/features/upload-member-photo/lib';
 import { ChangeEvent } from 'react';
 
@@ -24,16 +23,6 @@ export interface IEvaluationCriteriaFormProps {
     attribute: IMemberAssessmentsAttributes
   ) => void;
   totalScore: number;
-}
-
-export interface IEvaluationModalProps {
-  isModalOpen: boolean;
-  memberPhotos: IPhoto[];
-  setModalOpen: (isModalOpen: boolean) => void;
-  member: IMember;
-  totalScore: number;
-  memberAttributes: IMemberAssessmentsAttributes[];
-  nomination: string;
 }
 
 export interface IResult {

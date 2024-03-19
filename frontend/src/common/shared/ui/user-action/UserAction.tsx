@@ -21,11 +21,6 @@ export const UserAction = ({ role }: { role: string }) => {
               Выберите модель с которой работаете
             </p>
           )}
-          {role === 'Организатор' && (
-            <p className={styles.user_action}>
-              Вы Организатор, делайте, что пожелаете
-            </p>
-          )}
         </>
       )}
     </>
