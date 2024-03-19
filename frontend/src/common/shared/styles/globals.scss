@@ -73,6 +73,12 @@ input {
   font-family: 'SF Pro Display', sans-serif;
 }
 
+input[type='number'] {
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
+  appearance: textfield;
+}
+
 button {
   cursor: pointer;
 }

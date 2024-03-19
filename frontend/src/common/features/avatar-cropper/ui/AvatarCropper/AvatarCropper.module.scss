@@ -81,17 +81,27 @@
   border-radius: 15px;
   outline: none;
   background: #d0d0d0;
-}
 
-.input_range::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 30px;
-  height: 15px;
-  cursor: pointer;
-  opacity: 0.64;
-  background: #ff3e9b;
-  box-shadow: 2px 2px 5px rgba(255, 0, 137.7, 0.5);
-  border-radius: 3px;
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 30px;
+    height: 15px;
+    cursor: pointer;
+    opacity: 0.64;
+    background: #ff3e9b;
+    box-shadow: 2px 2px 5px rgba(255, 0, 137.7, 0.5);
+    border-radius: 3px;
+  }
+
+  &::-moz-range-thumb {
+    width: 30px;
+    height: 15px;
+    cursor: pointer;
+    opacity: 0.64;
+    background: #ff3e9b;
+    box-shadow: 2px 2px 5px rgba(255, 0, 137.7, 0.5);
+    border-radius: 3px;
+  }
 }
 
 .close_modal {

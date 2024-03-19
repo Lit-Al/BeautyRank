@@ -6,7 +6,7 @@ class User(AbstractUser):
     image = models.ImageField(upload_to="images/", null=True, blank=True)
 
     phone_number = models.CharField(
-        max_length=11,
+        max_length=12,
         help_text="Введите номер телефона пользователя",
         verbose_name="Номер телефона",
     )

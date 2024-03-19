@@ -8,7 +8,7 @@ def send_sms(phone, random_number):
     :param token: токен авторизации
     :return: id сообщения
     """
-    token = None
+    token = settings.TOKEN_SMSC
     try:
         response = requests.post(
             "https://online.sigmasms.ru/api/login",
