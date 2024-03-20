@@ -18,6 +18,8 @@ export const ENDPOINTS = {
   },
   EVENTS: {
     CHAMP: `${BASE_API_URL}/api/v1/event/`,
+    CHAMP_WINNERS_NOMINATIONS: `/winners_nominations/`,
+    CHAMP_WINNERS_CATEGORIES: `/winners_of_categories/`,
   },
   ASSESSMENTS: {
     ATTRIBUTE: `${BASE_API_URL}/api/v1/nominationAttribute/`,

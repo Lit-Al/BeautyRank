@@ -23,6 +23,7 @@ export interface IMember {
   is_done: boolean;
   preview: string;
   url_message_video: string;
+  id_member: number;
 }
 
 export interface MemberCardProps {

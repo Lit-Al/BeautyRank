@@ -1,6 +1,6 @@
 import { Button } from 'common/shared/ui/button';
 import React from 'react';
-import uploadPhtotoBackg from '@public/images/background-eyebrows.jpg';
+import uploadPhtotoBackg from '@public/images/decor-vectors.svg';
 import styles from './UploadPhotoForm.module.scss';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -41,13 +41,8 @@ const UploadPhotoForm = () => {
       {member ? (
         <>
           <div className={styles.upload_photo__backg}>
-            <Image
-              src={uploadPhtotoBackg}
-              alt="Выберите Фото"
-              layout="responsive"
-            />
+            <Image src={uploadPhtotoBackg} alt="Выберите Фото" width={470} />
           </div>
-
           <h3 className={styles.upload_photo__title}>Загрузите фото модели</h3>
           <p className={styles.upload_photo__nomination}>
             {member?.nomination} {member?.category}

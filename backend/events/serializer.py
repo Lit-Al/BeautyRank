@@ -42,7 +42,7 @@ class MemberNominationSerializer(serializers.ModelSerializer):
     category = serializers.CharField(
         source="category_nomination.event_category.category.name", read_only=True
     )
-    id_member = serializers.CharField(source="member.user.id", read_only=True)
+    id_member = serializers.IntegerField(source="member.user.id", read_only=True)
     member = serializers.CharField(source="member.user", read_only=True)
     result_sum = serializers.IntegerField(source="result_all", read_only=True)
     preview = serializers.SerializerMethodField()
@@ -126,11 +126,11 @@ class EventSerializer(serializers.ModelSerializer):
 
 class MemberNominationSerializerForWinners(serializers.ModelSerializer):
     member = serializers.CharField(source="member.user", read_only=True)
-    result_sum = serializers.IntegerField(read_only=True)
+    result_all = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = MemberNomination
-        fields = ("id", "member", "result_sum")
+        fields = ("id", "member", "result_all")
         read_only_fields = ["id"]
 
 

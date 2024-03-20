@@ -35,7 +35,7 @@ export default function AvatarPage() {
 
   return (
     <>
-      {showCheckMark && <CheckMark />}
+      {showCheckMark && <CheckMark text="Успешно!" />}
       <Layout pageTitle="Выбор Аватара">
         <Logo />
         <h1 className={styles.auth_title}>Красота!</h1>

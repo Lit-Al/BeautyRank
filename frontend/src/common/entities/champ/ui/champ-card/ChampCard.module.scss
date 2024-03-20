@@ -12,6 +12,10 @@
     align-items: center;
     padding: 0;
 
+    img {
+      object-fit: contain;
+    }
+
     &_active {
       border: 2px solid #ff006b;
     }

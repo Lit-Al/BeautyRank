@@ -36,8 +36,8 @@ class MemberNominationViewSet(
                 super()
                 .get_queryset()
                 .annotate(
-                    count_results=Count("results"),
-                    count_staffs=Count("category_nomination__event_staff"),
+                    count_results=Count("results", distinct=True),
+                    count_staffs=Count("category_nomination__event_staff", distinct=True),
                 )
                 .annotate(
                     is_done=Case(

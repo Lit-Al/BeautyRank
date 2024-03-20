@@ -63,20 +63,24 @@ export const MembersList = () => {
         </>
       ) : (
         <>
-          {currentMasterMembers.length !== 0 ? (
+          {champ?.role !== 'Организатор' && (
             <>
-              {champ?.role !== 'Организатор' && (
-                <h3 className={styles.members__title}>Ваши работы:</h3>
+              {currentMasterMembers.length !== 0 ? (
+                <>
+                  <h3 className={styles.members__title}>Ваши работы:</h3>
+
+                  <ul className={styles.members__list}>
+                    {currentMasterMembers.map((member) => (
+                      <MemberCard key={member.id} member={member} />
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <Loader />
               )}
-              <ul className={styles.members__list}>
-                {currentMasterMembers.map((member) => (
-                  <MemberCard key={member.id} member={member} />
-                ))}
-              </ul>
             </>
-          ) : (
-            <Loader />
           )}
+
           {champ?.role !== 'Организатор' && (
             <h3 className={styles.members__title}>Работы других мастеров:</h3>
           )}

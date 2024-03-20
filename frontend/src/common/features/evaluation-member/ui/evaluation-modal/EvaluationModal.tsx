@@ -23,7 +23,7 @@ export const EvaluationModal = () => {
   const { data: master } = useQuery('master', () => getUser(member?.id!), {
     enabled: !!member?.id,
   });
-  const whatsappLink = `https://api.whatsapp.com/send/?phone=${master?.data.phone_number}&text=Добрый день, ${master?.data.first_name}! Я оценил(а) вашу работу в номинации - ${member?.nomination} ${member?.category}!`;
+  const whatsappLink = `https://api.whatsapp.com/send/?phone=${master?.data.phone_number}&text=Добрый день, ${master?.data.last_name}! Я оценил(а) вашу работу в номинации - ${member?.nomination} ${member?.category}!`;
 
   const [evaluationModalOpen, setEvaluationModalOpen] = useState(false);
 

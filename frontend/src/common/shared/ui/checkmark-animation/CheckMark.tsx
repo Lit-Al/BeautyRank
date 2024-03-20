@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from './CheckMark.module.scss';
-function CheckMark() {
+function CheckMark({ text }: { text: string }) {
   const [showCheckMark, setShowCheckMark] = useState<boolean>(true);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ function CheckMark() {
           d="M14.1 27.2l7.1 7.2 16.7-16.8"
         />
       </svg>
-      <h1 className={styles.checkMark_title}>Успешно!</h1>
+      <h1 className={styles.checkMark_title}>{text}</h1>
     </div>
   );
 }

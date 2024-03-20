@@ -69,7 +69,6 @@ export const MemberCard: FC<MemberCardProps> = ({ member }) => {
     }
     return false;
   };
-
   return (
     <>
       {!isLoading ? (
@@ -83,9 +82,7 @@ export const MemberCard: FC<MemberCardProps> = ({ member }) => {
                   !userIsStaff &&
                   styles.members__content_other
                 } ${
-                  member.result_sum > 0 &&
-                  isMyMark() &&
-                  styles.members__content_done
+                  member.is_done && isMyMark() && styles.members__content_done
                 }`}
               >
                 <span className={styles.members__number}>№{member.id}</span>

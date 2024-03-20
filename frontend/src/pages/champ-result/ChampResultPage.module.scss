@@ -1,0 +1,38 @@
+@import '../../common/shared/styles/variables.scss';
+
+.nominations_categories {
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    align-items: center;
+    justify-content: center;
+  }
+  &__item {
+    text-align: center;
+  }
+  &__title {
+    color: $pink;
+    font-size: 25px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  &__nomination {
+    color: $black;
+    margin: 5px;
+    font-size: 22px;
+    font-weight: 700;
+    border-bottom: 2px solid #949494;
+    padding-bottom: 10px;
+    margin: 20px;
+  }
+  &__member_name {
+    font-size: 20px;
+    color: black;
+  }
+  &__result {
+    color: $black;
+    font-size: 16px;
+    margin: 5px 0px 15px;
+  }
+}

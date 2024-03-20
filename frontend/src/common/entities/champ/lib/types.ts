@@ -25,3 +25,11 @@ export interface IChamp {
 export interface ChampCardProps {
   champ: IChamp;
 }
+
+export interface IChampNominationsCategories {
+  name: string;
+  members: Array<{
+    member: string;
+    result_all: number;
+  }>;
+}
