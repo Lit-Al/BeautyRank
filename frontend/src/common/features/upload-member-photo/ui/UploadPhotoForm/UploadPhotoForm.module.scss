@@ -41,11 +41,26 @@
     font-size: 24px;
     font-weight: 800;
     text-align: center;
+    margin-top: 200px;
   }
 
   &__nomination {
     font-size: 16px;
     font-weight: 700;
     margin-bottom: 40px;
+  }
+
+  &__decor {
+    position: absolute;
+    top: 60px;
+    height: 300px;
+    width: 92%;
+    max-width: 430px;
+    background: url(/images/decor-vectors.svg) no-repeat;
+    transform: scale(1.07);
+    -webkit-transform: scale(1.07);
+    -moz-transform: scale(1.07);
+    -ms-transform: scale(1.07);
+    -o-transform: scale(1.07);
   }
 }

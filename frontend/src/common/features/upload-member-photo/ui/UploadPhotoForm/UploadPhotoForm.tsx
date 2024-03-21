@@ -40,9 +40,7 @@ const UploadPhotoForm = () => {
     <>
       {member ? (
         <>
-          <div className={styles.upload_photo__backg}>
-            <Image src={uploadPhtotoBackg} alt="Выберите Фото" width={470} />
-          </div>
+          <div className={styles.upload_photo__decor}></div>
           <h3 className={styles.upload_photo__title}>Загрузите фото модели</h3>
           <p className={styles.upload_photo__nomination}>
             {member?.nomination} {member?.category}

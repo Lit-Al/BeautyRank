@@ -23,16 +23,15 @@ export const MembersList = () => {
     'membersList',
     async () => {
       const { data } = await getMembers(champ?.id!);
-      setMembers(data);
       const currentMasterMembers = data.filter((member) =>
         member.member.includes(user?.last_name!)
       );
       const otherMasterMembers = data.filter(
         (member) => !member.member.includes(user?.last_name!)
       );
-
       setCurrentMasterMembers(currentMasterMembers);
       setOtherMasterMembers(otherMasterMembers);
+      setMembers(data);
       return data;
     },
     {
