@@ -99,7 +99,7 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
             className={styles.avatar_input}
             type="file"
             onChange={handleImageSelect}
-            accept="image/*"
+            accept="image/*,.mpo"
           />
         </label>
       ) : (
@@ -110,7 +110,7 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
               className={styles.avatar_input}
               type="file"
               onChange={handleImageSelect}
-              accept="image/*"
+              accept="image/*,.mpo"
             />
             <span className={styles.avatar_input_style}>Выбрать фото</span>
           </label>

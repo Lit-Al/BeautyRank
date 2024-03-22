@@ -18,7 +18,7 @@ const UploadPhotoList: FC<IPhotoListProps> = ({
     {photos.map((photo, index) => (
       <li key={index} className={styles.upload_photo__item}>
         <label className={styles.upload_photo__label}>
-          <input type="file" accept="image/*" onChange={onChange(index)} />
+          <input type="file" accept="image/*,.mpo" onChange={onChange(index)} />
           <Image
             src={getImageSrc(index)}
             alt="Выбранное фото"
