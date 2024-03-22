@@ -1,9 +1,8 @@
 import { useState, useRef, ReactNode, ChangeEvent } from 'react';
 import AvatarEditor from 'react-avatar-editor';
 import styles from './AvatarCropper.module.scss';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { userAtom } from 'store';
-import { IUser } from 'common/shared/types';
+import { useAtom } from 'jotai';
+import { avatarAtom } from 'store';
 import Avatar from 'common/shared/ui/avatar/Avatar';
 import Image from 'next/image';
 import closeIcon from '@/public/images/close-icon.svg';
@@ -19,8 +18,7 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
   const editorRef = useRef<AvatarEditor | null>(null);
   const [selectedImage, setSelectedImage] = useState(''); // Состояние для хранения выбранного изображения
   const [showModal, setShowModal] = useState(false);
-  const setAvatar = useSetAtom<any>(userAtom);
-  const user = useAtomValue(userAtom);
+  const [avatar, setAvatar] = useAtom(avatarAtom);
 
   const handleImageSelect = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -34,7 +32,7 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
     setShowModal(false);
     if (editorRef.current) {
       const dataUrl = editorRef.current.getImage().toDataURL();
-      setAvatar((prev: IUser) => ({
+      setAvatar((prev: any) => ({
         ...prev,
         image: dataUrl,
       }));
@@ -43,8 +41,8 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
 
   const handleClose = () => {
     setShowModal(false);
-    if (!user?.image) {
-      setAvatar((prev: IUser) => ({
+    if (!avatar?.image) {
+      setAvatar((prev: any) => ({
         ...prev,
         image: null,
       }));
@@ -116,7 +114,7 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
             />
             <span className={styles.avatar_input_style}>Выбрать фото</span>
           </label>
-          {user?.image && <Avatar />}
+          {avatar?.image && <Avatar />}
         </>
       )}
     </>

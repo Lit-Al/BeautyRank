@@ -1,6 +1,7 @@
 import { atomWithStorage } from 'jotai/utils';
 import { IUser } from 'common/shared/types';
 import { IChamp } from 'common/entities/champ';
+import { atom } from 'jotai';
 
 let initialUser: IUser | null = null;
 let initialChamp: IChamp | null = null;
@@ -29,5 +30,7 @@ export const refreshTokenAtom = atomWithStorage<string | null>(
 );
 
 export const userAtom = atomWithStorage<IUser | null>('user', initialUser);
+
+export const avatarAtom = atom<any>(null);
 
 export const champAtom = atomWithStorage<IChamp | null>('champ', initialChamp);

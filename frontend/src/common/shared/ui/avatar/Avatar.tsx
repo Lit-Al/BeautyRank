@@ -3,7 +3,7 @@ import { BASE_API_URL } from 'common/shared/api/endpoints';
 import { isBase64Image } from 'common/shared/helpers';
 import { useAtomValue } from 'jotai';
 import { useState, useEffect } from 'react';
-import { userAtom } from 'store';
+import { avatarAtom, userAtom } from 'store';
 import Image from 'next/image';
 
 interface IAvatarProps {
@@ -12,8 +12,13 @@ interface IAvatarProps {
 
 const Avatar = ({ edit = false }: IAvatarProps) => {
   const user = useAtomValue(userAtom);
+  const avatar = useAtomValue(avatarAtom);
   const isBase64 = isBase64Image(user?.image);
-  const avatarUrl = isBase64 ? user?.image : `${BASE_API_URL}${user?.image}`;
+  const avatarUrl = avatar
+    ? avatar.image
+    : isBase64
+    ? user?.image
+    : `${BASE_API_URL}${user?.image}`;
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
     setIsClient(true);
