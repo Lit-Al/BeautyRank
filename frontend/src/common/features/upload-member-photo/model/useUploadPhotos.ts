@@ -19,8 +19,8 @@ export const useUploadPhotos = ({ selectedFiles }: IUseUploadPhotos) => {
         formData.append('before_after', file.before_after);
         formData.append('name', file.name!);
         await setMemberPhotos(formData);
-        router.replace('/profile');
       }
+      router.replace('/profile');
     } catch (error) {
       console.error(error);
     }
