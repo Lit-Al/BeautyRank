@@ -2,11 +2,12 @@ import { useState, useRef, ReactNode, ChangeEvent } from 'react';
 import AvatarEditor from 'react-avatar-editor';
 import styles from './AvatarCropper.module.scss';
 import { useAtom } from 'jotai';
-import { avatarAtom } from 'store';
+import { userAtom } from 'store';
 import Avatar from 'common/shared/ui/avatar/Avatar';
 import Image from 'next/image';
 import closeIcon from '@/public/images/close-icon.svg';
 import { Button } from 'common/shared/ui/button';
+import { base64ToFileFunction } from 'common/shared/helpers';
 interface AvatarCropperProps {
   children?: ReactNode;
   childrenClassName?: string;
@@ -16,33 +17,33 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
   const [scale, setScale] = useState(2);
   const [position, setPosition] = useState({ x: 0.5, y: 0.5 });
   const editorRef = useRef<AvatarEditor | null>(null);
-  const [selectedImage, setSelectedImage] = useState(''); // Состояние для хранения выбранного изображения
+  const [selectedImage, setSelectedImage] = useState<File>(); // Состояние для хранения выбранного изображения
   const [showModal, setShowModal] = useState(false);
-  const [avatar, setAvatar] = useAtom(avatarAtom);
+  const [user, setUser] = useAtom(userAtom);
 
   const handleImageSelect = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setShowModal(true);
       const file = event.target.files[0];
-      setSelectedImage(URL.createObjectURL(file));
+      setSelectedImage(file);
     }
   };
 
   const handleSave = () => {
     setShowModal(false);
-    if (editorRef.current) {
-      const dataUrl = editorRef.current.getImage().toDataURL();
-      setAvatar((prev: any) => ({
-        ...prev,
-        image: dataUrl,
-      }));
-    }
+    const avatarFile = base64ToFileFunction(
+      editorRef.current!.getImage().toDataURL()
+    );
+    setUser((prev: any) => ({
+      ...prev,
+      image: avatarFile,
+    }));
   };
 
   const handleClose = () => {
     setShowModal(false);
-    if (!avatar?.image) {
-      setAvatar((prev: any) => ({
+    if (!user?.image) {
+      setUser((prev: any) => ({
         ...prev,
         image: null,
       }));
@@ -60,7 +61,7 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
           <div className={styles.modal__content}>
             <AvatarEditor
               style={{ borderRadius: '10px' }}
-              image={selectedImage} // Используем выбранное изображение для редактирования
+              image={selectedImage!} // Используем выбранное изображение для редактирования
               width={320}
               height={320}
               borderRadius={180}
@@ -114,7 +115,7 @@ const AvatarCropper = ({ children, childrenClassName }: AvatarCropperProps) => {
             />
             <span className={styles.avatar_input_style}>Выбрать фото</span>
           </label>
-          {avatar?.image && <Avatar />}
+          <Avatar user={user!} />
         </>
       )}
     </>

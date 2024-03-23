@@ -1,8 +1,6 @@
 import { Button } from 'common/shared/ui/button';
-import React from 'react';
-import uploadPhtotoBackg from '@public/images/decor-vectors.svg';
+import React, { useState } from 'react';
 import styles from './UploadPhotoForm.module.scss';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import UploadPhotoBox from '../UploadPhotoBox/UploadPhotoBox';
 import {
@@ -18,6 +16,7 @@ import { BEAUTY_RANK_BOT } from 'common/shared/api/endpoints';
 const UploadPhotoForm = () => {
   const router = useRouter();
   const memberId = Number(router.query.memberId);
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
 
   const { member, selectedFiles, setSelectedFiles } = useMember(memberId);
   const { handleFileChange } = useFileChange({
@@ -34,6 +33,13 @@ const UploadPhotoForm = () => {
       return selectedFiles.some((file) => file === null);
     }
     return true;
+  };
+
+  const handleButtonClick = () => {
+    if (!isButtonClicked) {
+      setIsButtonClicked(true);
+      mutation.mutate();
+    }
   };
 
   return (
@@ -73,11 +79,11 @@ const UploadPhotoForm = () => {
             Загрузить Видео
           </Link>
           <Button
-            disabled={buttonIsDisabled()}
+            disabled={buttonIsDisabled() || isButtonClicked}
             className={styles.upload_photo__btn}
-            onClick={() => mutation.mutate()}
+            onClick={handleButtonClick}
           >
-            Подтвердить
+            {isButtonClicked ? 'Загрузка...' : 'Подтвердить'}
           </Button>
         </>
       ) : (

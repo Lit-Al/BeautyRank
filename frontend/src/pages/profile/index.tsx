@@ -29,7 +29,7 @@ function ProfilePage() {
       {user && isClient ? (
         <>
           <Link href="/profile-edit">
-            <Avatar edit />
+            <Avatar edit user={user} />
           </Link>
           <UserName />
           <UserRole />

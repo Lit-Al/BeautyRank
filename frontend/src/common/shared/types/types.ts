@@ -2,8 +2,8 @@ export interface IUser {
   id: number;
   first_name: string;
   last_name: string;
-  image: null | string;
-  phone_number: string
+  image: null | File | string;
+  phone_number: string;
 }
 
 export interface ILoginRequest {

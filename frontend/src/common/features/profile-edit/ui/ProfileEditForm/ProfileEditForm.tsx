@@ -10,7 +10,6 @@ import { champAtom, userAtom } from 'store';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { IUser } from 'common/shared/types';
 import { useMutation } from 'react-query';
-import { base64ToFileFunction, isBase64Image } from 'common/shared/helpers';
 import router from 'next/router';
 import { ChampsList } from 'common/widgets/champs-list';
 import { Loader } from 'common/shared/ui/loader';
@@ -21,7 +20,6 @@ export const ProfileEditForm: FC = () => {
   const user = useAtomValue(userAtom);
   const [isClient, setIsClient] = useState(false);
   const setStoreUser = useSetAtom(userAtom);
-  const avatarFile = base64ToFileFunction(user?.image!);
   const selectedChamp = useAtomValue(champAtom);
 
   useEffect(() => {
@@ -69,9 +67,7 @@ export const ProfileEditForm: FC = () => {
 
   const onSubmitProfile = (data: Partial<IUser>) => {
     const formData = new FormData();
-    if (isBase64Image(user?.image)) {
-      formData.append('image', avatarFile!);
-    }
+    formData.append('image', user?.image!);
     formData.append('first_name', data.first_name!);
     formData.append('last_name', data.last_name!);
     mutation.mutate(formData as unknown as IUser);
@@ -81,7 +77,7 @@ export const ProfileEditForm: FC = () => {
   return (
     <>
       <AvatarCropper>
-        <Avatar edit />
+        <Avatar edit user={user!} />
       </AvatarCropper>
       {user && isClient ? (
         <form
