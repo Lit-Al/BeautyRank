@@ -17,13 +17,13 @@ export const EvaluationModal = () => {
   const { query } = router;
   const { evaluation } = query;
   const { score } = query;
-  const { member, memberPhotos, memberAttributes } = useMember(
+  const { member, memberPhotos } = useMember(
     Number(evaluation!)
   );
-  const { data: master } = useQuery('master', () => getUser(member?.id!), {
-    enabled: !!member?.id,
+  const { data: master } = useQuery('master', () => getUser(member?.id_member!), {
+    enabled: !!member?.id_member,
   });
-  const whatsappLink = `https://api.whatsapp.com/send/?phone=${master?.data.phone_number}&text=Добрый день, ${master?.data.last_name}! Я оценил(а) вашу работу в номинации - ${member?.nomination} ${member?.category}!`;
+  const whatsappLink = `https://api.whatsapp.com/send/?phone=${master?.data.phone_number}&text=Добрый день, ${master?.data.first_name}! Я оценил(а) вашу работу в номинации - ${member?.nomination} ${member?.category}!`;
 
   const [evaluationModalOpen, setEvaluationModalOpen] = useState(false);
 

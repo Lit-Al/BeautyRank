@@ -1,6 +1,8 @@
 import { Button } from 'common/shared/ui/button';
 import React, { useState } from 'react';
+import uploadPhtotoBackg from '@public/images/decor-vectors.svg';
 import styles from './UploadPhotoForm.module.scss';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import UploadPhotoBox from '../UploadPhotoBox/UploadPhotoBox';
 import {
@@ -30,7 +32,9 @@ const UploadPhotoForm = () => {
 
   const buttonIsDisabled = () => {
     if (selectedFiles.length) {
-      return selectedFiles.some((file) => file?.photo === null);
+      return selectedFiles.some(
+        (file) => file?.photo === undefined || file?.photo === null
+      );
     }
     return true;
   };
