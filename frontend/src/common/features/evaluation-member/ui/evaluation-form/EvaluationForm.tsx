@@ -22,16 +22,18 @@ export const EvaluationForm = ({ memberId }: IEvaluationFormProps) => {
     return memberAttributes.every((attribute) => attribute.score !== undefined);
   }, [memberAttributes]);
 
-  const { mutateAsync: postResult } = useSetMemberResult({
-    memberId: member?.id!,
-    totalScore,
-    memberAttributes,
-  });
+  const { mutateAsync: postResult, isLoading: isResultLoading } =
+    useSetMemberResult({
+      memberId: member?.id!,
+      totalScore,
+      memberAttributes,
+    });
 
   if (isLoading) {
     return <Loader />;
   }
 
+  console.log(isResultLoading);
   return (
     <>
       <h1 className={styles.evaluation__title}>Оцените Участника</h1>
@@ -47,11 +49,11 @@ export const EvaluationForm = ({ memberId }: IEvaluationFormProps) => {
         handleChange={handleChange}
       />
       <Button
-        disabled={!isAllAttributesFilled}
+        disabled={!isAllAttributesFilled || isResultLoading}
         className={styles.evaluation__modal_btn}
         onClick={() => postResult()}
       >
-        Подтвердить
+        {isResultLoading ? 'Загрузка...' : 'Подтвердить'}
       </Button>
     </>
   );
