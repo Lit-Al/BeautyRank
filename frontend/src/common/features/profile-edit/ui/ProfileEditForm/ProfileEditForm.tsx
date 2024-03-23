@@ -147,6 +147,15 @@ export const ProfileEditForm: FC = () => {
           >
             Подтвердить
           </Button>
+          <Button
+            className={styles.profile__button_exit}
+            onClick={() => {
+              localStorage.clear();
+              router.reload();
+            }}
+          >
+            Выйти
+          </Button>
         </form>
       ) : (
         <Loader />
