@@ -86,7 +86,6 @@ export const MemberCard: FC<MemberCardProps> = ({ member }) => {
                 }`}
               >
                 <span className={styles.members__number}>№{member.id}</span>
-
                 <div className={styles.members__service}>
                   <p className={styles.members__nomination}>
                     {`${member.nomination} ${member.category}`}
@@ -95,14 +94,16 @@ export const MemberCard: FC<MemberCardProps> = ({ member }) => {
                     {memberPoints()}
                   </span>
                 </div>
-                <Image
-                  width={55}
-                  height={55}
-                  className={styles.members__avatar}
-                  src={memberPreview}
-                  alt={`${(member.nomination, member.category)}`}
-                  quality={100}
-                />
+                <div>
+                  <Image
+                    width={55}
+                    height={55}
+                    className={styles.members__avatar}
+                    src={memberPreview}
+                    alt={`${(member.nomination, member.category)}`}
+                    quality={100}
+                  />
+                </div>
               </Link>
             </li>
           )}
