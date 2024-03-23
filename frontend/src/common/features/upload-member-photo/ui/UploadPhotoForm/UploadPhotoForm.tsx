@@ -30,7 +30,7 @@ const UploadPhotoForm = () => {
 
   const buttonIsDisabled = () => {
     if (selectedFiles.length) {
-      return selectedFiles.some((file) => file === null);
+      return selectedFiles.some((file) => file?.photo === null);
     }
     return true;
   };
