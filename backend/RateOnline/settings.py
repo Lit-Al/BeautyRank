@@ -145,7 +145,7 @@ USE_TZ = True
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_URL = "django-static/"
 STATIC_ROOT = BASE_DIR / "static_root"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = BASE_DIR / "media_root"
 MEDIA_URL = "django-media/"
 
 # Default primary key field type
@@ -179,8 +179,10 @@ DEFAULT_SENDER = "74956665610"
 
 CORS_ORIGIN_WHITELIST = ["http://localhost:3000"]
 
-
 # TELEGRAM SETTINGS
 
 TELEGRAM_SECRET_KEY = env("SECRET_KEY_TELEGRAM")
 TELEGRAM_CHAT_ID = env("TELEGRAM_CHAT_ID")
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

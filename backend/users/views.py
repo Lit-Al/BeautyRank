@@ -32,7 +32,7 @@ class UserViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
             if user is None:
                 user = User.objects.create(phone_number=phone_number)
             random_number = generate_password()
-            # send_sms(phone_number, random_number)
+            send_sms(phone_number, random_number)
             user.set_password(random_number)
             user.save()
             return Response(
