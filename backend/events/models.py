@@ -193,16 +193,17 @@ class MemberNomination(models.Model):
     )
     url_video = models.TextField(default="", blank=True)
     url_message_video = models.TextField(default="", blank=True)
+    is_done = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        print("membernomination save")
+        if self.category_nomination.event_staff.count() == self.results.count():
+            self.is_done = True
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Номинация участника"
         verbose_name_plural = "Номинации участника"
-
-    # @property
-    # def is_done(self):
-    #     count_referee = self.category_nomination.staffs.count()
-    #     count_results = self.results.count()
-    #     return count_results == count_referee
 
     def __str__(self) -> str:
         return f"{self.member} --- {self.category_nomination}"
@@ -226,6 +227,22 @@ class MemberNominationPhoto(models.Model):
         verbose_name="Название фотографии",
     )
     before_after = models.CharField(max_length=2, choices=BEFORE_AFTER_CHOICES)
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            # Количество фотографий в MemberNomination в момент сохранения новой фотографии
+            photos_count_member_nomination = self.member_nomination.photos.count()
+
+            # Количество фотографий в Nomination, относящейся к запрошенной MemberNomination
+            photos_count_nomination = (
+                self.member_nomination.category_nomination.nomination.get_photo_count()
+            )
+
+            if photos_count_member_nomination >= photos_count_nomination:
+                return ValueError(
+                    f"Максимум {photos_count_nomination} фотографии для данной MemberNomination."
+                )
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return f"{self.member_nomination}"
@@ -257,6 +274,13 @@ def save_url(sender, instance, **kwargs):
     if instance.url_video and not instance.url_message_video:
         integration = TelegramIntegration()
         integration.send_video_to_telegram_channel(instance)
+
+
+@receiver(post_save, sender=CategoryNomination)
+def save_member_nominations(sender, instance, **kwargs):
+    print("save_member_nominations")
+    mn = MemberNomination.objects.all()
+    list(map(lambda x: x.save(), mn))
 
 
 # @receiver(post_save, sender=Event)
