@@ -31,17 +31,14 @@ class UserViewSet(RetrieveModelMixin, viewsets.GenericViewSet):
             user = User.objects.filter(Q(phone_number=phone_number)).first()
             if user is None:
                 user = User.objects.create(phone_number=phone_number)
-            random_number = generate_password()
-            send_sms(phone_number, random_number)
-            user.set_password(random_number)
-            user.save()
-            return Response(
-                {
-                    "success": "Успешно!",
-                    "phone_number": phone_number,
-                    "password": random_number,
-                }
-            )
+            if user.is_superuser:
+                return Response({"success": "Успешно!"})
+            else:
+                random_number = generate_password()
+                send_sms(phone_number, random_number)
+                user.set_password(random_number)
+                user.save()
+                return Response({"success": "Успешно!"})
         return ValidationError(
             detail="Номер введён неверно", code=status.HTTP_400_BAD_REQUEST
         )
