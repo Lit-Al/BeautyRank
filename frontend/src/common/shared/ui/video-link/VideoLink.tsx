@@ -1,7 +1,6 @@
 import { IMember } from 'common/entities/member';
 import Link from 'next/link';
 import styles from './VideoLink.module.scss';
-import React from 'react';
 
 export const VideoLink = ({ member }: { member: IMember }) => {
   return (

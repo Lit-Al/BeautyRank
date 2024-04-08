@@ -1,8 +1,6 @@
 import { Button } from 'common/shared/ui/button';
-import React, { useState } from 'react';
-import uploadPhtotoBackg from '@public/images/decor-vectors.svg';
+import { useState } from 'react';
 import styles from './UploadPhotoForm.module.scss';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import UploadPhotoBox from '../UploadPhotoBox/UploadPhotoBox';
 import {

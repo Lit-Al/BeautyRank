@@ -6,6 +6,10 @@
     padding: 4.5px 2px;
     max-width: 420px;
     width: 100%;
+
+    &_skeleton {
+      border-radius: 10px;
+    }
   }
   &__content {
     text-decoration: none;
@@ -26,6 +30,14 @@
       background: rgba(255, 255, 255, 0.604);
       outline-color: lighten($pink, 10%);
       outline-offset: -2px;
+    }
+
+    &:active {
+      transform: scale(0.95);
+      -webkit-transform: scale(0.95);
+      -moz-transform: scale(0.95);
+      -ms-transform: scale(0.95);
+      -o-transform: scale(0.95);
     }
 
     &_other {

@@ -22,9 +22,6 @@ export default function AvatarPage() {
         setShowCheckMark(true);
       }
     }
-    setTimeout(() => {
-      setShowCheckMark(false);
-    }, 2000);
 
     document.body.classList.add('avatar-page');
 

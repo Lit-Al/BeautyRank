@@ -33,7 +33,6 @@ export const EvaluationForm = ({ memberId }: IEvaluationFormProps) => {
     return <Loader />;
   }
 
-  console.log(isResultLoading);
   return (
     <>
       <h1 className={styles.evaluation__title}>Оцените Участника</h1>

@@ -3,7 +3,7 @@ import { getMemberPhotos, getMember } from 'common/shared/api/members';
 import { Loader } from 'common/shared/ui/loader';
 import { MemberPhotosList } from 'common/widgets/member-photos-list';
 import { useRouter } from 'next/router';
-import React, { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import styles from './ResultList.module.scss';
 import { IResult } from 'common/features/evaluation-member/lib';
@@ -12,15 +12,18 @@ import Link from 'next/link';
 import Image from 'next/image';
 import WhatsAppIcon from '@/public/images/whatsapp-icon.svg';
 import { getUser } from 'common/shared/api/users';
-import { useAtomValue } from 'jotai';
-import { champAtom } from 'store';
+import { IUser } from 'common/shared/types';
+import { IMember } from 'common/entities/member';
+import { getUserIsStaff } from 'common/shared/constants';
 
 export const ResultList = () => {
   const router = useRouter();
   const memberId = Number(router.query.memberId);
-  const champ = useAtomValue(champAtom);
+  const [master, setMaster] = useState<IUser>();
+  const [member, setMember] = useState<IMember>();
+  const USER_IS_STAFF = getUserIsStaff();
 
-  const { data: resultData } = useQuery(
+  const { data: resultData, isLoading: resultDataDataIsLoading } = useQuery(
     'memberResult',
     () => getMemberResults(memberId),
     {
@@ -31,19 +34,17 @@ export const ResultList = () => {
     }
   );
 
-  const { data: memberPhotosData } = useQuery(
-    'memberPhotos',
-    () => getMemberPhotos(memberId),
-    {
+  const { data: memberPhotosData, isLoading: memberPhotosDataIsLoading } =
+    useQuery('memberPhotos', () => getMemberPhotos(memberId), {
       enabled: !!memberId,
-    }
-  );
+    });
 
-  const { data: memberData } = useQuery(
+  const { data: memberData, isLoading: memberDataIsLoading } = useQuery(
     ['member', memberId],
     () => getMember(memberId),
     {
       enabled: !!memberId,
+      onSuccess: (data) => setMember(data.data),
     }
   );
 
@@ -53,26 +54,31 @@ export const ResultList = () => {
       : [];
   }, [resultData]);
 
-  const { data: master } = useQuery(
-    'master',
-    () => getUser(memberData?.data.id_member!),
-    {
-      enabled: !!memberData?.data.id_member,
-    }
-  );
+  useQuery('master', () => getUser(memberData?.data.id_member!), {
+    enabled: USER_IS_STAFF && !!memberData?.data.id_member,
+    onSuccess: (data) => setMaster(data.data),
+  });
 
-  const whatsappLink = `https://api.whatsapp.com/send/?phone=${master?.data.phone_number}&text=Добрый день, ${master?.data.first_name}! Я оценил(а) вашу работу в номинации - ${memberData?.data.nomination} ${memberData?.data.category}!`;
+  const whatsappLink = useMemo(() => {
+    if (!master || !memberData) return '';
+    return `https://api.whatsapp.com/send/?phone=${master.phone_number}&text=Добрый день, ${master.first_name}! Я оценил(а) вашу работу в номинации - ${memberData.data.nomination} ${memberData.data.category}!`;
+  }, [master, memberData]);
 
-  if (!memberPhotosData || !memberData || !resultData) {
+  if (
+    resultDataDataIsLoading ||
+    memberPhotosDataIsLoading ||
+    memberDataIsLoading
+  ) {
     return <Loader />;
   }
+
   return (
     <>
-      <MemberPhotosList memberPhotos={memberPhotosData.data || []} />
+      <MemberPhotosList memberPhotos={memberPhotosData?.data} />
       <p className={styles.member__nomination}>
-        {`${memberData.data.nomination} ${memberData.data.category}`}
+        {`${member?.nomination || ''} ${member?.category || ''}`}
       </p>
-      {resultData.data.length > 0 ? (
+      {!!resultData?.data.length ? (
         <>
           <ul className={styles.result__list}>
             {criteries.map((criteria, index) => (
@@ -92,7 +98,7 @@ export const ResultList = () => {
                 </p>
               </li>
             ))}
-            {champ?.role === 'Судья' && (
+            {USER_IS_STAFF && (
               <p className={styles.result__comment}>
                 Дать комментарий
                 <Link target="_blank" href={whatsappLink}>

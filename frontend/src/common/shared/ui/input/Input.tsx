@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ForwardRefRenderFunction, Ref } from 'react';
+import { ChangeEvent, ForwardRefRenderFunction, Ref } from 'react';
 import styles from './Input.module.scss';
 
 interface InputProps {

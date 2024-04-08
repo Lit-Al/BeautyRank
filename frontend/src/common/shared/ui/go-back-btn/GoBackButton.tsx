@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './GoBackButton.module.scss';
 import router from 'next/router';
 

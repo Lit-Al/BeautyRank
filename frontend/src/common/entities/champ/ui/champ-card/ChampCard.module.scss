@@ -12,6 +12,12 @@
     align-items: center;
     padding: 0;
 
+    &:disabled {
+      opacity: 0.5;
+      background-color: rgba(80, 80, 80, 0.37) !important;
+      cursor: not-allowed;
+    }
+
     img {
       object-fit: contain;
     }
@@ -20,12 +26,12 @@
       border: 2px solid #ff006b;
     }
 
-    &:hover {
+    &:hover:not(:disabled) {
       border: 2px solid #ff006b;
       transform: scale(1.03);
     }
 
-    &:active {
+    &:active:not(:disabled) {
       transform: scale(0.96);
     }
   }

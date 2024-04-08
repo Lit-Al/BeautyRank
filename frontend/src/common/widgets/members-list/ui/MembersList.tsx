@@ -1,98 +1,96 @@
-import { IMember, MemberCard } from 'common/entities/member';
+import {
+  IMember,
+  MemberCard,
+  MemberCardSkeleton,
+} from 'common/entities/member';
 import { getMembers } from 'common/shared/api/members';
 import { useAtomValue } from 'jotai';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { champAtom, userAtom } from 'store';
 import styles from './MembersList.module.scss';
-import { Loader } from 'common/shared/ui/loader';
 import { BeautyLoader } from 'common/shared/ui/beauty-loader';
 import { EvaluationModal } from 'common/features/evaluation-member/ui';
+import { getUserIsOrganizer, getUserIsStaff } from 'common/shared/constants';
+import { motion } from 'framer-motion';
 
 export const MembersList = () => {
   const [members, setMembers] = useState<IMember[]>();
-  const [currentMasterMembers, setCurrentMasterMembers] = useState<IMember[]>(
-    []
-  );
-  const [otherMasterMembers, setOtherMasterMembers] = useState<IMember[]>([]);
   const champ = useAtomValue(champAtom);
-  const userIsStaff = champ?.role === 'Судья';
+  const USER_IS_STAFF = getUserIsStaff();
+  const USER_IS_ORGANIZER = getUserIsOrganizer();
   const user = useAtomValue(userAtom);
 
   const { isLoading: isMembersLoading } = useQuery(
     'membersList',
     async () => {
       const { data } = await getMembers(champ?.id!);
-      const currentMasterMembers = data.filter((member) =>
-        member.member.includes(user?.last_name!)
-      );
-      const otherMasterMembers = data.filter(
-        (member) => !member.member.includes(user?.last_name!)
-      );
-      setCurrentMasterMembers(currentMasterMembers);
-      setOtherMasterMembers(otherMasterMembers);
       setMembers(data);
       return data;
     },
     {
       enabled: !!champ?.id,
       refetchOnWindowFocus: true,
-      //запрос раз в 5 минут
       refetchInterval: 50 * 60 * 100,
     }
   );
 
+  const currentMasterMembers = useMemo(() => {
+    return (
+      members?.filter((member) => member.member.includes(user?.last_name!)) ||
+      []
+    );
+  }, [members, user?.last_name]);
+
+  const otherMasterMembers = useMemo(() => {
+    return (
+      members?.filter((member) => !member.member.includes(user?.last_name!)) ||
+      []
+    );
+  }, [members, user?.last_name]);
+
   if (isMembersLoading) {
-    return <Loader />;
+    return (
+      <ul className={styles.members__list} style={{ paddingTop: '20px' }}>
+        {Array.from({ length: 5 }, (_, index) => (
+          <MemberCardSkeleton key={index} />
+        ))}
+      </ul>
+    );
   }
+
+  const renderMemberCards = (members: IMember[]) => (
+    <ul className={styles.members__list}>
+      {members.map((member, index) => (
+        <motion.li
+          key={member.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: index * 0.1 }}
+        >
+          <MemberCard key={member.id} member={member} />
+        </motion.li>
+      ))}
+    </ul>
+  );
 
   return (
     <>
-      {userIsStaff ? (
-        <>
-          <ul
-            className={`${styles.members__list} ${
-              userIsStaff && styles.members__list_staff
-            }`}
-          >
-            {members?.map((member) => (
-              <MemberCard key={member.id} member={member} />
-            ))}
-          </ul>
-        </>
+      {USER_IS_STAFF ? (
+        renderMemberCards(members!)
       ) : (
         <>
-          {champ?.role !== 'Организатор' && (
+          {!USER_IS_ORGANIZER && currentMasterMembers.length !== 0 && (
             <>
-              {currentMasterMembers.length !== 0 ? (
-                <>
-                  <h3 className={styles.members__title}>Ваши работы:</h3>
-
-                  <ul className={styles.members__list}>
-                    {currentMasterMembers.map((member) => (
-                      <MemberCard key={member.id} member={member} />
-                    ))}
-                  </ul>
-                </>
-              ) : (
-                <Loader />
-              )}
+              <h3 className={styles.members__title}>Ваши работы:</h3>
+              {renderMemberCards(currentMasterMembers)}
             </>
           )}
-
-          {champ?.role !== 'Организатор' && (
+          {!USER_IS_ORGANIZER && (
             <h3 className={styles.members__title}>Работы других мастеров:</h3>
           )}
           {otherMasterMembers.length !== 0 ? (
-            <>
-              <ul
-                className={`${styles.members__list_other} ${styles.members__list}`}
-              >
-                {otherMasterMembers.map((member) => (
-                  <MemberCard key={member.id} member={member} />
-                ))}
-              </ul>
-            </>
+            renderMemberCards(otherMasterMembers)
           ) : (
             <BeautyLoader />
           )}

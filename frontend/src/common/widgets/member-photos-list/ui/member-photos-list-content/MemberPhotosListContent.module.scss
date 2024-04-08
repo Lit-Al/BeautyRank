@@ -19,6 +19,8 @@
     border-radius: 100%;
     -o-object-fit: cover;
     object-fit: cover;
+    background: url(/images/BR_loader.gif) center center no-repeat;
+    background-size: contain;
   }
 
   &__name {

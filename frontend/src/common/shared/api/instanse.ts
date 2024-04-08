@@ -25,7 +25,7 @@ axiosInstanse.interceptors.request.use(async (config: any) => {
     (response) => response,
     (error: AxiosError) => {
       if (error.response?.status === 401 && isLoggedIn) {
-        localStorage.removeItem('user');
+        localStorage.clear();
       }
     }
   );
@@ -44,12 +44,11 @@ axiosInstanse.interceptors.request.use(async (config: any) => {
       const tokenInfo = token.split('.')[1];
       const tokenInfoDecoded = window.atob(tokenInfo);
       const { exp }: IAuthTokenInfo = JSON.parse(tokenInfoDecoded);
-      const LIFE_TIME_TO_UPDATE_MULTIPLIER = 50;
       const tokenLifeTime = exp - Math.round(+new Date() / 1000);
 
-      return tokenLifeTime < LIFE_TIME_TO_UPDATE_MULTIPLIER;
+      return tokenLifeTime <= 0;
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return true;
     }
   };
@@ -60,11 +59,11 @@ axiosInstanse.interceptors.request.use(async (config: any) => {
       const accessToken = accessTokenStorage?.replace(/"/g, '');
 
       if (!accessToken || isTokenExpired(accessToken)) {
-        console.log('Токен устарел или не существует');
+        console.error('Токен устарел или не существует');
 
         if (refreshTokenRequest === null) {
           refreshTokenRequest = api.auth.refreshToken({
-            refresh: refreshToken,
+            refresh: refreshToken!,
           });
         }
 
@@ -79,7 +78,7 @@ axiosInstanse.interceptors.request.use(async (config: any) => {
 
       return accessToken;
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return null;
     }
   };

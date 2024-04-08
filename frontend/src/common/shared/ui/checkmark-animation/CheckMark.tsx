@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './CheckMark.module.scss';
 function CheckMark({ text }: { text: string }) {
   const [showCheckMark, setShowCheckMark] = useState<boolean>(true);

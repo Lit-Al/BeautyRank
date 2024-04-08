@@ -7,30 +7,30 @@ import { declineNumberOfBalls } from 'common/shared/helpers';
 import { MemberCardProps } from 'common/entities/member/lib';
 import { BASE_API_URL } from 'common/shared/api/endpoints';
 import { useAtomValue } from 'jotai';
-import { champAtom, userAtom } from 'store';
+import { userAtom } from 'store';
 import { getMemberResults } from 'common/shared/api/assessments';
 import { useQuery } from 'react-query';
 import { Loader } from 'common/shared/ui/loader';
+import { getUserIsStaff } from 'common/shared/constants';
+import cn from 'classnames';
 
 export const MemberCard: FC<MemberCardProps> = ({ member }) => {
   const user = useAtomValue(userAtom);
-  const champ = useAtomValue(champAtom);
-  const userIsStaff = champ?.role === 'Судья';
-  const memberCurrent = member.member.includes(user?.last_name!);
-  const memberPreview = member.preview
-    ? `${BASE_API_URL}${member.preview}`
-    : unknownAvatar;
+  const USER_IS_STAFF = getUserIsStaff();
+
+  const { preview, id, result_sum, member: members } = member;
+  const memberPreview = preview ? `${BASE_API_URL}${preview}` : unknownAvatar;
 
   const { data: resultData, isLoading } = useQuery(
-    ['memberResult', member.id],
-    () => getMemberResults(member.id),
+    ['memberResult', id],
+    () => getMemberResults(id),
     {
-      enabled: !!member.id,
+      enabled: !!id && USER_IS_STAFF,
     }
   );
 
   const isMyMark = () => {
-    if (userIsStaff) {
+    if (USER_IS_STAFF) {
       return resultData?.data
         .map((result: any) => result.event_staff)
         .includes(user?.id);
@@ -39,36 +39,30 @@ export const MemberCard: FC<MemberCardProps> = ({ member }) => {
   };
 
   const memberLink = () => {
-    if (memberCurrent && !member.preview) {
-      return `/upload-photo/${member.id}`;
+    if (members.includes(user?.last_name!) && !preview) {
+      return `/upload-photo/${id}`;
     }
-    if (userIsStaff && member.preview && !isMyMark()) {
-      return `/member-evaluation/${member.id}`;
-    } else {
-      return `/member-result/${member.id}`;
+    if (USER_IS_STAFF && preview && !isMyMark()) {
+      return `/member-evaluation/${id}`;
     }
+    return `/member-result/${id}`;
   };
 
   const memberPoints = () => {
     if (!isMyMark()) {
       return 'оцените работу';
     }
-    if (member.preview && member.result_sum) {
-      return `${member.result_sum} ${declineNumberOfBalls(member.result_sum)}`;
+    if (preview && result_sum) {
+      return `${result_sum} ${declineNumberOfBalls(result_sum)}`;
     }
-    if (!member.preview) {
+    if (!preview) {
       return 'выберите фото';
-    } else {
-      return 'оценивается';
     }
+    return 'оценивается';
   };
 
-  const notPhotoMembers = () => {
-    if (!member.preview && userIsStaff) {
-      return true;
-    }
-    return false;
-  };
+  const notPhotoMembers = () => !preview && USER_IS_STAFF;
+
   return (
     <>
       {!isLoading ? (
@@ -77,13 +71,11 @@ export const MemberCard: FC<MemberCardProps> = ({ member }) => {
             <li className={styles.members__item} key={member.id}>
               <Link
                 href={memberLink()}
-                className={`${styles.members__content} ${
-                  !memberCurrent &&
-                  !userIsStaff &&
-                  styles.members__content_other
-                } ${
-                  member.is_done && isMyMark() && styles.members__content_done
-                }`}
+                className={cn(styles.members__content, {
+                  [styles.members__content_other]:
+                    !members.includes(user?.last_name!) && !USER_IS_STAFF,
+                  [styles.members__content_done]: member.is_done && isMyMark(),
+                })}
               >
                 <span className={styles.members__number}>№{member.id}</span>
                 <div className={styles.members__service}>
@@ -101,7 +93,7 @@ export const MemberCard: FC<MemberCardProps> = ({ member }) => {
                     className={styles.members__avatar}
                     src={memberPreview}
                     alt={`${(member.nomination, member.category)}`}
-                    quality={100}
+                    loading="lazy"
                   />
                 </div>
               </Link>

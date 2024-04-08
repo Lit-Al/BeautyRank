@@ -14,6 +14,7 @@ import { Loader } from 'common/shared/ui/loader';
 import { LoginFormValues } from '../../model';
 import router from 'next/router';
 import PhoneInput from 'common/shared/ui/phone-input/PhoneInput';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const LoginForm = () => {
   const [showCodePage, setShowCodePage] = useState(false);
@@ -62,22 +63,29 @@ export const LoginForm = () => {
         return data;
       } catch (error) {
         // Обработка ошибки
-        console.log(error);
+        console.error(error);
         throw error;
       }
     }
   );
 
   const onSubmitNumber = async (data: LoginFormValues) => {
-    try {
-      const phoneNumber = data.phone;
-      await loginUserMutation.mutateAsync(phoneNumber);
-      setShowCodePage(true);
-    } catch (error: any) {
+    if (!data.phone || data.phone.length < 11) {
       setError('phone', {
         type: 'custom',
-        message: 'Упс! что-то пошло не так! Возможно номер - некорректный!',
+        message: 'Номер введён не полностью!',
       });
+    } else {
+      try {
+        const phoneNumber = data.phone;
+        await loginUserMutation.mutateAsync(phoneNumber);
+        setShowCodePage(true);
+      } catch (error: any) {
+        setError('phone', {
+          type: 'custom',
+          message: 'Упс! что-то пошло не так! Возможно номер - некорректный!',
+        });
+      }
     }
   };
 
@@ -88,7 +96,7 @@ export const LoginForm = () => {
       }
       await verifyCodeMutation.mutateAsync(data);
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
 
       if (error?.message === 'Вы не ввели весь код!') {
         setValue('code', '');
@@ -108,56 +116,68 @@ export const LoginForm = () => {
 
   return (
     <>
-      {showCodePage ? (
-        // Код подтверждения
-        <form
-          className={styles.auth_form}
-          onSubmit={handleSubmit(onSubmitCode)}
-        >
-          <label className={styles.auth_label}>
-            Введите код из звонка, чтобы войти
-          </label>
-          <Controller
-            control={control}
-            name="code"
-            defaultValue=" "
-            render={({ field }) => (
-              <Input
-                autofocus
-                icon="lock"
-                error={errors.code?.message}
-                type="number"
-                maxLength={4}
-                placeholder={
-                  errors.code ? errors.code.message : 'Код сообщения из звонка'
-                }
-                {...field}
+      <AnimatePresence mode="wait">
+        {showCodePage ? (
+          // Код подтверждения
+          <motion.div
+            key="codePage"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 100 }}
+            transition={{ duration: 0.5 }}
+            className={styles.code_box}
+          >
+            <form
+              className={styles.auth_form}
+              onSubmit={handleSubmit(onSubmitCode)}
+            >
+              <label className={styles.auth_label}>
+                Введите код из звонка, чтобы войти
+              </label>
+              <Controller
+                control={control}
+                name="code"
+                render={({ field }) => (
+                  <Input
+                    autofocus
+                    icon="lock"
+                    error={errors.code?.message}
+                    type="number"
+                    maxLength={4}
+                    placeholder={
+                      errors.code
+                        ? errors.code.message
+                        : 'Код сообщения из звонка'
+                    }
+                    {...field}
+                  />
+                )}
               />
-            )}
-          />
-          <Button>ВОЙТИ</Button>
-          {verifyCodeMutation.isLoading && <Loader />}
-        </form>
-      ) : (
-        // Проверка номера
-        <form
-          className={styles.auth_form}
-          onSubmit={handleSubmit(onSubmitNumber)}
-        >
-          <label className={styles.auth_label}>
-            Введите свой номер телефона, чтобы войти
-          </label>
-          <Controller
-            control={control}
-            name="phone"
-            render={({ field }) => (
-              <PhoneInput error={errors.phone?.message} {...field} />
-            )}
-          />
-          <Button>Получить код</Button>
-          {loginUserMutation.isLoading && <Loader />}
-        </form>
-      )}
+              <Button loading={verifyCodeMutation.isLoading}>ВОЙТИ</Button>
+              {verifyCodeMutation.isLoading && <Loader />}
+            </form>
+          </motion.div>
+        ) : (
+          // Проверка номера
+          <form
+            className={styles.auth_form}
+            onSubmit={handleSubmit(onSubmitNumber)}
+          >
+            <label className={styles.auth_label}>
+              Введите свой номер телефона, чтобы войти
+            </label>
+            <Controller
+              control={control}
+              name="phone"
+              render={({ field }) => (
+                <PhoneInput error={errors.phone?.message} {...field} />
+              )}
+            />
+            <Button loading={loginUserMutation.isLoading}>Получить код</Button>
+            {loginUserMutation.isLoading && <Loader />}
+          </form>
+        )}
+      </AnimatePresence>
     </>
   );
 };

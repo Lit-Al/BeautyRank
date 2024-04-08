@@ -11,17 +11,19 @@ import { champAtom } from 'store';
 import styles from './ChampResultPage.module.scss';
 import { declineNumberOfBalls } from 'common/shared/helpers';
 import { Loader } from 'common/shared/ui/loader';
+import { getUserIsOrganizer } from 'common/shared/constants';
 
 function ChampResultPage() {
   const champ = useAtomValue(champAtom);
   const [isClient, setIsClient] = useState(false);
+  const USER_IS_ORGANIZER = getUserIsOrganizer();
 
   useEffect(() => {
     setIsClient(true);
-    if (champ?.role != 'Организатор') {
+    if (!USER_IS_ORGANIZER) {
       router.replace('/profile-edit');
     }
-  }, []);
+  }, [USER_IS_ORGANIZER]);
 
   const { data: champWinnersNominationsData, isLoading: isNominationsLoading } =
     useQuery(

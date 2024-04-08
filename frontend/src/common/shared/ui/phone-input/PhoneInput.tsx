@@ -1,4 +1,4 @@
-import React, { forwardRef, ForwardRefRenderFunction } from 'react';
+import { forwardRef, ForwardRefRenderFunction } from 'react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import styles from './PhoneInput.module.scss';

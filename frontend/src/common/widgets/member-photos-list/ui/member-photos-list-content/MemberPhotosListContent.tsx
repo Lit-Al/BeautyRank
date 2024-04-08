@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import Image from 'next/image';
 import '@fancyapps/ui/dist/fancybox/fancybox.css';
 import { Fancybox } from '@fancyapps/ui';
@@ -36,9 +36,8 @@ export const MemberPhotosListContent: FC<IMemberPhotoList> = ({
                 width={100}
                 height={100}
                 alt={photo.name}
-                quality={100}
-                priority
-                unoptimized
+                quality={50}
+                priority={true}
               />
             </a>
             <span className={styles.member_photos__name}>{photo.name}</span>

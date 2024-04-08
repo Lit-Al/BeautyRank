@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC } from 'react';
+import { ChangeEvent, FC } from 'react';
 import styles from './UploadPhotoBox.module.scss';
 import UploadPhotoList from '../UploadPhotoList/UploadPhotoList';
 

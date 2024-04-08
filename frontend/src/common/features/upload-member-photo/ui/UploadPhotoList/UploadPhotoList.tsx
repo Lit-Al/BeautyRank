@@ -1,5 +1,5 @@
-import React, { ChangeEvent, FC } from 'react';
-import { IPhoto } from '../../lib/types';
+import { ChangeEvent, FC } from 'react';
+import { IPhoto } from '../../lib';
 import Image from 'next/image';
 import styles from './UploadPhotoList.module.scss';
 
@@ -25,6 +25,7 @@ const UploadPhotoList: FC<IPhotoListProps> = ({
             width={80}
             height={80}
             className={styles.upload_photo__image}
+            quality={75}
           />
           <span>{photo.name}</span>
         </label>

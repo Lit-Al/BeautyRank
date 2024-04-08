@@ -11,5 +11,11 @@ export const smsCall = (phone: string): AxiosPromise<ILoginRequest> =>
     phone_number: phone,
   });
 
-export const refreshToken = (refreshToken: any): AxiosPromise<ILoginResponse> =>
+interface IRefreshTokeRequest {
+  refresh: string;
+}
+
+export const refreshToken = (
+  refreshToken: IRefreshTokeRequest
+): AxiosPromise<ILoginResponse> =>
   axiosInstanse.post(ENDPOINTS.AUTH.REFRESH, refreshToken);

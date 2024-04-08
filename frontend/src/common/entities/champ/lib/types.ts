@@ -24,6 +24,7 @@ export interface IChamp {
 
 export interface ChampCardProps {
   champ: IChamp;
+  disableChamp: boolean;
 }
 
 export interface IChampNominationsCategories {

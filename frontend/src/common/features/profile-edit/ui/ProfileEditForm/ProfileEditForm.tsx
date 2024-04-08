@@ -5,22 +5,35 @@ import { Controller, useForm, useWatch } from 'react-hook-form';
 import styles from './ProfileEditForm.module.scss';
 import Avatar from 'common/shared/ui/avatar/Avatar';
 import { literalValidation } from 'common/shared/helpers';
-import { setUser } from 'common/shared/api/users';
-import { champAtom, userAtom } from 'store';
+import { getMe, setUser } from 'common/shared/api/users';
+import { userAtom } from 'store';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { IUser } from 'common/shared/types';
-import { useMutation } from 'react-query';
+import { useQuery } from 'react-query';
 import router from 'next/router';
 import { ChampsList } from 'common/widgets/champs-list';
 import { Loader } from 'common/shared/ui/loader';
 import { FC, useEffect, useState } from 'react';
+import { IUser } from 'common/shared/types';
+import { useDebounce } from '../../model';
+import { AnimatePresence, motion } from 'framer-motion';
+import { LogoutModal } from 'common/features/logout/ui';
 
 export const ProfileEditForm: FC = () => {
-  const { control, handleSubmit } = useForm();
+  const { control, setValue } = useForm();
   const user = useAtomValue(userAtom);
   const [isClient, setIsClient] = useState(false);
   const setStoreUser = useSetAtom(userAtom);
-  const selectedChamp = useAtomValue(champAtom);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useQuery(['user'], getMe, {
+    onSuccess: (response) => {
+      if (response?.data) {
+        setStoreUser(response.data);
+      }
+    },
+
+    enabled: !!user,
+  });
 
   useEffect(() => {
     setIsClient(true);
@@ -31,31 +44,20 @@ export const ProfileEditForm: FC = () => {
     defaultValue: user?.first_name,
     name: 'first_name',
   });
+
   const lastname = useWatch({
     control,
     defaultValue: user?.last_name,
     name: 'last_name',
   });
 
-  const validationUserFlag = {
-    name: literalValidation(name),
-    lastname: literalValidation(lastname),
-  };
-
-  const isButtonDisabled =
-    (!selectedChamp && selectedChamp === null) ||
-    !name ||
-    !lastname ||
-    validationUserFlag.lastname ||
-    validationUserFlag.name;
-
-  const uploadUser = async (formData: IUser) => {
+  const uploadUser = async (userData: Partial<IUser>) => {
     try {
       try {
-        const { data } = await setUser(formData);
+        const { data } = await setUser(userData);
         setStoreUser(data);
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     } catch (error: any) {
       // Обработка ошибок
@@ -63,28 +65,28 @@ export const ProfileEditForm: FC = () => {
     }
   };
 
-  const mutation = useMutation(['user'], uploadUser);
+  const debouncedOnSubmitName = useDebounce(
+    (type: 'first_name' | 'last_name', value: string) => {
+      if (!literalValidation(value) && !!value) {
+        uploadUser({ [type]: value });
+      }
+    }
+  );
 
-  const onSubmitProfile = (data: Partial<IUser>) => {
-    const formData = new FormData();
-    formData.append('image', user?.image!);
-    formData.append('first_name', data.first_name!);
-    formData.append('last_name', data.last_name!);
-    mutation.mutate(formData as unknown as IUser);
-    router.push('/profile');
-  };
+  const handleNameChange =
+    (type: 'first_name' | 'last_name') =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setValue(type, e.target.value.trim());
+      debouncedOnSubmitName(type, e.target.value);
+    };
 
   return (
     <>
-      <AvatarCropper>
-        <Avatar edit user={user!} />
-      </AvatarCropper>
       {user && isClient ? (
-        <form
-          encType="multipart/form-data"
-          className={styles.profile__form}
-          onSubmit={handleSubmit(onSubmitProfile)}
-        >
+        <div className={styles.profile__form}>
+          <AvatarCropper>
+            <Avatar edit user={user!} />
+          </AvatarCropper>
           <div className={styles.profile__inputs}>
             <Controller
               control={control}
@@ -94,7 +96,7 @@ export const ProfileEditForm: FC = () => {
                 <>
                   <label
                     className={`${styles.profile__validation} ${
-                      validationUserFlag.name &&
+                      literalValidation(name) &&
                       styles.profile__validation_error
                     }`}
                   >
@@ -107,8 +109,9 @@ export const ProfileEditForm: FC = () => {
                     icon="profile"
                     type="text"
                     placeholder="Имя"
-                    error={validationUserFlag.name}
+                    error={literalValidation(name)}
                     {...field}
+                    onChange={handleNameChange('first_name')}
                   />
                 </>
               )}
@@ -124,12 +127,13 @@ export const ProfileEditForm: FC = () => {
                     minLength={2}
                     icon="profile"
                     placeholder="Фамилия"
-                    error={validationUserFlag.lastname}
+                    error={literalValidation(lastname)}
                     {...field}
+                    onChange={handleNameChange('last_name')}
                   />
                   <label
                     className={`${styles.profile__validation} ${
-                      validationUserFlag.lastname &&
+                      literalValidation(lastname) &&
                       styles.profile__validation_error
                     }`}
                   >
@@ -140,23 +144,25 @@ export const ProfileEditForm: FC = () => {
             />
           </div>
           <h3>Доступные Чемпионаты:</h3>
-          <ChampsList />
-          <Button
-            className={styles.profile__button}
-            disabled={isButtonDisabled}
-          >
-            Подтвердить
-          </Button>
+          <ChampsList
+            disableChamps={
+              literalValidation(name) ||
+              literalValidation(lastname) ||
+              !name ||
+              !lastname
+            }
+          />
           <Button
             className={styles.profile__button_exit}
-            onClick={() => {
-              localStorage.clear();
-              router.reload();
-            }}
+            onClick={() => setIsModalOpen(true)}
           >
-            Выйти
+            Выйти из аккаунта
           </Button>
-        </form>
+          <LogoutModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+          />
+        </div>
       ) : (
         <Loader />
       )}

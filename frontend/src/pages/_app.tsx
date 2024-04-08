@@ -5,21 +5,22 @@ import { userAtom } from 'store';
 import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import Head from 'next/head';
+import { PageTransition } from 'common/shared/ui/page-transition-box';
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const user = useAtomValue(userAtom);
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: { refetchOnWindowFocus: false, refetchInterval: false },
     },
   });
-  const user = useAtomValue(userAtom);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const router = require('next/router').default;
       if (!user) {
         router.replace('/');
-      } else if (!user.image) {
+      } else if (user.image === null) {
         router.replace('/avatar');
       }
     }
@@ -30,7 +31,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <link rel="icon" type="image/x-icon" href="/images/BR.ico" />
       </Head>
-      <Component {...pageProps} />
+      <PageTransition>
+        <Component {...pageProps} />
+      </PageTransition>
     </QueryClientProvider>
   );
 }

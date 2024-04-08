@@ -1,1 +1,1 @@
-export * from './Champs-list'
+export * from './ChampsList'

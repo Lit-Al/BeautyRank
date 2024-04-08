@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './UserName.module.scss';
 import { useAtomValue } from 'jotai';
 import { userAtom } from 'store';

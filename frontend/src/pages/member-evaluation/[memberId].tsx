@@ -1,4 +1,3 @@
-import React from 'react';
 import { Layout } from 'common/shared/ui/layout';
 import { GoBackButton } from 'common/shared/ui/go-back-btn';
 import { useRouter } from 'next/router';

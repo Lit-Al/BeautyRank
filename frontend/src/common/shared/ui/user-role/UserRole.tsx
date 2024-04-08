@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './UserRole.module.scss';
 import { useAtomValue } from 'jotai';
 import { champAtom } from 'store';

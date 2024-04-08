@@ -35,7 +35,7 @@ export const useSetMemberResult = ({
         });
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   });
 };

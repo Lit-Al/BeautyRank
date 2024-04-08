@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './UserAction.module.scss';
+import { getUserIsStaff } from 'common/shared/constants';
 
 export const UserAction = ({ role }: { role: string }) => {
   const [isClient, setIsClient] = useState(false);
+  const USER_IS_STAFF = getUserIsStaff();
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -11,14 +14,9 @@ export const UserAction = ({ role }: { role: string }) => {
     <>
       {isClient && (
         <>
-          {role === 'Судья' && (
+          {USER_IS_STAFF && (
             <p className={styles.user_action}>
               Выберите модель для оценки работы
-            </p>
-          )}
-          {role === 'Мастер(участник)' && (
-            <p className={styles.user_action}>
-              Выберите модель с которой работаете
             </p>
           )}
         </>

@@ -21,7 +21,7 @@ const Home: NextPage = () => {
     return () => {
       document.body.classList.remove('home-page');
     };
-  }, []);
+  }, [user?.image]);
 
   return (
     <Layout pageTitle="Авторизация">

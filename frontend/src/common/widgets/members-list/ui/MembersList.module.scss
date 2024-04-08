@@ -4,12 +4,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-height: 277px;
     overflow-y: scroll;
     margin-bottom: 25px;
     padding-right: 10px;
     position: relative;
+    min-height: 80px;
     left: 10px;
+
+    li {
+      width: 100%;
+    }
 
     &::-webkit-scrollbar {
       display: block;
