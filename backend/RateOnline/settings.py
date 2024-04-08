@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "django_extensions",
     "django_json_widget",
+    "debug_toolbar",
     "drf_standardized_errors",
     "django_filters",
     "users",
@@ -62,6 +63,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 REST_FRAMEWORK = {
@@ -69,6 +71,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "EXCEPTION_HANDLER": "drf_standardized_errors.handler.exception_handler",
@@ -145,7 +148,7 @@ USE_TZ = True
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_URL = "django-static/"
 STATIC_ROOT = BASE_DIR / "static_root"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = BASE_DIR / "media_root"
 MEDIA_URL = "django-media/"
 
 # Default primary key field type
@@ -179,8 +182,13 @@ DEFAULT_SENDER = "74956665610"
 
 CORS_ORIGIN_WHITELIST = ["http://localhost:3000"]
 
-
 # TELEGRAM SETTINGS
 
 TELEGRAM_SECRET_KEY = env("SECRET_KEY_TELEGRAM")
 TELEGRAM_CHAT_ID = env("TELEGRAM_CHAT_ID")
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+
+INTERNAL_IPS = ["127.0.0.1"]
