@@ -2,7 +2,7 @@ FROM node as build
 
 WORKDIR /frontend
 
-COPY package.json package-lock.json . /frontend
+COPY package.json . /frontend
 
 RUN yarn install
 

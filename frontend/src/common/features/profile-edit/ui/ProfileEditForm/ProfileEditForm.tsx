@@ -9,13 +9,11 @@ import { getMe, setUser } from 'common/shared/api/users';
 import { userAtom } from 'store';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useQuery } from 'react-query';
-import router from 'next/router';
 import { ChampsList } from 'common/widgets/champs-list';
 import { Loader } from 'common/shared/ui/loader';
 import { FC, useEffect, useState } from 'react';
 import { IUser } from 'common/shared/types';
 import { useDebounce } from '../../model';
-import { AnimatePresence, motion } from 'framer-motion';
 import { LogoutModal } from 'common/features/logout/ui';
 
 export const ProfileEditForm: FC = () => {

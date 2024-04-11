@@ -12,10 +12,6 @@ export interface ILoginRequest {
   success?: string;
 }
 
-export interface ISmsRequest {
-  phone_number: string;
-}
-
 export interface ILoginResponse {
   access: string;
   refresh: string;
