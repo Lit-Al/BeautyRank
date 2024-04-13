@@ -11,9 +11,7 @@ export const ChampsList = ({ disableChamps }: { disableChamps: boolean }) => {
     return (
       <AnimatePresence>
         <div className={styles.champs__list}>
-          {Array.from({ length: 2 }, (_, index) => (
-            <ChampCardSkeleton key={index} />
-          ))}
+          <ChampCardSkeleton />
         </div>
       </AnimatePresence>
     );

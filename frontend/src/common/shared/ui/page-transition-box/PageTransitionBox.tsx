@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { ReactNode, useEffect, useState } from 'react';
 
-export const PageTransition = ({ children }: { children: ReactNode }) => {
+export const PageTransitionBox = ({ children }: { children: ReactNode }) => {
   const { asPath } = useRouter();
   const [isReady, setIsReady] = useState(false);
 

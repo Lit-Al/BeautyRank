@@ -5,7 +5,7 @@ import { userAtom } from 'store';
 import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import Head from 'next/head';
-import { PageTransition } from 'common/shared/ui/page-transition-box';
+import { PageTransitionBox } from 'common/shared/ui/page-transition-box';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const user = useAtomValue(userAtom);
@@ -31,9 +31,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <link rel="icon" type="image/x-icon" href="/images/BR.ico" />
       </Head>
-      <PageTransition>
-        <Component {...pageProps} />
-      </PageTransition>
+      <Component {...pageProps} />
     </QueryClientProvider>
   );
 }
