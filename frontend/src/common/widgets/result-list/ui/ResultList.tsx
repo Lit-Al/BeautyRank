@@ -101,7 +101,7 @@ export const ResultList = () => {
                   </p>
                   {index === criteries.length - 1 && (
                     <>
-                      {!USER_IS_STAFF && (
+                      {USER_IS_STAFF && (
                         <p className={styles.result__comment}>
                           Дать комментарий
                           <Link target="_blank" href={whatsappLink}>

@@ -1,6 +1,5 @@
 import styles from './Avatar.module.scss';
 import Image from 'next/image';
-import {BASE_API_URL} from 'common/shared/api/endpoints';
 import {IUser} from 'common/shared/types';
 import cn from 'classnames';
 

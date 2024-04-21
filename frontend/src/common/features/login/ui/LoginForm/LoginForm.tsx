@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './LoginForm.module.scss';
 import { useForm, Controller } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
