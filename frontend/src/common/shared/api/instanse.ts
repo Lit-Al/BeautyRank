@@ -59,7 +59,7 @@ axiosInstanse.interceptors.request.use(async (config: any) => {
       const accessToken = accessTokenStorage?.replace(/"/g, '');
 
       if (!accessToken || isTokenExpired(accessToken)) {
-        console.error('Токен устарел или не существует');
+        console.warn('Токен устарел или не существует');
 
         if (refreshTokenRequest === null) {
           refreshTokenRequest = api.auth.refreshToken({

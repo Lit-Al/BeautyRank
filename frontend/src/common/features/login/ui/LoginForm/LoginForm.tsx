@@ -83,7 +83,7 @@ export const LoginForm = () => {
       } catch (error: any) {
         setError('phone', {
           type: 'custom',
-          message: 'Упс! что-то пошло не так! Возможно номер - некорректный!',
+          message: 'Упс! что-то пошло не так! Попробуйте ещё раз!',
         });
       }
     }

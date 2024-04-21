@@ -13,7 +13,7 @@ const Avatar = ({ edit = false, user }: IAvatarProps) => {
   const avatarSrc = user?.image
     ? user.image instanceof File
       ? URL.createObjectURL(user.image)
-      : `${BASE_API_URL}${user.image}`
+      : user.image
     : null;
 
   return (

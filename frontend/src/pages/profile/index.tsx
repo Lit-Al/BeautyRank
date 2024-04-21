@@ -25,7 +25,7 @@ function ProfilePage() {
   }, []);
 
   return (
-    <Layout pageTitle="Профиль">
+    <Layout fullHeight pageTitle="Профиль">
       {user && isClient ? (
         <>
           <Link href="/profile-edit">

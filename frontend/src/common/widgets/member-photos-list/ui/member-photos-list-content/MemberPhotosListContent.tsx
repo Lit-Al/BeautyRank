@@ -30,14 +30,12 @@ export const MemberPhotosListContent: FC<IMemberPhotoList> = ({
               href={photo.photo as string}
               className={styles.member_photos__link}
             >
-              <Image
+              <img
                 className={styles.member_photos__img}
                 src={photo.photo as string}
                 width={100}
                 height={100}
                 alt={photo.name}
-                quality={50}
-                priority={true}
               />
             </a>
             <span className={styles.member_photos__name}>{photo.name}</span>

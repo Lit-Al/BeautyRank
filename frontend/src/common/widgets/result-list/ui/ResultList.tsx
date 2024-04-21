@@ -80,33 +80,45 @@ export const ResultList = () => {
       </p>
       {!!resultData?.data.length ? (
         <>
-          <ul className={styles.result__list}>
-            {criteries.map((criteria, index) => (
-              <li key={index} className={styles.result__item}>
-                <p className={styles.result__criteria}>{criteria}</p>
-                <p className={styles.result__score}>
-                  {resultData?.data.map((item: IResult, itemIndex: number) => (
-                    <div key={itemIndex}>
-                      <span>{item.score_retail![criteria]}</span>
-                      {index === criteries.length - 1 && (
-                        <p className={styles.result__staff}>
-                          {item.event_staff_name}
+          <div className={styles.result__box}>
+            <ul className={styles.result__list}>
+              {criteries.map((criteria, index, criteries) => (
+                <li key={index} className={styles.result__item}>
+                  <p className={styles.result__criteria}>{criteria}</p>
+                  <p className={styles.result__score}>
+                    {resultData?.data.map(
+                      (item: IResult, itemIndex: number) => (
+                        <div key={itemIndex}>
+                          <span>{item.score_retail![criteria]}</span>
+                          {index === criteries.length - 1 && (
+                            <p className={styles.result__staff}>
+                              {item.event_staff_name}
+                            </p>
+                          )}
+                        </div>
+                      )
+                    )}
+                  </p>
+                  {index === criteries.length - 1 && (
+                    <>
+                      {!USER_IS_STAFF && (
+                        <p className={styles.result__comment}>
+                          Дать комментарий
+                          <Link target="_blank" href={whatsappLink}>
+                            <Image
+                              width={22}
+                              src={WhatsAppIcon}
+                              alt="WhatsApp"
+                            />
+                          </Link>
                         </p>
                       )}
-                    </div>
-                  ))}
-                </p>
-              </li>
-            ))}
-            {USER_IS_STAFF && (
-              <p className={styles.result__comment}>
-                Дать комментарий
-                <Link target="_blank" href={whatsappLink}>
-                  <Image width={22} src={WhatsAppIcon} alt="WhatsApp" />
-                </Link>
-              </p>
-            )}
-          </ul>
+                    </>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
         </>
       ) : (
         <BeautyLoader />

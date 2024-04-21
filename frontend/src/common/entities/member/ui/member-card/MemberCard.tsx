@@ -19,7 +19,7 @@ export const MemberCard: FC<MemberCardProps> = ({ member }) => {
   const USER_IS_STAFF = getUserIsStaff();
 
   const { preview, id, result_sum, member: members } = member;
-  const memberPreview = preview ? `${BASE_API_URL}${preview}` : unknownAvatar;
+  const memberPreview = preview ? preview : unknownAvatar;
 
   const { data: resultData, isLoading } = useQuery(
     ['memberResult', id],
@@ -93,6 +93,7 @@ export const MemberCard: FC<MemberCardProps> = ({ member }) => {
                     className={styles.members__avatar}
                     src={memberPreview}
                     alt={`${(member.nomination, member.category)}`}
+                    quality={50}
                     loading="lazy"
                   />
                 </div>

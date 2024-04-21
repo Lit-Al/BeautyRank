@@ -61,7 +61,7 @@ export const MembersList = () => {
 
   const renderMemberCards = (members: IMember[]) => (
     <ul className={styles.members__list}>
-      {members.map((member, index) => (
+      {members?.map((member, index) => (
         <motion.li
           key={member.id}
           initial={{ opacity: 0, y: 20 }}

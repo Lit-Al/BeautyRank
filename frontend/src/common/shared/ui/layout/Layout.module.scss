@@ -6,5 +6,8 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  max-height: 100vh;
+
+  &_full_height {
+    max-height: 100vh;
+  }
 }
