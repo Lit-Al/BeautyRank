@@ -86,14 +86,12 @@ export const MemberCard: FC<MemberCardProps> = ({ member }) => {
                   </span>
                 </div>
                 <div>
-                  <Image
+                  <img
                     width={55}
                     height={55}
                     className={styles.members__avatar}
                     src={memberPreview}
                     alt={`${(member.nomination, member.category)}`}
-                    quality={75}
-                    loading="lazy"
                   />
                 </div>
               </Link>
