@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "drf_standardized_errors",
     "django_filters",
+    "storages",
     "users",
     "events",
 ]
@@ -112,6 +113,8 @@ DATABASES = {
     }
 }
 
+STATICFILES_STORAGE = "storages.backends.s3.S3Storage"
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -142,17 +145,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-STATICFILES_DIRS = [BASE_DIR / "static"]
-STATIC_URL = "django-static/"
-STATIC_ROOT = BASE_DIR / "static_root"
-MEDIA_ROOT = BASE_DIR / "media_root"
-MEDIA_URL = "django-media/"
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -192,3 +184,31 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
 INTERNAL_IPS = ["127.0.0.1"]
+
+USE_S3 = os.getenv("USE_S3") == "True"
+
+if USE_S3:
+    # aws settings
+    AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+    AWS_DEFAULT_ACL = "public-read"
+    AWS_HOST = "s3.timeweb.cloud"
+    AWS_S3_ENDPOINT_URL = f"https://{AWS_HOST}"
+    AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.{AWS_HOST}"
+    AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+    AWS_S3_REGION_NAME = os.getenv("AWS_S3_REGION_NAME")
+    # s3 static settings
+    AWS_LOCATION = "static"
+    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
+    STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+    PRIVATE_MEDIA_LOCATION = "private"
+    PRIVATE_FILE_STORAGE = "RateOnline.storage_backends.PrivateMediaStorage"
+else:
+    STATIC_URL = "django-static/"
+    STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
+    MEDIA_URL = "django-media/"
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media_root")
+
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)

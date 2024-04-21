@@ -1,9 +1,13 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from RateOnline.storage_backends import PrivateMediaStorage
+
 
 class User(AbstractUser):
-    image = models.ImageField(upload_to="images/", null=True, blank=True)
+    image = models.ImageField(
+        upload_to="images/", null=True, blank=True, storage=PrivateMediaStorage
+    )
 
     phone_number = models.CharField(
         max_length=12,

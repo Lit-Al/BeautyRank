@@ -5,6 +5,7 @@ from django.db.models import constraints
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from RateOnline.storage_backends import PrivateMediaStorage
 from integrations.telegram import TelegramIntegration
 
 
@@ -67,7 +68,7 @@ class Event(models.Model):
         help_text="Введите название мероприятия",
         verbose_name="Название мероприятия",
     )
-    image = models.ImageField()
+    image = models.ImageField(storage=PrivateMediaStorage)
     owners = models.ManyToManyField(
         "users.User", blank=True, related_name="owner_events"
     )
@@ -220,7 +221,7 @@ class MemberNominationPhoto(models.Model):
     member_nomination = models.ForeignKey(
         "MemberNomination", models.PROTECT, related_name="photos", default=None
     )
-    photo = models.ImageField()
+    photo = models.ImageField(storage=PrivateMediaStorage)
     name = models.CharField(
         max_length=50,
         help_text="Введите название фотографии",

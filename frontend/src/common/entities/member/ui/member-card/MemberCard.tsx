@@ -5,7 +5,6 @@ import styles from './MemberCard.module.scss';
 import unknownAvatar from '@public/images/unknown-avatar.svg';
 import { declineNumberOfBalls } from 'common/shared/helpers';
 import { MemberCardProps } from 'common/entities/member/lib';
-import { BASE_API_URL } from 'common/shared/api/endpoints';
 import { useAtomValue } from 'jotai';
 import { userAtom } from 'store';
 import { getMemberResults } from 'common/shared/api/assessments';
@@ -93,7 +92,7 @@ export const MemberCard: FC<MemberCardProps> = ({ member }) => {
                     className={styles.members__avatar}
                     src={memberPreview}
                     alt={`${(member.nomination, member.category)}`}
-                    quality={50}
+                    quality={75}
                     loading="lazy"
                   />
                 </div>
