@@ -23,8 +23,15 @@ class ResultSerializer(serializers.ModelSerializer):
 class MemberNominationPhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = MemberNominationPhoto
-        fields = ("id", "member_nomination", "photo", "before_after", "name")
-        read_only_fields = ["id"]
+        fields = (
+            "id",
+            "member_nomination",
+            "photo",
+            "optimized_photo",
+            "before_after",
+            "name",
+        )
+        read_only_fields = ["id", "optimized_photo"]
 
     def validate(self, attrs):
         if self.context["request"].user != attrs["member_nomination"].member.user:
@@ -112,10 +119,12 @@ class EventSerializer(serializers.ModelSerializer):
     def get_role(self, obj) -> str:
         user = self.context.get("request").user
         event = obj
-        if CategoryNomination.objects.filter(event_category__event__pk=event.pk ,event_staff=user).exists():
+        if CategoryNomination.objects.filter(
+            event_category__event__pk=event.pk, event_staff=user
+        ).exists():
             return "Судья"
 
-        if Member.objects.filter(event__pk=event.pk ,user=user).exists():
+        if Member.objects.filter(event__pk=event.pk, user=user).exists():
             return "Мастер"
 
         if Event.objects.filter(pk=event.pk, owners=user).exists():

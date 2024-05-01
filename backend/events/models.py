@@ -1,4 +1,8 @@
 import json
+from io import BytesIO
+
+from PIL import Image
+from django.core.files import File
 
 from django.db import models
 from django.db.models import constraints
@@ -197,7 +201,6 @@ class MemberNomination(models.Model):
     is_done = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        print("membernomination save")
         if self.category_nomination.event_staff.count() == self.results.count():
             self.is_done = True
         super().save(*args, **kwargs)
@@ -222,6 +225,13 @@ class MemberNominationPhoto(models.Model):
         "MemberNomination", models.PROTECT, related_name="photos", default=None
     )
     photo = models.ImageField(storage=PrivateMediaStorage)
+    optimized_photo = models.ImageField(
+        storage=PrivateMediaStorage,
+        default=None,
+        blank=True,
+        null=True,
+        upload_to="optimized_photos/",
+    )
     name = models.CharField(
         max_length=50,
         help_text="Введите название фотографии",
@@ -279,9 +289,23 @@ def save_url(sender, instance, **kwargs):
 
 @receiver(post_save, sender=CategoryNomination)
 def save_member_nominations(sender, instance, **kwargs):
-    print("save_member_nominations")
     mn = MemberNomination.objects.all()
     list(map(lambda x: x.save(), mn))
+
+
+@receiver(post_save, sender=MemberNominationPhoto)
+def make_photo_optimized(sender, instance, **kwargs):
+    if instance.photo and not instance.optimized_photo:
+        img = Image.open(instance.photo)
+        img = img.resize((150, 150))
+
+        buffer = BytesIO()
+        img.save(buffer, format="webp", quality=80, lossless=True)
+        instance.optimized_photo.save(
+            "optimized_photo_" + instance.photo.name, File(buffer), save=False
+        )
+
+        instance.save()
 
 
 # @receiver(post_save, sender=Event)

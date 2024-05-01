@@ -16,7 +16,15 @@ class CustomUserAdmin(ModelAdmin):
     fieldsets = (
         (
             _("Personal info"),
-            {"fields": ("first_name", "last_name", "phone_number", "image")},
+            {
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "phone_number",
+                    "image",
+                    "optimized_image",
+                )
+            },
         ),
         (
             _("Permissions"),

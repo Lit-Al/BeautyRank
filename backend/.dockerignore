@@ -1,3 +1,5 @@
 .venv
 .git
 .gitignore
+events/migrations
+users/migrations
