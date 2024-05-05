@@ -1,4 +1,5 @@
 from io import BytesIO
+from os.path import basename
 
 from PIL import Image
 from django.contrib.auth.models import AbstractUser
@@ -49,20 +50,7 @@ class User(AbstractUser):
 
     def save(self, *args, **kwargs):
         self.username = self.phone_number
-
-        is_image_changed = False
-        if "image" in kwargs:
-            is_image_changed = kwargs["image"] != self.image
-
-            if self.pk:
-                old_image = self.__class__.objects.get(pk=self.pk).image
-                new_image = self.image
-                is_image_changed = old_image != new_image
-
         super().save(*args, **kwargs)
-
-        if is_image_changed and self.image:
-            optimize_image(self)
 
     def __str__(self):
         if not self.last_name or not self.first_name:
@@ -72,14 +60,12 @@ class User(AbstractUser):
 
 @receiver(post_save, sender=User)
 def make_image_optimized(sender, instance, **kwargs):
-    if instance.image and not instance.optimized_image:
+    if basename(instance.image.name) != basename(instance.optimized_image.name):
         img = Image.open(instance.image)
         img = img.resize((150, 150))
 
         buffer = BytesIO()
         img.save(buffer, format="webp", quality=80, lossless=True)
-        instance.optimized_image.save(
-            "optimized_photo_" + instance.image.name[7:], File(buffer), save=False
-        )
+        instance.optimized_image.save(instance.image.name[7:], File(buffer), save=False)
 
         instance.save()

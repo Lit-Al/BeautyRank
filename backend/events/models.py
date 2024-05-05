@@ -1,5 +1,6 @@
 import json
 from io import BytesIO
+from os.path import basename
 
 from PIL import Image
 from django.core.files import File
@@ -253,6 +254,17 @@ class MemberNominationPhoto(models.Model):
                 return ValueError(
                     f"Максимум {photos_count_nomination} фотографии для данной MemberNomination."
                 )
+
+        if self.optimized_photo.name is None or basename(self.photo.name) != basename(
+            self.optimized_photo.name
+        ):
+            img = Image.open(self.photo)
+            img = img.resize((150, 150))
+
+            buffer = BytesIO()
+            img.save(buffer, format="webp", quality=80, lossless=True)
+            self.optimized_photo.save(self.photo.name, File(buffer), save=False)
+
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
@@ -291,21 +303,6 @@ def save_url(sender, instance, **kwargs):
 def save_member_nominations(sender, instance, **kwargs):
     mn = MemberNomination.objects.all()
     list(map(lambda x: x.save(), mn))
-
-
-@receiver(post_save, sender=MemberNominationPhoto)
-def make_photo_optimized(sender, instance, **kwargs):
-    if instance.photo and not instance.optimized_photo:
-        img = Image.open(instance.photo)
-        img = img.resize((150, 150))
-
-        buffer = BytesIO()
-        img.save(buffer, format="webp", quality=80, lossless=True)
-        instance.optimized_photo.save(
-            "optimized_photo_" + instance.photo.name, File(buffer), save=False
-        )
-
-        instance.save()
 
 
 # @receiver(post_save, sender=Event)
