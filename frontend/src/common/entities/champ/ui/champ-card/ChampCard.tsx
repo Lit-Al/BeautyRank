@@ -13,7 +13,7 @@ export const ChampCard = ({ champ, disableChamp }: ChampCardProps) => {
   const isButtonDisabled = champ.role === USER_IS_UNKNOWN || disableChamp;
 
   return (
-    <li className={styles.champs__item}>
+    <div className={styles.champs__item}>
       <button
         disabled={isButtonDisabled}
         type="button"
@@ -27,7 +27,7 @@ export const ChampCard = ({ champ, disableChamp }: ChampCardProps) => {
       >
         <Image width={280} height={90} src={champ?.image} alt={champ.name} />
       </button>
-    </li>
+    </div>
   );
 };
 

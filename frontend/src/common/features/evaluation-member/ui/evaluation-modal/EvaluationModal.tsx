@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './EvaluationModal.module.scss';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -25,10 +25,10 @@ export const EvaluationModal = () => {
     }
   );
 
-  const whatsappLink = useMemo(() => {
+  const whatsappLink = () => {
     if (!master || !member) return '';
     return `https://api.whatsapp.com/send/?phone=${master?.data.phone_number}&text=Добрый день, ${master?.data.first_name}! Я оценил(а) вашу работу в номинации - ${member?.nomination} ${member?.category}!`;
-  }, [master, member]);
+  };
 
   const [evaluationModalOpen, setEvaluationModalOpen] = useState(!!evaluation);
 
@@ -79,13 +79,12 @@ export const EvaluationModal = () => {
                       href={memberData.photo as string}
                       className={styles.member_photos__link}
                     >
-                      <Image
+                      <img
                         className={styles.evaluation__img}
-                        src={memberData.photo as string}
+                        src={memberData.optimized_photo || memberData.photo as string}
                         width={75}
                         height={75}
                         alt={memberData.name}
-                        quality={75}
                       />
                     </a>
                     <span className={styles.evaluation__name}>
@@ -102,7 +101,7 @@ export const EvaluationModal = () => {
             </p>
             <p className={styles.evaluation__comment}>
               Дать комментарий
-              <Link target="_blank" href={whatsappLink}>
+              <Link target="_blank" href={whatsappLink()}>
                 <Image width={22} src={WhatsAppIcon} alt="WhatsApp" />
               </Link>
             </p>

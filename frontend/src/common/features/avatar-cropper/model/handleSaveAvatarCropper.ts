@@ -18,5 +18,6 @@ export const handleSaveAvatarCropper = (
   formData.append('image', avatarFile!);
   mutation.mutate(formData as unknown as IUser);
   //@ts-ignore
+  //todo поправить типизацию
   setUser((prev: IUser) => ({ ...prev, image: avatarFile }));
 };

@@ -22,18 +22,14 @@ export const ChampsList = ({ disableChamps }: { disableChamps: boolean }) => {
       {champsData?.data?.map((champ, index) => {
         return (
           <>
-            <motion.div
-              key={index}
+            <motion.li
+              key={champ.id}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <ChampCard
-                disableChamp={disableChamps}
-                champ={champ}
-                key={champ.id}
-              />
-            </motion.div>
+              <ChampCard disableChamp={disableChamps} champ={champ} />
+            </motion.li>
           </>
         );
       })}

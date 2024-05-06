@@ -103,7 +103,7 @@ export const ProfileEditForm: FC = () => {
                   <Input
                     maxLength={255}
                     minLength={2}
-                    autofocus
+                    autofocus={!field.value}
                     icon="profile"
                     type="text"
                     placeholder="Имя"

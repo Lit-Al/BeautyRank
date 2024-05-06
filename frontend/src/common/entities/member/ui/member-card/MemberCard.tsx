@@ -18,7 +18,6 @@ export const MemberCard: FC<MemberCardProps> = ({ member }) => {
   const USER_IS_STAFF = getUserIsStaff();
 
   const { preview, id, result_sum, member: members } = member;
-  const memberPreview = preview ? preview : unknownAvatar;
 
   const { data: resultData, isLoading } = useQuery(
     ['memberResult', id],
@@ -86,13 +85,26 @@ export const MemberCard: FC<MemberCardProps> = ({ member }) => {
                   </span>
                 </div>
                 <div>
-                  <img
-                    width={55}
-                    height={55}
-                    className={styles.members__avatar}
-                    src={memberPreview}
-                    alt={`${(member.nomination, member.category)}`}
-                  />
+                  {preview ? (
+                    <>
+                      <img
+                        width={55}
+                        height={55}
+                        className={styles.members__avatar}
+                        src={preview}
+                        alt={cn(member.nomination, member.category)}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <Image
+                        width={55}
+                        height={55}
+                        src={unknownAvatar}
+                        alt="Фото не выбрано"
+                      ></Image>
+                    </>
+                  )}
                 </div>
               </Link>
             </li>

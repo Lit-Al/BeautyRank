@@ -16,8 +16,7 @@ export const LogoutModal = ({
 
   const handleLogout = () => {
     setStoreUser(null);
-    onClose();
-    router.replace('/');
+    localStorage.clear();
   };
 
   return (

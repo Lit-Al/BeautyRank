@@ -1,5 +1,4 @@
 import { FC, useEffect } from 'react';
-import Image from 'next/image';
 import '@fancyapps/ui/dist/fancybox/fancybox.css';
 import { Fancybox } from '@fancyapps/ui';
 import styles from './MemberPhotosListContent.module.scss';
@@ -32,7 +31,7 @@ export const MemberPhotosListContent: FC<IMemberPhotoList> = ({
             >
               <img
                 className={styles.member_photos__img}
-                src={photo.photo as string}
+                src={photo.optimized_photo || photo.photo as string}
                 width={100}
                 height={100}
                 alt={photo.name}
