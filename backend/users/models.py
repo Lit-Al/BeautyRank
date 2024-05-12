@@ -5,7 +5,7 @@ from PIL import Image
 from django.contrib.auth.models import AbstractUser
 from django.core.files import File
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
 from RateOnline.storage_backends import PrivateMediaStorage
@@ -26,11 +26,11 @@ def optimize_image(user):
 
 class User(AbstractUser):
     image = models.ImageField(
-        upload_to="images/", null=True, blank=True, storage=PrivateMediaStorage
+        upload_to="images/%Y/%m/%d", null=True, blank=True, storage=PrivateMediaStorage
     )
 
     optimized_image = models.ImageField(
-        upload_to="images/optimized_images/",
+        upload_to="images/optimized_images/%Y/%m/%d",
         null=True,
         blank=True,
         default=None,
@@ -60,7 +60,18 @@ class User(AbstractUser):
 
 @receiver(post_save, sender=User)
 def make_image_optimized(sender, instance, **kwargs):
-    if basename(instance.image.name) != basename(instance.optimized_image.name):
+    is_have_image = bool(instance.image)
+    is_have_optimized_image = bool(instance.optimized_image)
+    equal_images = False
+
+    try:
+        equal_images = bool(
+            basename(instance.image.name) != basename(instance.optimized_image.name)
+        )
+    except:
+        pass
+
+    if (is_have_image and not is_have_optimized_image) or equal_images:
         img = Image.open(instance.image)
         img = img.resize((150, 150))
 
@@ -69,3 +80,11 @@ def make_image_optimized(sender, instance, **kwargs):
         instance.optimized_image.save(instance.image.name[7:], File(buffer), save=False)
 
         instance.save()
+
+
+@receiver(post_delete, sender=User)
+def delete_objects_user(sender, instance, **kwargs):
+    if instance.image:
+        PrivateMediaStorage().delete(instance.image.name)
+    if instance.optimized_image:
+        PrivateMediaStorage().delete(instance.optimized_image.name)

@@ -7,7 +7,7 @@ from django.core.files import File
 
 from django.db import models
 from django.db.models import constraints
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
 from RateOnline.storage_backends import PrivateMediaStorage
@@ -73,7 +73,9 @@ class Event(models.Model):
         help_text="Введите название мероприятия",
         verbose_name="Название мероприятия",
     )
-    image = models.ImageField(storage=PrivateMediaStorage)
+    image = models.ImageField(
+        storage=PrivateMediaStorage, upload_to="event_photo/%Y/%m/%d"
+    )
     owners = models.ManyToManyField(
         "users.User", blank=True, related_name="owner_events"
     )
@@ -202,7 +204,10 @@ class MemberNomination(models.Model):
     is_done = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        if self.category_nomination.event_staff.count() == self.results.count():
+        if (
+            self.id
+            and self.category_nomination.event_staff.count() == self.results.count()
+        ):
             self.is_done = True
         super().save(*args, **kwargs)
 
@@ -225,13 +230,13 @@ class MemberNominationPhoto(models.Model):
     member_nomination = models.ForeignKey(
         "MemberNomination", models.PROTECT, related_name="photos", default=None
     )
-    photo = models.ImageField(storage=PrivateMediaStorage)
+    photo = models.ImageField(storage=PrivateMediaStorage, upload_to="photos/%Y/%m/%d")
     optimized_photo = models.ImageField(
         storage=PrivateMediaStorage,
         default=None,
         blank=True,
         null=True,
-        upload_to="optimized_photos/",
+        upload_to="optimized_photos/%Y/%m/%d",
     )
     name = models.CharField(
         max_length=50,
@@ -303,6 +308,14 @@ def save_url(sender, instance, **kwargs):
 def save_member_nominations(sender, instance, **kwargs):
     mn = MemberNomination.objects.all()
     list(map(lambda x: x.save(), mn))
+
+
+@receiver(post_delete, sender=MemberNominationPhoto)
+def delete_objects_of_member_nomination_photo(sender, instance, **kwargs):
+    if instance.photo:
+        PrivateMediaStorage().delete(instance.photo.name)
+    if instance.optimized_photo:
+        PrivateMediaStorage().delete(instance.optimized_photo.name)
 
 
 # @receiver(post_save, sender=Event)
