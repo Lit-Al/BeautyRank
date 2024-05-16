@@ -12,6 +12,7 @@ from django.dispatch import receiver
 
 from RateOnline.storage_backends import PrivateMediaStorage
 from integrations.telegram import TelegramIntegration
+from users.utils import optimize_image
 
 
 class Category(models.Model):
@@ -263,12 +264,8 @@ class MemberNominationPhoto(models.Model):
         if self.optimized_photo.name is None or basename(self.photo.name) != basename(
             self.optimized_photo.name
         ):
-            img = Image.open(self.photo)
-            img = img.resize((150, 150))
-
-            buffer = BytesIO()
-            img.save(buffer, format="webp", quality=80, lossless=True)
-            self.optimized_photo.save(self.photo.name, File(buffer), save=False)
+            optimized_image = optimize_image(self.photo, max_size=100)
+            self.optimized_photo.save(optimized_image.name, optimized_image, save=False)
 
         super().save(*args, **kwargs)
 

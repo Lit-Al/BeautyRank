@@ -1,4 +1,9 @@
 import random
+from io import BytesIO
+from os.path import splitext, basename
+
+from PIL import Image, ImageOps
+from django.core.files import File
 
 
 def generate_password() -> str:
@@ -15,3 +20,26 @@ def generate_password() -> str:
         password = "".join(remaining_digits) + pair
 
     return password
+
+
+def optimize_image(source_image, max_size):
+    img = Image.open(source_image)
+
+    img = ImageOps.exif_transpose(img)
+
+    original_width, original_height = img.size
+    if original_width > original_height:
+        new_width = max_size
+        new_height = int((max_size / original_width) * original_height)
+    else:
+        new_height = max_size
+        new_width = int((max_size / original_height) * original_width)
+
+    img = img.resize((new_width, new_height))
+
+    buffer = BytesIO()
+    img.save(buffer, format="webp", quality=80, lossless=True)
+
+    buffer.seek(0)
+
+    return File(buffer, name=splitext(basename(source_image.name))[0] + ".webp")
