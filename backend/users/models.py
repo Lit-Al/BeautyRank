@@ -1,36 +1,22 @@
 from io import BytesIO
 from os.path import basename
 
-from PIL import Image
 from django.contrib.auth.models import AbstractUser
-from django.core.files import File
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
 from RateOnline.storage_backends import PrivateMediaStorage
-
-
-def optimize_image(user):
-    img = Image.open(user.image)
-    img = img.resize((150, 150))
-
-    buffer = BytesIO()
-    img.save(buffer, format="webp", quality=80, lossless=True)
-    user.optimized_image.save(
-        "optimized_photo_" + user.image.name[7:], File(buffer), save=False
-    )
-
-    user.save()
+from users.utils import optimize_image
 
 
 class User(AbstractUser):
     image = models.ImageField(
-        upload_to="images/", null=True, blank=True, storage=PrivateMediaStorage
+        upload_to="images/%Y/%m/%d", null=True, blank=True, storage=PrivateMediaStorage
     )
 
     optimized_image = models.ImageField(
-        upload_to="images/optimized_images/",
+        upload_to="images/optimized_images/%Y/%m/%d",
         null=True,
         blank=True,
         default=None,
@@ -60,12 +46,34 @@ class User(AbstractUser):
 
 @receiver(post_save, sender=User)
 def make_image_optimized(sender, instance, **kwargs):
-    if basename(instance.image.name) != basename(instance.optimized_image.name):
-        img = Image.open(instance.image)
-        img = img.resize((150, 150))
+    try:
+        is_have_image = bool(instance.image)
+        is_have_optimized_image = bool(instance.optimized_image)
+        equal_images = False
 
-        buffer = BytesIO()
-        img.save(buffer, format="webp", quality=80, lossless=True)
-        instance.optimized_image.save(instance.image.name[7:], File(buffer), save=False)
+        if is_have_image and is_have_optimized_image:
+            equal_images = basename(instance.image.name) == basename(
+                instance.optimized_image.name
+            )
 
-        instance.save()
+        if is_have_image and (not is_have_optimized_image or equal_images):
+            optimized_image = optimize_image(instance.image, 150)
+            if not instance.optimized_image:
+                instance.optimized_image = optimized_image
+            else:
+                instance.optimized_image.save(
+                    optimized_image.name, optimized_image, save=False
+                )
+
+            instance.save()
+
+    except Exception as e:
+        print(f"Error during image optimization: {e}")
+
+
+@receiver(post_delete, sender=User)
+def delete_objects_user(sender, instance, **kwargs):
+    if instance.image:
+        PrivateMediaStorage().delete(instance.image.name)
+    if instance.optimized_image:
+        PrivateMediaStorage().delete(instance.optimized_image.name)

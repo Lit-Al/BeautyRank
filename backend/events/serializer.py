@@ -52,9 +52,7 @@ class MemberNominationSerializer(serializers.ModelSerializer):
     id_member = serializers.IntegerField(source="member.user.id", read_only=True)
     member = serializers.CharField(source="member.user", read_only=True)
     result_sum = serializers.IntegerField(source="result_all", read_only=True)
-    preview = serializers.FileField(
-        source="member.user.optimized_image", read_only=True
-    )
+    preview = serializers.SerializerMethodField()
     is_done = serializers.BooleanField(read_only=True)
 
     class Meta:
@@ -93,6 +91,13 @@ class MemberNominationSerializer(serializers.ModelSerializer):
         representation["result_sum"] = sum(result.score for result in unique_results)
 
         return representation
+
+    def get_preview(self, obj) -> str:
+        preview = obj.photos.first()
+        if preview:
+            return preview.optimized_photo.url
+        else:
+            return None
 
 
 class CategoryNominationSerializer(serializers.ModelSerializer):

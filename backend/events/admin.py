@@ -9,7 +9,6 @@ from .models import *
 @admin.register(
     Category,
     NominationAttribute,
-    Event,
     EventCategory,
 )
 class DefaultEventAdmin(admin.ModelAdmin):
@@ -18,6 +17,27 @@ class DefaultEventAdmin(admin.ModelAdmin):
 
 class NominationAttributeInline(admin.TabularInline):
     model = NominationAttribute
+
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    readonly_fields = ["finished"]
+    actions = ["make_finished", "clean_champ"]
+    list_display = ["name", "finished"]
+
+    @admin.action(description="Завершить чемп")
+    def make_finished(self, request, queryset):
+        queryset.update(finished=True)
+
+    @admin.action(description="Удалить связанные файлы/объекты")
+    def clean_champ(self, request, queryset):
+        for event in queryset:
+            for photo in MemberNominationPhoto.objects.filter(
+                member_nomination__member__event=event
+            ):
+                photo.delete()
+            Result.objects.filter(member_nomination__member__event=event).delete()
+            MemberNomination.objects.filter(member__event=event).delete()
 
 
 @admin.register(Nomination)
