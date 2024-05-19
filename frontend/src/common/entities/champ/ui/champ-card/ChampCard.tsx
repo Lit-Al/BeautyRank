@@ -25,7 +25,7 @@ export const ChampCard = ({ champ, disableChamp }: ChampCardProps) => {
           router.push('./profile');
         }}
       >
-        <Image width={280} height={90} src={champ?.image} alt={champ.name} />
+        <img width={280} height={90} src={champ?.image} alt={champ.name} />
       </button>
     </div>
   );
