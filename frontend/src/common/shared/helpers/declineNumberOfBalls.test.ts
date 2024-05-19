@@ -1,4 +1,4 @@
-import { declineNumberOfBalls } from './declineNumberOfBalls'; // импортируйте вашу функцию из файла, где она определена
+import { declineNumberOfBalls } from './declineNumberOfBalls'; 
 
 describe('declineNumberOfBalls', () => {
     it('возвращает "балл" для 1, 21, 31, etc.', () => {

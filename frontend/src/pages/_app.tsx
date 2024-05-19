@@ -5,7 +5,6 @@ import { userAtom } from 'store';
 import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import Head from 'next/head';
-import { PageTransitionBox } from 'common/shared/ui/page-transition-box';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const user = useAtomValue(userAtom);
