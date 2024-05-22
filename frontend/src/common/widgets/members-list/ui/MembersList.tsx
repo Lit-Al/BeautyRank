@@ -60,7 +60,14 @@ export const MembersList = () => {
   }
 
   const renderMemberCards = (members: IMember[]) => (
-    <ul className={styles.members__list}>
+    <ul
+      className={styles.members__list}
+      style={{
+        minHeight: `${
+          members === currentMasterMembers && members.length * 75
+        }px`,
+      }}
+    >
       {members?.map((member, index) => (
         <motion.li
           key={member.id}

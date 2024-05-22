@@ -89,7 +89,7 @@ const UploadPhotoForm = () => {
           </Button>
         </>
       ) : (
-        <Loader />
+        <Loader top="35vh" />
       )}
     </>
   );

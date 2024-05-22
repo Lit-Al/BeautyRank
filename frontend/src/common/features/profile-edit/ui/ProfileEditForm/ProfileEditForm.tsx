@@ -162,7 +162,7 @@ export const ProfileEditForm: FC = () => {
           />
         </div>
       ) : (
-        <Loader />
+        <Loader top="35vh" />
       )}
     </>
   );

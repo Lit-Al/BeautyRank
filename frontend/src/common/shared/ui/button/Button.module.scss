@@ -20,13 +20,45 @@
     box-shadow: 0px 10px 20px #ffb8da;
   }
 
-  &:disabled {
+  &_disabled {
     background: $grey;
     cursor: not-allowed;
+  }
+
+  &_loading {
+    background: darken($pink, 10%);
+    opacity: 0.6;
+    cursor: not-allowed;
+    animation: pulse 1s ease-out infinite;
+    -webkit-animation: pulse 1s ease-out infinite;
   }
 
   &:not([disabled]):active {
     background: darken($pink, 5%);
     scale: 0.95;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+  }
+  50% {
+    transform: scale(1.07);
+    -webkit-transform: scale(1.07);
+    -moz-transform: scale(1.07);
+    -ms-transform: scale(1.07);
+    -o-transform: scale(1.07);
+  }
+  100% {
+    transform: scale(1);
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
   }
 }

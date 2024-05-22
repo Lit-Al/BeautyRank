@@ -1,9 +1,12 @@
 import { ILoginResponse } from '../types';
 import axios, { AxiosError, AxiosPromise } from 'axios';
+import axiosRetry from 'axios-retry';
 import { ENDPOINTS } from './endpoints';
 import api from '.';
 
 export const axiosInstanse = axios.create({});
+
+axiosRetry(axiosInstanse, { retries: 3, onRetry: () => {console.warn('Повтор запроса')} }); // максимум 3 повтора
 
 // эндпоинты где не нужен access токен
 const urlsSkipAuth = [

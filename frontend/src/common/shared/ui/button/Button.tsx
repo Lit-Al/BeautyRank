@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import styles from './Button.module.scss';
+import cn from 'classnames';
 
 interface ButtonProps {
   children: string;
@@ -26,11 +27,14 @@ export const Button: FC<ButtonProps> = ({
     <>
       {isClient && (
         <button
-          className={`${styles.UI_button} ${className}`}
+          className={cn(styles.UI_button, className, {
+            [styles.UI_button_disabled]: disabled,
+            [styles.UI_button_loading]: loading,
+          })}
           disabled={disabled || loading}
           onClick={onClick}
         >
-          {children}
+          {loading ? 'Загрузка...' : <>{children}</>}
         </button>
       )}
     </>
