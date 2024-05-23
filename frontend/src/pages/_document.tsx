@@ -4,6 +4,25 @@ export default function Document() {
   return (
     <Html>
       <Head />
+      <meta
+        name="description"
+        content="Онлайн-сервис электронного судейства чемпионатов по перманентному макияжу - BeautyRank"
+      />
+      <meta
+        name="keywords"
+        content="beautyrank, бьютиранк, бьюти ранк, бьютидон, бьюти дон, перманентый макияж ростов, beautydon, beauty don"
+      />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content="https://beautyrank.ru/" />
+      <meta property="og:title" content="BeautyRank" />
+      <meta
+        property="og:image"
+        content="https://beautyrank.ru/_next/static/media/logo.6ca3380f.svg"
+      />
+      <meta
+        property="og:description"
+        content="Онлайн-сервис электронного судейства чемпионатов по перманентному макияжу - BeautyRank"
+      />
       <body>
         <Main />
         <NextScript />
