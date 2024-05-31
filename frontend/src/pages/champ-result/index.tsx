@@ -104,7 +104,7 @@ function ChampResultPage() {
           </ul>
         </>
       ) : (
-        <Loader top="35vh" />
+        <Loader fullPage />
       )}
     </Layout>
   );

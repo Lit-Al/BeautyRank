@@ -30,7 +30,7 @@ export const EvaluationForm = ({ memberId }: IEvaluationFormProps) => {
     });
 
   if (isLoading) {
-    return <Loader top="35vh" />;
+    return <Loader fullPage/>;
   }
 
   return (

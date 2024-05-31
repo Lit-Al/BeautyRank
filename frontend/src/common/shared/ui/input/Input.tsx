@@ -15,6 +15,7 @@ interface InputProps {
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   onInput?: any;
   autofocus?: boolean;
+  autoComplete?: string;
 }
 
 function checkInputLength(event: ChangeEvent<HTMLInputElement>) {
@@ -38,6 +39,7 @@ export const Input: ForwardRefRenderFunction<HTMLInputElement, InputProps> = ({
   autofocus,
   required = false,
   ref,
+  autoComplete = 'off',
 }) => {
   return (
     <div
@@ -58,6 +60,7 @@ export const Input: ForwardRefRenderFunction<HTMLInputElement, InputProps> = ({
         minLength={minLength}
         onInput={onInput}
         onChange={onChange}
+        autoComplete={autoComplete}
       />
     </div>
   );

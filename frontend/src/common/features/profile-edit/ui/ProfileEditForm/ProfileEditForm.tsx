@@ -108,6 +108,7 @@ export const ProfileEditForm: FC = () => {
                     type="text"
                     placeholder="Имя"
                     error={literalValidation(name)}
+                    autoComplete="given-name"
                     {...field}
                     onChange={handleNameChange('first_name')}
                   />
@@ -126,6 +127,7 @@ export const ProfileEditForm: FC = () => {
                     icon="profile"
                     placeholder="Фамилия"
                     error={literalValidation(lastname)}
+                    autoComplete="family-name"
                     {...field}
                     onChange={handleNameChange('last_name')}
                   />
@@ -141,7 +143,6 @@ export const ProfileEditForm: FC = () => {
               )}
             />
           </div>
-          <h3>Доступные Чемпионаты:</h3>
           <ChampsList
             disableChamps={
               literalValidation(name) ||
@@ -162,7 +163,7 @@ export const ProfileEditForm: FC = () => {
           />
         </div>
       ) : (
-        <Loader top="35vh" />
+        <Loader fullPage />
       )}
     </>
   );

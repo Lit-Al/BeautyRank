@@ -69,7 +69,7 @@ export const ResultList = () => {
     memberPhotosDataIsLoading ||
     memberDataIsLoading
   ) {
-    return <Loader top="35vh" />;
+    return <Loader fullPage />;
   }
 
   return (

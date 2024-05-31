@@ -16,7 +16,6 @@ import { BEAUTY_RANK_BOT } from 'common/shared/api/endpoints';
 const UploadPhotoForm = () => {
   const router = useRouter();
   const memberId = Number(router.query.memberId);
-  const [isButtonClicked, setIsButtonClicked] = useState(false);
 
   const { member, selectedFiles, setSelectedFiles } = useMember(memberId);
   const { handleFileChange } = useFileChange({
@@ -26,7 +25,7 @@ const UploadPhotoForm = () => {
     setSelectedFiles,
   });
   const { getImageSrc } = useMemberImageSrc({ selectedFiles });
-  const { mutation } = useUploadPhotos({ selectedFiles });
+  const { mutation, isLoading } = useUploadPhotos({ selectedFiles });
 
   const buttonIsDisabled = () => {
     if (selectedFiles.length) {
@@ -35,13 +34,6 @@ const UploadPhotoForm = () => {
       );
     }
     return true;
-  };
-
-  const handleButtonClick = () => {
-    if (!isButtonClicked) {
-      setIsButtonClicked(true);
-      mutation.mutate();
-    }
   };
 
   return (
@@ -81,15 +73,15 @@ const UploadPhotoForm = () => {
             Загрузить Видео
           </Link>
           <Button
-            disabled={buttonIsDisabled() || isButtonClicked}
+            disabled={buttonIsDisabled() || isLoading}
             className={styles.upload_photo__btn}
-            onClick={handleButtonClick}
+            onClick={() => mutation.mutate()}
           >
-            {isButtonClicked ? 'Загрузка...' : 'Подтвердить'}
+            {isLoading ? 'Загрузка...' : 'Подтвердить'}
           </Button>
         </>
       ) : (
-        <Loader top="35vh" />
+        <Loader fullPage />
       )}
     </>
   );

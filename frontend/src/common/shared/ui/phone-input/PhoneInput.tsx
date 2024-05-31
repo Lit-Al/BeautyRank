@@ -26,6 +26,7 @@ const PhoneInputBase: ForwardRefRenderFunction<
         {error}
       </span>
       <PhoneInput
+        autocompleteSearch
         inputClass={`${styles.phone_input} ${
           error ? styles.phone_input_error : ''
         }`}

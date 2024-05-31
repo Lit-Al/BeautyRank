@@ -37,7 +37,7 @@ function ProfilePage() {
           <MembersList />
         </>
       ) : (
-        <Loader top="35vh" />
+        <Loader fullPage />
       )}
     </Layout>
   );

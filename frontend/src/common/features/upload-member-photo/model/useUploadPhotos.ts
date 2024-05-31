@@ -28,5 +28,5 @@ export const useUploadPhotos = ({ selectedFiles }: IUseUploadPhotos) => {
 
   const mutation = useMutation(['memberPhotos'], uploadPhotos);
 
-  return { mutation };
+  return { mutation, isLoading: mutation.isLoading };
 };
