@@ -1,9 +1,4 @@
-import json
-from io import BytesIO
 from os.path import basename
-
-from PIL import Image
-from django.core.files import File
 
 from django.db import models
 from django.db.models import constraints
@@ -58,11 +53,27 @@ class Nomination(models.Model):
 
 
 class NominationAttribute(models.Model):
-    name = models.CharField(max_length=150)
-    nomination = models.ForeignKey(
-        "Nomination", models.PROTECT, related_name="attribute"
+    name = models.CharField(
+        max_length=150,
+        help_text="Введите название атрибута",
+        verbose_name="Название атрибута",
     )
-    max_score = models.IntegerField(default=5)
+    nomination = models.ForeignKey(
+        "Nomination",
+        models.PROTECT,
+        related_name="attribute",
+        help_text="Выберите номинацию",
+        verbose_name="Номинация",
+    )
+    max_score = models.IntegerField(
+        default=5,
+        help_text="Введите максимальную оценку",
+        verbose_name="Максимальная оценка",
+    )
+
+    class Meta:
+        verbose_name = "Атрибуты номинации"
+        verbose_name_plural = "Атрибуты номинаций"
 
     def __str__(self):
         return self.name
@@ -75,17 +86,61 @@ class Event(models.Model):
         verbose_name="Название мероприятия",
     )
     image = models.ImageField(
-        storage=PrivateMediaStorage, upload_to="event_photo/%Y/%m/%d"
+        storage=PrivateMediaStorage,
+        upload_to="event_photo/%Y/%m/%d",
+        help_text="Выберите фото",
+        verbose_name="Фото чемпионата",
     )
     owners = models.ManyToManyField(
-        "users.User", blank=True, related_name="owner_events"
+        "users.User",
+        blank=True,
+        related_name="owner_events",
+        help_text="Выберите организаторов",
+        verbose_name="Организаторы",
     )
-    finished = models.BooleanField(default=False)
-    result = models.JSONField(default=dict, blank=True)
+    finished = models.BooleanField(
+        default=False,
+        help_text="Поставьте галочку, если чемпионат завершился",
+        verbose_name="Завершение чемпионата",
+    )
+    result = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text="Поле заполняется автоматически. Редактирование в крайнем случае",
+        verbose_name="Результат чемпионата",
+    )
 
     class Meta:
         verbose_name = "Мероприятие"
         verbose_name_plural = "Мероприятия"
+
+    def generate_result(self):
+        categories = []
+        for event_category in self.eventcategory_set.select_related("category"):
+            nominations = []
+            for nomination in event_category.categorynomination_set.select_related(
+                "nomination"
+            ):
+                members = []
+                for member in nomination.categ.select_related("member", "member__user"):
+                    members.append(
+                        {
+                            "user_id": member.member.user.id,
+                            "user_name": str(member.member.user),
+                            "score": member.result_sum,
+                        }
+                    )
+                nominations.append(
+                    {"name": nomination.nomination.name, "members": members}
+                )
+            categories.append(
+                {
+                    "name": event_category.category.name,
+                    "nominations": nominations,
+                }
+            )
+
+        return {"name": self.name, "categories": categories}
 
     def get_winners_nominations(self):
         win_nominations = []
@@ -153,8 +208,19 @@ class Event(models.Model):
 
 
 class Member(models.Model):
-    user = models.ForeignKey("users.User", models.PROTECT)
-    event = models.ForeignKey("Event", models.PROTECT, related_name="members")
+    user = models.ForeignKey(
+        "users.User",
+        models.PROTECT,
+        help_text="Выберите пользователя",
+        verbose_name="Пользователь",
+    )
+    event = models.ForeignKey(
+        "Event",
+        models.PROTECT,
+        related_name="members",
+        help_text="Выберите чемпионат",
+        verbose_name="Чемпионат",
+    )
 
     class Meta:
         verbose_name = "Участник"
@@ -165,9 +231,18 @@ class Member(models.Model):
 
 
 class EventCategory(models.Model):
-    event = models.ForeignKey("Event", models.PROTECT)
+    event = models.ForeignKey(
+        "Event",
+        models.PROTECT,
+        help_text="Выберите чемпионат",
+        verbose_name="Чемпионат",
+    )
     category = models.ForeignKey(
-        "Category", models.PROTECT, related_name="categories_in_EventCategoryModel"
+        "Category",
+        models.PROTECT,
+        related_name="categories_in_EventCategoryModel",
+        help_text="Выберите категорию",
+        verbose_name="Категория",
     )
 
     class Meta:
@@ -180,11 +255,26 @@ class EventCategory(models.Model):
 
 class CategoryNomination(models.Model):
     event_category = models.ForeignKey(
-        "EventCategory", models.PROTECT, default=None, null=True
+        "EventCategory",
+        models.PROTECT,
+        default=None,
+        null=True,
+        help_text="Выберите категорию чемпионата",
+        verbose_name="Категория чемпионата",
     )
-    nomination = models.ForeignKey("Nomination", models.PROTECT, related_name="nom")
+    nomination = models.ForeignKey(
+        "Nomination",
+        models.PROTECT,
+        related_name="nom",
+        help_text="Выберите номинацию",
+        verbose_name="Номинация",
+    )
     event_staff = models.ManyToManyField(
-        "users.User", blank=True, related_name="staffs"
+        "users.User",
+        blank=True,
+        related_name="staffs",
+        help_text="Выберите судей",
+        verbose_name="Судьи",
     )
 
     class Meta:
@@ -196,9 +286,19 @@ class CategoryNomination(models.Model):
 
 
 class MemberNomination(models.Model):
-    member = models.ForeignKey("Member", models.PROTECT, related_name="membernom")
+    member = models.ForeignKey(
+        "Member",
+        models.PROTECT,
+        related_name="membernom",
+        help_text="Выберите участника",
+        verbose_name="Участник",
+    )
     category_nomination = models.ForeignKey(
-        "CategoryNomination", models.PROTECT, related_name="categ"
+        "CategoryNomination",
+        models.PROTECT,
+        related_name="categ",
+        help_text="Выберите категорию номинацию",
+        verbose_name="Категория номинации",
     )
     url_video = models.TextField(default="", blank=True)
     url_message_video = models.TextField(default="", blank=True)
@@ -211,6 +311,12 @@ class MemberNomination(models.Model):
         ):
             self.is_done = True
         super().save(*args, **kwargs)
+
+    @property
+    def result_sum(self):
+        unique_results = self.results.order_by("event_staff").distinct("event_staff")
+
+        return sum(result.score for result in unique_results)
 
     class Meta:
         verbose_name = "Номинация участника"
@@ -229,22 +335,39 @@ class MemberNominationPhoto(models.Model):
     ]
 
     member_nomination = models.ForeignKey(
-        "MemberNomination", models.PROTECT, related_name="photos", default=None
+        "MemberNomination",
+        models.PROTECT,
+        related_name="photos",
+        default=None,
+        help_text="Выберите работу участника",
+        verbose_name="Работа участника",
     )
-    photo = models.ImageField(storage=PrivateMediaStorage, upload_to="photos/%Y/%m/%d")
+    photo = models.ImageField(
+        storage=PrivateMediaStorage,
+        upload_to="photos/%Y/%m/%d",
+        help_text="Выберите фото работы",
+        verbose_name="Фото работы",
+    )
     optimized_photo = models.ImageField(
         storage=PrivateMediaStorage,
         default=None,
         blank=True,
         null=True,
         upload_to="optimized_photos/%Y/%m/%d",
+        help_text="Поле заполняется автоматически",
+        verbose_name="Оптимизированное фото. Трогать в крайнем случае.",
     )
     name = models.CharField(
         max_length=50,
         help_text="Введите название фотографии",
         verbose_name="Название фотографии",
     )
-    before_after = models.CharField(max_length=2, choices=BEFORE_AFTER_CHOICES)
+    before_after = models.CharField(
+        max_length=2,
+        choices=BEFORE_AFTER_CHOICES,
+        help_text="Выберите статус фотографии",
+        verbose_name="Статус фотографии",
+    )
 
     def save(self, *args, **kwargs):
         if self.pk is None:
@@ -269,17 +392,29 @@ class MemberNominationPhoto(models.Model):
 
         super().save(*args, **kwargs)
 
+    class Meta:
+        verbose_name = "Фотографии работы"
+        verbose_name_plural = "Фотографии работ"
+
     def __str__(self) -> str:
         return f"{self.member_nomination}"
 
 
 class Result(models.Model):
     member_nomination = models.ForeignKey(
-        "MemberNomination", models.PROTECT, related_name="results"
+        "MemberNomination",
+        models.PROTECT,
+        related_name="results",
+        help_text="Выберите работу участника",
+        verbose_name="Работа участника",
     )
-    score = models.IntegerField()
-    event_staff = models.ForeignKey("users.User", models.PROTECT)
-    score_retail = models.JSONField(default=None, null=True)
+    score = models.IntegerField(verbose_name="Баллы")
+    event_staff = models.ForeignKey(
+        "users.User", models.PROTECT, verbose_name="Судья, выдавший оценку"
+    )
+    score_retail = models.JSONField(
+        default=None, null=True, verbose_name="Подробная оценка"
+    )
 
     class Meta:
         verbose_name = "Оценка"
@@ -313,45 +448,3 @@ def delete_objects_of_member_nomination_photo(sender, instance, **kwargs):
         PrivateMediaStorage().delete(instance.photo.name)
     if instance.optimized_photo:
         PrivateMediaStorage().delete(instance.optimized_photo.name)
-
-
-# @receiver(post_save, sender=Event)
-# def calculate_results(sender, instance, **kwargs):
-#
-#     if instance.finished:
-#         win_categories = instance.get_winners_categories()
-#         win_nominations = instance.get_winners_nominations()
-#         # result_data = {
-#         #     "winners_by_category": ,
-#         #     "winners_by_nomination": ,
-#         # }
-#         # result_json = json.dumps(result_data)
-#         # instance.result = result_json
-#         # instance.save()
-
-# @receiver(post_save, sender=Event)
-# def calculate_results(sender, instance, **kwargs):
-#
-#     if instance.finished:
-#         win_categories = instance.get_winners_categories()
-#         win_nominations = instance.get_winners_nominations()
-#
-#         # Сериализация данных о победителях
-#         serialized_winners_categories = [
-#             MemberNominationSerializerForWinners(winners, many=True).data
-#             for winners in win_categories
-#         ]
-#         serialized_winners_nominations = [
-#             MemberNominationSerializerForWinners(winners["members"], many=True).data
-#             for winners in win_nominations
-#         ]
-#
-#         # Подготовка данных для поля result
-#         result_data = {
-#             "winners_by_category": serialized_winners_categories,
-#             "winners_by_nomination": serialized_winners_nominations,
-#         }
-#
-#         # Обновление поля result
-#         instance.result = result_data
-#         instance.save()

@@ -3,7 +3,7 @@ from os.path import basename
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 
 from RateOnline.storage_backends import PrivateMediaStorage
@@ -46,6 +46,9 @@ class User(AbstractUser):
 
 @receiver(post_save, sender=User)
 def make_image_optimized(sender, instance, **kwargs):
+    if hasattr(instance, "_disable_signal"):
+        return
+
     try:
         is_have_image = bool(instance.image)
         is_have_optimized_image = bool(instance.optimized_image)
@@ -56,7 +59,7 @@ def make_image_optimized(sender, instance, **kwargs):
                 instance.optimized_image.name
             )
 
-        if is_have_image and (not is_have_optimized_image or equal_images):
+        if is_have_image and (not is_have_optimized_image or equal_images is False):
             optimized_image = optimize_image(instance.image, 150)
             if not instance.optimized_image:
                 instance.optimized_image = optimized_image
@@ -65,10 +68,12 @@ def make_image_optimized(sender, instance, **kwargs):
                     optimized_image.name, optimized_image, save=False
                 )
 
+            instance._disable_signal = True
             instance.save()
+            del instance._disable_signal
 
     except Exception as e:
-        print(f"Error during image optimization: {e}")
+        print(f"Ошибка во время оптимизации фото: {e}")
 
 
 @receiver(post_delete, sender=User)

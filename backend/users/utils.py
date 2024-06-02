@@ -1,9 +1,9 @@
 import random
 from io import BytesIO
-from os.path import splitext, basename
+from os.path import basename, splitext
 
-from PIL import Image, ImageOps
 from django.core.files import File
+from PIL import Image, ImageOps
 
 
 def generate_password() -> str:

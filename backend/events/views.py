@@ -1,6 +1,4 @@
 from django.db.models import BooleanField, Case, F, Q, When, Count
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.mixins import (
@@ -9,7 +7,7 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from events.permissions import (
@@ -36,20 +34,6 @@ class MemberNominationViewSet(
     serializer_class = MemberNominationSerializer
     filterset_fields = ["category_nomination__event_category__event", "is_done"]
     permission_classes = [TelegramBotUpdate]
-
-    @method_decorator(cache_page(60 * 60 * 2))
-    def list(self, request, *args, **kwargs):
-        """
-        Возвращает список всех объектов MemberNomination.
-        """
-        return super().list(request, *args, **kwargs)
-
-    @method_decorator(cache_page(60 * 60 * 2))
-    def retrieve(self, request, *args, **kwargs):
-        """
-        Возвращает один объект MemberNomination по его ID.
-        """
-        return super().retrieve(request, *args, **kwargs)
 
     def get_queryset(self):
         """
@@ -105,13 +89,6 @@ class MemberNominationPhotoViewSet(
     filterset_fields = ["member_nomination"]
     ordering_fields = ["before_after"]
     permission_classes = [IsMemberOrReadOnly]
-
-    @method_decorator(cache_page(60 * 60 * 2))
-    def list(self, request, *args, **kwargs):
-        """
-        Возвращает список всех объектов MemberNominationPhoto.
-        """
-        return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
         """
@@ -201,6 +178,13 @@ class EventViewSet(
         win_categories = event.get_winners_categories()
         serializer = WinnersSerializer(win_categories, many=True)
         return Response(serializer.data)
+
+    @action(detail=False, methods=["get"], permission_classes=[AllowAny])
+    def top_100(self, request, *args, **kwargs):
+        result = []
+        for event in Event.objects.filter(finished=True):
+            result.append(event.result)
+        return Response(data=result)
 
 
 class NominationAttributeViewSet(ListModelMixin, viewsets.GenericViewSet):

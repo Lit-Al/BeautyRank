@@ -28,6 +28,9 @@ class EventAdmin(admin.ModelAdmin):
     @admin.action(description="Завершить чемп")
     def make_finished(self, request, queryset):
         queryset.update(finished=True)
+        for event in queryset:
+            event.result = event.generate_result()
+            event.save()
 
     @admin.action(description="Удалить связанные файлы/объекты")
     def clean_champ(self, request, queryset):

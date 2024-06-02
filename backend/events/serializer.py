@@ -135,6 +135,7 @@ class EventSerializer(serializers.ModelSerializer):
 
 class MemberNominationSerializerForWinners(serializers.ModelSerializer):
     member = serializers.CharField(source="member.user", read_only=True)
+    member_id = serializers.IntegerField(source="member.user_id", read_only=True)
     result_all = serializers.IntegerField(read_only=True)
 
     class Meta:
