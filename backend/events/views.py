@@ -161,6 +161,8 @@ class EventViewSet(
             "winners_of_categories",
         ]:
             permission_classes = [IsOwnerOnly]
+        elif self.action == "top_100":
+            permission_classes = [AllowAny]
         else:
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
