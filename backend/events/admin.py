@@ -41,6 +41,9 @@ class EventAdmin(admin.ModelAdmin):
                 photo.delete()
             Result.objects.filter(member_nomination__member__event=event).delete()
             MemberNomination.objects.filter(member__event=event).delete()
+            Member.objects.filter(event=event).delete()
+            CategoryNomination.objects.filter(event_category__event=event).delete()
+            EventCategory.objects.filter(event=event).delete()
 
 
 @admin.register(Nomination)

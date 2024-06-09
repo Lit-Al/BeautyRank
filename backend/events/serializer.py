@@ -140,7 +140,7 @@ class MemberNominationSerializerForWinners(serializers.ModelSerializer):
 
     class Meta:
         model = MemberNomination
-        fields = ("id", "member", "result_all")
+        fields = ("id", "member", "member_id", "result_all")
         read_only_fields = ["id"]
 
 

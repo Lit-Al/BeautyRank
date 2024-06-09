@@ -127,6 +127,11 @@ class Event(models.Model):
                         {
                             "user_id": member.member.user.id,
                             "user_name": str(member.member.user),
+                            "user_avatar": (
+                                member.member.user.optimized_image.url
+                                if member.member.user.optimized_image
+                                else None
+                            ),
                             "score": member.result_sum,
                         }
                     )
