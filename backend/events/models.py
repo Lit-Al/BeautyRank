@@ -186,7 +186,8 @@ class Event(models.Model):
         )
         for category in categories:
             member_nominations = MemberNomination.objects.filter(
-                category_nomination__event_category__category=category
+                category_nomination__event_category__category=category,
+                member__event=self.id,
             )
             members = set(member_nominations.values_list("member", flat=True))
             top = []
@@ -310,11 +311,17 @@ class MemberNomination(models.Model):
     is_done = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        if (
-            self.id
-            and self.category_nomination.event_staff.count() == self.results.count()
-        ):
-            self.is_done = True
+        print(
+            "СУДЬИ:",
+            self.category_nomination.event_staff.count(),
+            "РЕЗУЛЬТ:",
+            self.results.count(),
+        )
+        if self.id:
+            if self.category_nomination.event_staff.count() == self.results.count():
+                self.is_done = True
+            else:
+                self.is_done = False
         super().save(*args, **kwargs)
 
     @property
@@ -439,12 +446,6 @@ def save_url(sender, instance, **kwargs):
     if instance.url_video and not instance.url_message_video:
         integration = TelegramIntegration()
         integration.send_video_to_telegram_channel(instance)
-
-
-@receiver(post_save, sender=CategoryNomination)
-def save_member_nominations(sender, instance, **kwargs):
-    mn = MemberNomination.objects.all()
-    list(map(lambda x: x.save(), mn))
 
 
 @receiver(post_delete, sender=MemberNominationPhoto)

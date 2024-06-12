@@ -63,9 +63,7 @@ class MemberAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(MemberAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields["user"].queryset = User.objects.filter(
-            is_staff=False
-        )  # TODO: сделать другой фильтр
+        form.base_fields["user"].queryset = User.objects.filter(is_staff=False)
         return form
 
 
@@ -75,6 +73,12 @@ class CategoryNominationAdmin(admin.ModelAdmin):
     list_display = ("event_category", "nomination")
     list_display_links = ("event_category", "nomination")
     ordering = ["event_category", "nomination"]
+
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)
+        if change:
+            mn = MemberNomination.objects.filter(category_nomination=form.instance)
+            list(map(lambda x: x.save(), mn))
 
 
 @admin.register(MemberNomination)
