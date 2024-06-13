@@ -15,6 +15,10 @@ import { LoginFormValues } from '../../model';
 import router from 'next/router';
 import PhoneInput from 'common/shared/ui/phone-input/PhoneInput';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Checkbox } from 'common/shared/ui/checkbox';
+import Link from 'next/link';
+
+export const USER_AGREEMENT = process.env.NEXT_PUBLIC_USER_AGREEMENT;
 
 export const LoginForm = () => {
   const [showCodePage, setShowCodePage] = useState(false);
@@ -28,6 +32,7 @@ export const LoginForm = () => {
   const setUser = useSetAtom(userAtom);
   const setAccess = useSetAtom(accessTokenAtom);
   const setRefresh = useSetAtom(refreshTokenAtom);
+  const [agreement, setAgreement] = useState(false);
 
   useEffect(() => {
     // При переходе на новую форму сбрасываем значения полей
@@ -173,7 +178,20 @@ export const LoginForm = () => {
                 <PhoneInput error={errors.phone?.message} {...field} />
               )}
             />
-            <Button loading={loginUserMutation.isLoading}>Получить код</Button>
+            <p className={styles.user_agreement}>
+              <Checkbox
+                checked={agreement}
+                onChange={() => setAgreement(!agreement)}
+              />
+              Я принимаю условия{' '}
+              <Link target="_blank" href={USER_AGREEMENT || ''}>
+                пользовательского соглашения
+              </Link>
+            </p>
+
+            <Button disabled={!agreement} loading={loginUserMutation.isLoading}>
+              Получить код
+            </Button>
             {loginUserMutation.isLoading && <Loader />}
           </form>
         )}

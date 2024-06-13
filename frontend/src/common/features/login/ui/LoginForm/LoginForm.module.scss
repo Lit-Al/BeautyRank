@@ -26,3 +26,19 @@
 .code_box {
   width: 100%;
 }
+
+.user_agreement {
+  color: darken($grey, 35%);
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+  a {
+    color: $pink;
+  }
+
+  @media screen and (max-width: 450px) {
+    font-size: 13px;
+    white-space: nowrap;
+  }
+}
