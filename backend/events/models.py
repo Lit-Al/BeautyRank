@@ -311,12 +311,6 @@ class MemberNomination(models.Model):
     is_done = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        print(
-            "СУДЬИ:",
-            self.category_nomination.event_staff.count(),
-            "РЕЗУЛЬТ:",
-            self.results.count(),
-        )
         if self.id:
             if self.category_nomination.event_staff.count() == self.results.count():
                 self.is_done = True
