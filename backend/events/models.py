@@ -448,3 +448,8 @@ def delete_objects_of_member_nomination_photo(sender, instance, **kwargs):
         PrivateMediaStorage().delete(instance.photo.name)
     if instance.optimized_photo:
         PrivateMediaStorage().delete(instance.optimized_photo.name)
+
+
+@receiver(post_save, sender=Result)
+def save_member_nominations(sender, instance, **kwargs):
+    instance.member_nomination.save()
