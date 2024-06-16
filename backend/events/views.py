@@ -10,6 +10,7 @@ from rest_framework.mixins import (
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
+from RateOnline import settings
 from events.permissions import (
     IsMemberOrReadOnly,
     IsStaffOrReadOnly,
@@ -183,10 +184,20 @@ class EventViewSet(
 
     @action(detail=False, methods=["get"], permission_classes=[AllowAny])
     def top_100(self, request, *args, **kwargs):
-        result = []
+        results = []
         for event in Event.objects.filter(finished=True):
-            result.append(event.result)
-        return Response(data=result)
+            event_result = event.result
+            for category in event_result["categories"]:
+                for nomination in category["nominations"]:
+                    for member in nomination["members"]:
+                        if member["user_avatar"]:
+                            s3_storage = PrivateMediaStorage(
+                                bucket_name=settings.AWS_STORAGE_BUCKET_NAME
+                            )
+                            url = s3_storage.url(member["user_avatar"])
+                            member["user_avatar"] = url
+            results.append(event_result)
+        return Response(data=results)
 
 
 class NominationAttributeViewSet(ListModelMixin, viewsets.GenericViewSet):
